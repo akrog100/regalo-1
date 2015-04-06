@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="navigataur.css">
+<meta charset="utf-8">
+<title>My Posts</title>
+</head>
+
+<body>
+
+<img src="http://i58.tinypic.com/1z1uyw9.png" width="200" height="100" alt=""/>
+
+<input type="checkbox" id="toggle" />
+<div>
+
+  <label for="toggle" class="toggle" data-open="Main Menu" data-close="Close Menu" onclick></label>
+  <ul class="menu">
+	  <li><a href="#"> <font face="Impact, Haettenschweiler, Franklin Gothic Bold, Arial Black, sans-serif">Browse</font></a></li>
+	  <li><a href="#">My Profile</a></li>		
+	  <li><a href="#">My Posts</a></li>	
+	  <li><a href="#">My Bids</a></li>
+      <li><a href="#">Help/FAQ</a></li>
+	</ul>
+    <br> <br> <br> <br> <br> <br>
+        
+</div>
+
+
+
+<div align="center">
+User's posts will be listed here.<br>
+<button type="button">Create Post</button>
+</div>
+
+
+</body>
+</html>
