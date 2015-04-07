@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block content %}
+<p>This is my bids page</p>
+
+{% endblock %}
+
+<script>
+ $(document).ready(function() {
+    $("#bids").addClass("active").siblings().removeClass("active");
+});
+
+function bids_on() {
+	 $("#bids").addClass("active").siblings().removeClass("active");
+}
+</script>
+

@@ -1,0 +1,108 @@
+body {
+  background-color: #F0F0F0;
+ }
+ 
+ #main-container {
+  font-family: Sans-serif;
+  padding: 1em 1em 1em 1em;
+  border:1px solid red 10px;
+  background-color: white;
+  border-radius: 10px;
+  border-color:black;
+  width: 800px;
+  min-height: 750px;
+  margin: 0 auto;
+  box-shadow: 5px 5px 2.5px #888888;
+  overflow: overlay;
+ }
+
+ #header {
+  position: relative;
+  top: 1em;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  border: solid 2px white;
+ }
+
+ #topbar-first {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 20px;
+ }
+ 
+ #topbar-second {
+  font-weight: bold;
+  width: 100%;
+  height: 40px;
+ }
+
+ #logo-cont {
+  float: left;
+  position: relative; 
+  top: 0;
+  height: 100%;
+  width: 25%;
+  background-position: left;
+  background-size: 60% 100%;
+  background-color: black;
+  /*background-image: url('./images.jpg');*/
+  background-repeat: no-repeat;
+ }
+#login-cont {
+  float: left;
+  height: 100%;
+  width: 75%;
+  background-color: #CFCFCF;
+}
+#page-body {
+  margin: 0 auto;
+  position: relative;
+  top: 0.7em;
+  width:100%;
+  height: auto;
+  min-height: 525px;
+  float: left;
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 2px grey;
+}
+
+.button-link {
+  width: 6.8525em;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+  padding: 10px;
+  color: #000;
+  border-radius: 4px;
+  }
+
+.button-link:hover {
+    background: #E6E6E6;
+  }
+.button-link.active {
+    background: grey;
+  }
+
+ #footer {
+  margin-top: 1em;
+  float: left;
+  border: solid 2px grey;
+  min-height: 65px;
+  width: 100%;
+  height: auto; 
+  overflow: hidden;
+  border-radius: 4px;
+}
+.buy-link {
+  margin: 0 auto;
+  background: #0063C6;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+  padding: 10px;
+  color: #000;
+  border-radius: 4px;
+  
+}

@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+<p>This is settings page</p>
+
+{% endblock %}
+
+<script>
+$(document).ready(function() {
+    myInit();
+})
+function myInit() {
+    $('#settings').addClass("active").siblings().removeClass("active");
+}
+</script>
+

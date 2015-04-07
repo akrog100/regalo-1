@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block content %}
+<p>This is a profile page</p>
+
+{% endblock %}
+
+
+<script>
+$(document).ready(function() {
+    myInit();
+})
+function myInit() {
+    $('#profile').addClass("active").siblings().removeClass("active");
+}
+</script>
+

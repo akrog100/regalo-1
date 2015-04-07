@@ -226,13 +226,77 @@ class SignInHandler(Handler):
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
-class FrontHandler(Handler):
+class BrowseHandler(Handler):
     def get(self):   
-        self.render("frontpage.html")
+        self.render("browse.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
+#----------------------------------------------MY PROFILE HANDLER-------------------------------------------------#
+class MyProfileHandler(Handler):
+    def get(self):   
+        self.render("myprofile.html")
+#-----------------------------------------------------------------------------------------------------------------#
+
+#------------------------------------------------MY POSTS HANDLER-------------------------------------------------#
+class MyPostsHandler(Handler):
+    def get(self):   
+        self.render("myposts.html")
+#-----------------------------------------------------------------------------------------------------------------#
+
+#-------------------------------------------------MY BIDS HANDLER-------------------------------------------------#
+class MyBidsHandler(Handler):
+    def get(self):   
+        self.render("mybids.html")
+#-----------------------------------------------------------------------------------------------------------------#
+
+#----------------------------------------------SETTINGS-- HANDLER-------------------------------------------------#
+class SettingsHandler(Handler):
+    def get(self):   
+        self.render("settings.html")
+#-----------------------------------------------------------------------------------------------------------------#
+
+#----------------------------------------------------HELP HANDLER-------------------------------------------------#
+class HelpHandler(Handler):
+    def get(self):   
+        self.render("help.html")
+#-----------------------------------------------------------------------------------------------------------------#
+
+
+#//////////////////////////////////////////
+class Movie(db.Model):
+    title = db.StringProperty()
+    picture = db.BlobProperty(default=None)
+
+class TestHandler(Handler):
+    def get(self):
+        title = "pic"
+        movie = getMovie(title)
+        if (movie and movie.picture):
+            self.response.headers['Content-Type'] = 'image/jpeg'
+            self.response.out.write(movie.picture)
+        else:
+            self.redirect('/static/noimage.jpg') 
+
+def getMovie(title):
+    result = db.GqlQuery("SELECT * FROM Movie WHERE title = :1 LIMIT 1",
+                    title).fetch(1)
+    if (len(result) > 0):
+        return result[0]
+    else:
+        return None
+#///////////////////////////////////////////
+
+
 app = webapp2.WSGIApplication([ #URL handlers
-    ('/', FrontHandler),
     ('/register', SignUpHandler),
-    ('/signin', SignInHandler)
+    ('/signin', SignInHandler),
+    ('/browse', BrowseHandler),
+    ('/myprofile', MyProfileHandler),
+    ('/myposts', MyPostsHandler),
+    ('/mybids', MyBidsHandler),
+    ('/settings', SettingsHandler),
+    ('/help', HelpHandler),
+    ('/test',TestHandler)
     ], debug=True)
+
+

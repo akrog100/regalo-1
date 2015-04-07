@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>REGALO</title>
+
+  <link type="text/css" rel="stylesheet" href="/static/styles/basic.css">
+  <script src="/scripts/jquery-1.11.2.min.js"></script>
+  <script src="/scripts/basic.js"></script>
+ </head>
+  
+ <body>
+  <div id="main-container"> 
+   <div id="header">
+    <div id="topbar-first">
+     <div id="logo-cont">
+      
+     </div>
+ 
+     <div id="login-cont">
+ 
+     </div>
+    </div>
+  
+    <div id="topbar-second">
+      <div style="height: 40px; width: 100%; margin: 0 auto;">
+        <a id="browse" class="button-link" href='/browse'>BROWSE</a>
+        <a id="profile" class="button-link" href='/myprofile' >MY PROFILE</a>
+        <a id="posts" class="button-link" href='/myposts' >MY POSTS</a>
+        <a id="bids" class="button-link" href='/mybids' > MY BIDS</a>
+        <a id="settings" class="button-link" href='/settings' >SETTINGS</a>
+        <a id="help" class="button-link" href='/help' >HELP/FAQ</a>
+      </div>
+      
+      
+    </div>  
+   </div>
+    
+   <div id="page-body" style="overflow: hidden;">
+      {% block content %}
+
+      {% endblock %}
+   </div>
+
+   <div id="footer">
+
+  </div>
+</div>
+</body>
+</html>
+
+<script>
+ $(document).ready(function() {
+  var  parser = document.createElement('a');
+  parser.href = window.location.href;
+  var tab = parser.pathname;
+   if (tab == '/browse')  {
+    $('#browse').addClass("active").siblings().removeClass("active");
+   }
+   if (tab == '/myprofile')  {
+    $('#profile').addClass("active").siblings().removeClass("active");
+   }
+   if (tab == '/myposts') {
+    $('#posts').addClass("active").siblings().removeClass("active");
+   }
+   if (tab == '/mybids')  {
+    $('#bids').addClass("active").siblings().removeClass("active");
+   }
+   if (tab == '/settings')  {
+    $('#settings').addClass("active").siblings().removeClass("active");
+   }
+   if (tab == '/help')  {
+    $('#help').addClass("active").siblings().removeClass("active");
+   }
+
+});
+ </script>
