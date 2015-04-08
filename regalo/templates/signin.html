@@ -1,44 +1,30 @@
-<!DOCTYPE html>
+{% extends "frontpage.html" %}
 
-<html>
-  <head>
-    <title>Login</title>
-    <style type="text/css">
-      .label {text-align: right}
-      .error {color: red}
-    </style>
+{% block content %}
+  <div id="login">
+    <div>
+      <p id="login_title">Sign in</p>
+    </div>
+    <hr id="login_line" style="">
 
-  </head>
-
-  <body>
-    <h2>Login</h2>
-    <form method="post">
-      <table>
-        <tr>
-          <td class="label">
-            Username
-          </td>
-          <td>
-            <input type="text" name="username" value="{{username}}">
-          </td>
-        </tr>
-
-        <tr>
-          <td class="label">
-            Password
-          </td>
-          <td>
-            <input type="password" name="password" value="">
-          </td>
-        </tr>
-      </table>
-
-      <div class="error">
-        {{error_login}}
+    <form method="post" >
+      <div>
+        <input placeholder="User Name" class="inputs" type="text" name="username" value="{{first_name}}">
       </div>
 
-      <input type="submit">
-    </form>
-  </body>
+      <div >
+        <input placeholder="Password" class="inputs" type="password" name="password" value="{{last_name}}">
+      </div>
+      <div class="error">
+        {{error_login}}  
+      </div>
+      <div>
+        <input id="login_but" type="submit" value="LOG IN">
+      </div>
 
-</html>
+      <div style="margin: 1.5em auto; text-align: center;">
+        Not a user? <a href="register">Sign up now!</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>This is my posts page</p>
 
+<div id="mypost_main_body">
+	<div id="browse-left-my">
+		<div id="new_button_cont">
+			<a id="new_button" href='/myposts/newpost'>+ NEW POST</a>
+		</div>
+	</div>
+	<div id="browse-nav-my">
+	</div>
+	<div id="browse-main-my">
+		{% block contents %}
+		{% endblock %}
+	</div>
+</div>
 {% endblock %}
+
 
 

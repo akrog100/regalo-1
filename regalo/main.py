@@ -17,6 +17,9 @@ secret = "imsosecret"
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                 autoescape = True)
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
 
 #REGULAR EXPRESSION VALIDATION----------
 FIRST_RE = re.compile(r"^[a-zA-Z]{1,20}$") #atleast one characters, atmost 20, only letters
@@ -62,6 +65,26 @@ def valid_pw(name,pw,h):
     return h == make_pw_hash(name,pw,salt)
 #---------------------------------------
 
+#---------------------------------------------------RETAILER DB---------------------------------------------------#
+retailers=("Applebees", "Best Buy","Body Shop","Chipotle","CVS","Dominos Pizza","Dunkin Donuts","Forever 21","Papa Johns","WalMart")
+
+class Retailer(db.Model):
+    name = db.StringProperty(required=True,choices=retailers)
+    link = db.LinkProperty()
+
+    @classmethod
+    def by_ret_name(cls, ret_name):
+        u = Retailer.all().filter('name =', ret_name).get()
+        return u
+
+    @classmethod
+    def by_id(cls, rid):
+        return Retailer.get_by_id(rid)
+
+    @classmethod
+    def register(cls, name, link = None):
+        return Retailer(name = name, link = link)
+#-----------------------------------------------------------------------------------------------------------------#
 
 #-----------------------------------------------------USER DB-----------------------------------------------------#
 class User(db.Model):
@@ -97,6 +120,24 @@ class User(db.Model):
             return user
 #-----------------------------------------------------------------------------------------------------------------#
 
+#-----------------------------------------------------POST DB-----------------------------------------------------#
+class Post(db.Model):
+    owner = db.ReferenceProperty(User,collection_name='user_posts')
+    retailer = db.ReferenceProperty(Retailer)
+    card_val = db.FloatProperty(required=True)
+    val_offer = db.FloatProperty(required=True)
+    looking_for = db.ListProperty(str,required= True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
+
+    @classmethod
+    def register(cls, owner, ret, val, offer, choices):
+        return Post(owner = owner, retailer = ret, card_val = val, val_offer = offer, looking_for = choices)
+
+    def render(self):
+        return render_str("post.html", p = self)
+#-----------------------------------------------------------------------------------------------------------------#
+
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -125,12 +166,24 @@ class Handler(webapp2.RequestHandler):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
 
+    def initialize(self, *a, **kw):
+        webapp2.RequestHandler.initialize(self, *a, **kw)
+        uid = self.read_secure_cookie('user_id')
+        self.user = uid and User.by_id(int(uid))
+
+    def get_user(self):
+        uid = self.read_secure_cookie('user_id')
+        return User.by_id(int(uid))
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN UP PAGE HANDLER-----------------------------------------------#
 class SignUpHandler(Handler):
     def get(self):
-        self.render('register.html')
+        if self.user:
+            self.redirect("/browse")
+        else:
+            self.render('register.html')
+
 
     def post(self):
         have_error = False
@@ -212,7 +265,11 @@ class SignUpHandler(Handler):
 #----------------------------------------------SIGN IN PAGE HANDLER-----------------------------------------------#
 class SignInHandler(Handler):
     def get(self):
-        self.render('signin.html')
+        if self.user:
+            self.redirect("/browse")
+        else:
+            self.render('signin.html')
+       
 
     def post(self):
         user_name = self.request.get('username')
@@ -236,39 +293,100 @@ class FrontPageHandler(Handler):
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class BrowseHandler(Handler):
     def get(self):
-        self.render("browse.html")
+        if self.user:
+            posts = Post.all().order('-created')
+            self.render('browse.html', posts = posts)
+        else:
+            self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------MY PROFILE HANDLER-------------------------------------------------#
 class MyProfileHandler(Handler):
-    def get(self):   
-        self.render("myprofile.html")
+    def get(self):
+        if self.user:
+            self.render("myprofile.html")
+        else:
+            self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
 
 #------------------------------------------------MY POSTS HANDLER-------------------------------------------------#
 class MyPostsHandler(Handler):
-    def get(self):   
-        self.render("myposts.html")
+    def get(self):
+        if self.user:
+            self.render("myposts.html")
+        else:
+            self.redirect('/signin')
+        
+#-----------------------------------------------------------------------------------------------------------------#
+
+#------------------------------------------------NEW POSTS HANDLER------------------------------------------------#
+class NewPostHandler(Handler):
+    def get(self):
+        if self.user:
+            self.render("newpost.html", retailers = retailers)
+        else:
+            self.redirect('/signin')
+
+    def post(self):
+        have_error = False
+        self.card_retailer = self.request.get('retailer')
+        self.selected_rets = self.request.get('choices', allow_multiple=True)
+        self.value = self.request.get('value')
+        self.offer = self.request.get('offer')
+
+        #????????????????????/do error checking
+        if have_error:
+            self.render("newpost.html", retailers = retailers)
+        else:
+            num_choices = len(self.selected_rets)
+            choices = [0] * num_choices
+            for i in range(0,num_choices):
+                choices[i] = str(self.selected_rets).split(',')[i].split("'")[1]
+
+            u = self.get_user()
+            r = Retailer.by_ret_name(self.card_retailer)
+            self.response.write(choices)
+            p = Post.register(u, r, float(self.value), float(self.offer), choices)
+            p.put()
+
+            self.redirect('/myposts')
+
+
+
+        
 #-----------------------------------------------------------------------------------------------------------------#
 
 #-------------------------------------------------MY BIDS HANDLER-------------------------------------------------#
 class MyBidsHandler(Handler):
-    def get(self):   
-        self.render("mybids.html")
+    def get(self):
+        if self.user:
+            self.render("mybids.html")
+        else:
+            self.redirect('/signin')
+
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------ABOUT HANDLER-------------------------------------------------#
 class AboutHandler(Handler):
-    def get(self):   
+    def get(self):  
         self.render("about.html")
+
+        
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------------HELP HANDLER-------------------------------------------------#
 class HelpHandler(Handler):
-    def get(self):   
+    def get(self):
         self.render("help.html")
+ 
 #-----------------------------------------------------------------------------------------------------------------#
 
+#----------------------------------------------------HELP HANDLER-------------------------------------------------#
+class LogoutHandler(Handler):
+    def get(self):
+        self.logout()
+        self.redirect('/signin')
+#-----------------------------------------------------------------------------------------------------------------#
 
 #//////////////////////////////////////////
 class Movie(db.Model):
@@ -302,10 +420,12 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/browse', BrowseHandler),
     ('/myprofile', MyProfileHandler),
     ('/myposts', MyPostsHandler),
+    ('/myposts/newpost', NewPostHandler),
     ('/mybids', MyBidsHandler),
     ('/about', AboutHandler),
     ('/help', HelpHandler),
-    ('/test',TestHandler)
+    ('/test',TestHandler),
+    ('/logout', LogoutHandler)
     ], debug=True)
 
 

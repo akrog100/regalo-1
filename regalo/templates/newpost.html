@@ -1,0 +1,70 @@
+{% extends "myposts.html" %}
+
+
+{% block contents %}
+<div id="newpost_form">
+	<div>
+      <p id="newpost_title">New Post</p>
+    </div>
+    <hr id="newpost_line" style="">
+	<form method="post">
+		<div class="label">
+        	Retailer
+      	</div>
+		<div >
+			<select id="dropdown1" name="retailer">
+				<option>--select--</option>
+				{% for retailer in retailers %}
+					<option>{{retailer}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="error">
+          {{error_retailer}}  
+        </div>
+
+		<div class="label">
+        	Card Value
+      	</div>
+		<div >
+			<input class="inputs" type="text" name="value">
+		</div>
+		<div class="error">
+          {{error_value}}  
+        </div>
+		<div class="label">
+        	Offer Value
+      	</div >
+		<div >
+			<input class="inputs"type="text" name="offer">
+		</div>
+		<div class="error">
+          {{error_offer}}  
+        </div>
+		
+
+        <div class="label">
+        	Gift cards looking for?
+      	</div>
+		<div >
+			<select id="dropdown2" name="choices" multiple>
+				<option>--select--</option>
+				{% for retailer in retailers %}
+					<option>{{retailer}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="error">
+          {{error_retailer}}  
+        </div>
+
+        <div>
+        	<input id="post_but" type="submit" value="Post">
+      </div>
+	</form>
+</div>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,31 @@
+<div id="post_cont">
+	<div id="post_left_cont">
+		<div id="post_title">
+			<span id="post_retailer">{{p.retailer.name}}: ${{p.card_val}}</span>
+		</div>
+
+		<div id="retailer_pic_cont">
+			<div id="retailer_pic">
+			</div>
+		</div>
+ 
+		<div id="post_owner_cont">
+			<span>Posted By: <a href="#">@{{p.owner.user_name}}</a></span>
+			<br>
+			<span>Date: {{p.created.strftime("%b %d, %Y")}} </span>
+		</div>
+	</div>
+
+	<div id="post_mid_cont">
+		<div id="looking_for_cont">
+			<span id="looking_for_span"><u>Looking for</u></span>
+			<ol class="looking_for_list">{{p.looking_for[0]}}</ol>
+			<ol class="looking_for_list">{{p.looking_for[1]}}</ol>
+			<ol class="looking_for_list">{{p.looking_for[2]}}</ol>
+		</div>
+	</div>
+
+	<div id="bid_button_cont">
+		<a id="bid_button" href='#'>BID</a>
+	</div>
+</div>

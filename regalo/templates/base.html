@@ -22,7 +22,7 @@
     </div>
   
     <div id="topbar-second">
-      <div style="height: 40px; width: 100%; margin: 0 auto;">
+      <div>
         <a id="browse" class="button-link" href='/browse'>Browse</a>
         <a id="profile" class="button-link" href='/myprofile' >My Profile</a>
         <a id="posts" class="button-link" href='/myposts'>My Posts</a>
@@ -30,12 +30,10 @@
         <a id="about" class="button-link" href='/about' >About Us</a>
         <a id="help" class="button-link" href='/help'>Help/FAQ</a>
       </div>
-      
-      
     </div>  
    </div>
     
-   <div id="page-body" style="overflow: hidden;">
+   <div id="page-body">
       {% block content %}
 
       {% endblock %}
@@ -62,7 +60,7 @@
    if (tab == '/myprofile')  {
     $('#profile').addClass("active").siblings().removeClass("active");
    }
-   if (tab == '/myposts') {
+   if (tab == '/myposts' || tab == "/myposts/newpost") {
     $('#posts').addClass("active").siblings().removeClass("active");
    }
    if (tab == '/mybids')  {

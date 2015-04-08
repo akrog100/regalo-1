@@ -56,6 +56,7 @@ body {
   background-color: #CFCFCF;
 }
 #main-container #page-body {
+  overflow: hidden;
   margin: 0 auto;
   position: relative;
   top: 0.7em;
@@ -99,16 +100,129 @@ body {
 }
 
 /* Browse */
-.buy-link {
-  margin: 0 auto;
-  background: #3385FF;
-  text-decoration: none;
+#post_main_body #browse-left {
+  margin: 1em 1em 1em 1em; 
+  float: left; 
+  height:400px; 
+  width: 25%;  
+  border-radius: 3px; 
+  background-color: #CFCFCF;
+}
+
+#post_main_body #browse-nav {
+  border-radius: 3px;
+  margin: 1em 1em 0 0 ;
+  float: left; 
+  height: 3em; 
+  width: 69%; 
+  background-color: #CFCFCF;
+}
+
+#post_main_body #browse-main {
+  margin: 0.25em 1em 0 0 ; 
+  float: left; 
+  height:450px; 
+  min-height: 400px;
+  width: 69%; 
+  background-color: #CFCFCF; 
+  overflow-y: scroll; 
+  overflow-x: hidden; 
+  border-radius: 3px;
+}
+
+#post_main_body  #post_cont {
+  background-color: #EAEFFF;
+  width: 95%; 
+  height: 150px; 
+  margin: 10px auto 10px auto; 
+  border-radius: 5px;
+}
+
+#post_main_body  #post_cont #post_left_cont {
+  width: 40%; 
+  height: 100%; 
+  float: left;
+}
+
+#post_main_body #post_cont #post_title {
+  width: 120%; 
+  height: 20%;
+}
+
+#post_main_body #post_cont #post_retailer {
+  padding-left: 5px; 
+  font-weight: 900; 
+  font-size:15pt;
+}
+
+#post_main_body #post_cont #retailer_pic_cont {
+  width: 100%; 
+  height: 55%;
+}
+
+#post_main_body #post_cont #retailer_pic {
+  height: 100%; width: 100%; 
+  background-image:url('/static/images/walmartgiftcard.jpg'); 
+  background-size: 75% 100%; 
+  background-repeat: no-repeat; 
+  background-position: center;
+}
+
+#post_main_body #post_cont #post_owner_cont {
+  padding: 5px 0 0 5px; 
+  width: 100%; 
+  height: 25%; 
+  font-size:9pt;
+}
+
+#post_main_body #post_cont #post_mid_cont {
+  width: 35%; 
+  height: 100%; 
+  float: left;
+}
+
+#post_main_body #post_cont #looking_for_cont {
+  margin-top: 30px; 
+  margin-left: 40px; 
+  font-weight: bold;
+}
+
+#post_main_body #post_cont #looking_for_span {
+  width: 100%;
+  font-weight: 900; 
+  font-size: 10pt;
   text-align: center;
-  display: inline-block;
-  padding: 10px;
-  color: #000;
+}
+
+#post_main_body #post_cont .looking_for_list {
+  font-size: 10pt;
+  margin: 5px;
+  text-align: center;
+  padding :0;
+}
+
+
+#post_main_body #post_cont #bid_button {
+  padding-top:10px; 
+  padding-bottom:10px;
+  background-color: #3385FF;  
+  margin: 50px auto; 
+  width: 70px;
+  text-decoration: none;
+  color: #000; 
+  text-align: center; 
+  display: block; 
+  font-size: 13pt; 
+  font-weight: bold;
   border-radius: 4px;
 }
+
+#post_main_body #post_cont #bid_button_cont {
+  width: 25%; 
+  height: 100%; 
+  float: left;
+}
+
 
 /* Register */
 #register {
@@ -138,7 +252,7 @@ body {
   border-radius: 5px;
   width: 100%;
   height: 2em;
-  }
+}
 #register .label {
   font-size: 0.95em;
   margin-top: 0.75em;
@@ -153,6 +267,183 @@ body {
   font-weight: 900;
   display: block;
   margin: 2em auto;
+  height: 2.5em;
+  border-radius: 5px;
+  border: 2px solid #3385FF;
+  background-color: #3385FF;
+  padding: 0 1em 0 1em;
+  vertical-align: center;
+}
+
+/* My Posts */
+#mypost_main_body #browse-left-my {
+  margin: 1em 1em 1em 1em; 
+  float: left; 
+  height:400px; 
+  width: 25%;  
+  border-radius: 3px; 
+  background-color: #CFCFCF;
+}
+
+#mypost_main_body #browse-nav-my  {
+  border-radius: 3px;
+  margin: 1em 1em 0 0 ;
+  float: left; 
+  height: 3em; 
+  width: 69%; 
+  background-color: #CFCFCF;
+}
+
+#mypost_main_body #browse-main-my  {
+  margin: 0.25em 1em 0 0 ; 
+  float: left; 
+  height:450px; 
+  min-height: 400px;
+  width: 69%; 
+  background-color: #CFCFCF; 
+  overflow-y: scroll; 
+  overflow-x: hidden; 
+  border-radius: 3px;
+}
+
+#mypost_main_body #new_button {
+  padding-top:10px; 
+  padding-bottom:10px;
+  background-color: #3385FF;  
+  margin: 15px auto; 
+  width: 140px;
+  text-decoration: none;
+  color: #000; 
+  text-align: center; 
+  display: block; 
+  font-size: 13pt; 
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+#mypost_main_body #new_button_cont {
+  margin: 0 auto;
+  height: 100%;
+}
+
+/* New post */
+#newpost_form {
+  margin: 1em;
+}
+#newpost_form #newpost_title {
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
+}
+
+#newpost_form #newpost_line {
+  border: none; 
+  background-color: #3385FF; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 1em;
+}
+
+#newpost_form .inputs {
+  padding-left:5px;
+  border-radius: 5px;
+  width: 40%;
+  height: 2em;
+}
+
+#newpost_form #dropdown1 {
+  padding-left:5px;
+  border-radius: 5px;
+  width: 41.5%;
+  height: 2.7em;
+}
+
+#newpost_form #dropdown2 {
+  padding-left:5px;
+  border-radius: 5px;
+  width: 41.5%;
+  height: 8em;
+}
+
+#newpost_form .label {
+  font-size: 0.95em;
+  margin-top: 0.75em;
+  text-align: left;
+}
+#newpost_form .error {
+  padding-left: 10px;
+  color: red;
+  font-size: 8pt;
+}
+#newpost_form #submit_but {
+  font-weight: 900;
+  display: block;
+  margin: 2em auto;
+  height: 2.5em;
+  border-radius: 5px;
+  border: 2px solid #3385FF;
+  background-color: #3385FF;
+  padding: 0 1em 0 1em;
+  vertical-align: center;
+}
+
+#newpost_form #post_but {
+  font-weight: 900;
+  display: block;
+  margin: 1em 0 0 5.5em;
+  height: 2.5em;
+  border-radius: 5px;
+  border: 2px solid #3385FF;
+  background-color: #3385FF;
+  padding: 0 1em 0 1em;
+  vertical-align: center;
+}
+
+/* Log In */
+
+#login {
+  padding: 2em; 
+  border: 1px solid #EBEBEB; 
+  border-radius: 4px; 
+  margin: 2em auto; 
+  width: 220px;
+}
+#login #login_title {
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
+}
+
+#login #login_line {
+  border: none; 
+  background-color: #3385FF; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 2em;
+}
+
+#login .inputs {
+  padding-left:5px;
+  border-radius: 5px;
+  width: 100%;
+  height: 3em;
+  margin-top: 0.75em;
+}
+#login .label {
+  font-size: 0.95em;
+  margin-top: 0.75em;
+  text-align: left;
+}
+#login .error {
+  padding-left: 10px;
+  color: red;
+  font-size: 8pt;
+}
+
+#login #login_but {
+  font-weight: 900;
+  display: block;
+  margin: 1em 0 0 5.5em;
   height: 2.5em;
   border-radius: 5px;
   border: 2px solid #3385FF;
