@@ -1,0 +1,80 @@
+{% extends "frontpage.html" %}
+
+{% block content %}
+  <div id="register">
+    <div>
+      <p id="register_title">Register</p>
+    </div>
+    <hr id="register_line" style="">
+
+    <form method="post" >
+      <div class="label">
+        Frist Name
+      </div>
+      <div>
+        <input class="inputs" type="text" name="first_name" value="{{first_name}}">
+        <div class="error">
+          {{error_first}}  
+        </div>
+      </div>
+
+      <div class="label">
+        Last Name
+      </div>
+      <div >
+        <input class="inputs" type="text" name="last_name" value="{{last_name}}">
+      </div>
+      <div class="error">
+        {{error_last}}  
+      </div>
+
+
+      <div class="label">
+        Username
+      </div>
+      <div >
+        <input class="inputs" type="text" name="user_name" value="{{user_name}}">
+      </div>
+      <div class="error">
+        {{error_username}}  
+      </div>
+
+
+      <div class="label">
+        Password
+      </div>
+      <div >
+        <input class="inputs" type="password" name="password" value="">
+      </div>
+      <div class="error">
+        {{error_password}}  
+      </div>
+
+
+      <div class="label">
+        Verify Password
+      </div>
+      <div >
+        <input class="inputs" type="password" name="pass_verify" value="">
+      </div>
+      <div class="error">
+        {{error_verify}}  
+      </div>
+
+
+      <div class="label">
+        Email
+      </div>
+      <div >
+        <input class="inputs"type="text" name="email" value="{{email}}">
+      </div>
+      <div class="error">
+        {{error_email}}  
+      </div>
+
+      <div>
+        <input id="submit_but" type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
+{% endblock %}

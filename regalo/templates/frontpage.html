@@ -1,1 +1,40 @@
-This is REGALO!!!
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>REGALO</title>
+
+  <link type="text/css" rel="stylesheet" href="/static/styles/basic.css">
+
+  <script src="/scripts/jquery-1.11.2.min.js"></script>
+ </head>
+  
+ <body>
+  <div id="main-container"> 
+   <div id="header">
+    <div id="topbar-first">
+     <div id="logo-cont">
+      
+     </div>
+ 
+     <div id="login-cont">
+ 
+     </div>
+    </div> 
+   </div>
+    
+   <div id="page-body" style="overflow: hidden;">
+      {% block content %}
+
+      {% endblock %}
+   </div>
+
+   <div id="footer">
+      © 2015 Reeegalo. All Rights Reserved.
+      <br>
+      <a href="#">Terms of Use</a>
+      <a href="#">Privacy Policy</a>
+  </div>
+</div>
+</body>
+</html>

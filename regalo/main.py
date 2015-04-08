@@ -124,12 +124,13 @@ class Handler(webapp2.RequestHandler):
     def read_secure_cookie(self, name):
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_secure_val(cookie_val)
+
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN UP PAGE HANDLER-----------------------------------------------#
 class SignUpHandler(Handler):
     def get(self):
-        self.render('signup.html')
+        self.render('register.html')
 
     def post(self):
         have_error = False
@@ -172,6 +173,7 @@ class SignUpHandler(Handler):
             user = User.by_username(self.user_name)
             if user:
                 params['error_username'] = "*user name already exists"
+                have_error = True
 
         #password and verify passoword
         if not self.password or not self.pass_verify:
@@ -181,7 +183,7 @@ class SignUpHandler(Handler):
             if not self.pass_verify:
                 params['error_verify'] = "*required"
                 have_error = True
-        if not valid_password(self.password) or self.password != self.pass_verify:
+        elif not valid_password(self.password) or self.password != self.pass_verify:
             if not valid_password(self.password):
                 params['error_password'] = "*minimum five characters"
                 have_error = True
@@ -199,12 +201,12 @@ class SignUpHandler(Handler):
 
         #REGISTER OR RETURN ERROR
         if have_error:
-            self.render('signup.html', **params)
+            self.render('register.html', **params)
         else:
             user = User.register(self.first_name, self.last_name, self.user_name, self.password, self.email)
             user.put()
             self.login(user)
-            self.redirect("/")
+            self.redirect("/browse")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN IN PAGE HANDLER-----------------------------------------------#
@@ -219,15 +221,21 @@ class SignInHandler(Handler):
         user = User.login(user_name, password)
         if user:
             self.login(user)
-            self.redirect("/")
+            self.redirect("/browse")
         else:
             err = 'Invalid username or password'
             self.render('signin.html', error_login = err)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
-class BrowseHandler(Handler):
+class FrontPageHandler(Handler):
     def get(self):   
+        self.render("frontpage.html")
+#-----------------------------------------------------------------------------------------------------------------#
+
+#----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
+class BrowseHandler(Handler):
+    def get(self):
         self.render("browse.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -249,10 +257,10 @@ class MyBidsHandler(Handler):
         self.render("mybids.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
-#----------------------------------------------SETTINGS-- HANDLER-------------------------------------------------#
-class SettingsHandler(Handler):
+#----------------------------------------------ABOUT HANDLER-------------------------------------------------#
+class AboutHandler(Handler):
     def get(self):   
-        self.render("settings.html")
+        self.render("about.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------------HELP HANDLER-------------------------------------------------#
@@ -288,13 +296,14 @@ def getMovie(title):
 
 
 app = webapp2.WSGIApplication([ #URL handlers
+    ('/', FrontPageHandler),
     ('/register', SignUpHandler),
     ('/signin', SignInHandler),
     ('/browse', BrowseHandler),
     ('/myprofile', MyProfileHandler),
     ('/myposts', MyPostsHandler),
     ('/mybids', MyBidsHandler),
-    ('/settings', SettingsHandler),
+    ('/about', AboutHandler),
     ('/help', HelpHandler),
     ('/test',TestHandler)
     ], debug=True)

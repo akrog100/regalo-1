@@ -6,7 +6,6 @@
 
   <link type="text/css" rel="stylesheet" href="/static/styles/basic.css">
   <script src="/scripts/jquery-1.11.2.min.js"></script>
-  <script src="/scripts/basic.js"></script>
  </head>
   
  <body>
@@ -24,12 +23,12 @@
   
     <div id="topbar-second">
       <div style="height: 40px; width: 100%; margin: 0 auto;">
-        <a id="browse" class="button-link" href='/browse'>BROWSE</a>
-        <a id="profile" class="button-link" href='/myprofile' >MY PROFILE</a>
-        <a id="posts" class="button-link" href='/myposts' >MY POSTS</a>
-        <a id="bids" class="button-link" href='/mybids' > MY BIDS</a>
-        <a id="settings" class="button-link" href='/settings' >SETTINGS</a>
-        <a id="help" class="button-link" href='/help' >HELP/FAQ</a>
+        <a id="browse" class="button-link" href='/browse'>Browse</a>
+        <a id="profile" class="button-link" href='/myprofile' >My Profile</a>
+        <a id="posts" class="button-link" href='/myposts'>My Posts</a>
+        <a id="bids" class="button-link" href='/mybids'>My Bids</a>
+        <a id="about" class="button-link" href='/about' >About Us</a>
+        <a id="help" class="button-link" href='/help'>Help/FAQ</a>
       </div>
       
       
@@ -43,7 +42,10 @@
    </div>
 
    <div id="footer">
-
+      © 2015 Reeegalo. All Rights Reserved.
+      <br>
+      <a href="#">Terms of Use</a>
+      <a href="#">Privacy Policy</a>
   </div>
 </div>
 </body>
@@ -66,8 +68,8 @@
    if (tab == '/mybids')  {
     $('#bids').addClass("active").siblings().removeClass("active");
    }
-   if (tab == '/settings')  {
-    $('#settings').addClass("active").siblings().removeClass("active");
+   if (tab == '/about')  {
+    $('#about').addClass("active").siblings().removeClass("active");
    }
    if (tab == '/help')  {
     $('#help').addClass("active").siblings().removeClass("active");
