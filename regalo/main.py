@@ -124,15 +124,14 @@ class User(db.Model):
 class Post(db.Model):
     owner = db.ReferenceProperty(User,collection_name='user_posts')
     retailer = db.ReferenceProperty(Retailer)
-    card_val = db.FloatProperty(required=True)
-    val_offer = db.FloatProperty(required=True)
+    card_val = db.StringProperty(required=True)
     looking_for = db.ListProperty(str,required= True)
     created = db.DateTimeProperty(auto_now_add = True)
 
 
     @classmethod
-    def register(cls, owner, ret, val, offer, choices):
-        return Post(owner = owner, retailer = ret, card_val = val, val_offer = offer, looking_for = choices)
+    def register(cls, owner, ret, val,choices):
+        return Post(owner = owner, retailer = ret, card_val = val, looking_for = choices)
 
     def render(self):
         return render_str("post.html", p = self)
@@ -179,10 +178,7 @@ class Handler(webapp2.RequestHandler):
 #----------------------------------------------SIGN UP PAGE HANDLER-----------------------------------------------#
 class SignUpHandler(Handler):
     def get(self):
-        if self.user:
-            self.redirect("/browse")
-        else:
-            self.render('register.html')
+        self.render('register.html')
 
 
     def post(self):
@@ -293,9 +289,21 @@ class FrontPageHandler(Handler):
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class BrowseHandler(Handler):
     def get(self):
+        get_values = self.request.GET
+        t = None
+        try:
+            t = get_values['type']
+        except KeyError:
+            pass
+
         if self.user:
-            posts = Post.all().order('-created')
-            self.render('browse.html', posts = posts)
+            u = self.get_user()
+            if not t  or t == '1':
+                posts = Post.all().order('-created')
+                self.render('browse_swap.html', posts = posts)
+
+            if t == '2':
+                self.render('browse_sell.html')
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -312,8 +320,21 @@ class MyProfileHandler(Handler):
 #------------------------------------------------MY POSTS HANDLER-------------------------------------------------#
 class MyPostsHandler(Handler):
     def get(self):
+        get_values = self.request.GET
+        t = None
+        try:
+            t = get_values['type']
+        except KeyError:
+            pass
+
         if self.user:
-            self.render("myposts.html")
+            u = self.get_user()
+            if not t  or t == '1':
+                posts = Post.all().order('-created').filter('owner =', u)
+                self.render('myposts_swap.html', posts = posts)
+
+            if t == '2':
+                self.render('myposts_sell.html')
         else:
             self.redirect('/signin')
         
@@ -323,7 +344,7 @@ class MyPostsHandler(Handler):
 class NewPostHandler(Handler):
     def get(self):
         if self.user:
-            self.render("newpost.html", retailers = retailers)
+            self.render("myposts_new.html", retailers = retailers)
         else:
             self.redirect('/signin')
 
@@ -332,7 +353,6 @@ class NewPostHandler(Handler):
         self.card_retailer = self.request.get('retailer')
         self.selected_rets = self.request.get('choices', allow_multiple=True)
         self.value = self.request.get('value')
-        self.offer = self.request.get('offer')
 
         #????????????????????/do error checking
         if have_error:
@@ -346,7 +366,7 @@ class NewPostHandler(Handler):
             u = self.get_user()
             r = Retailer.by_ret_name(self.card_retailer)
             self.response.write(choices)
-            p = Post.register(u, r, float(self.value), float(self.offer), choices)
+            p = Post.register(u, r, self.value, choices)
             p.put()
 
             self.redirect('/myposts')
@@ -427,5 +447,3 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/test',TestHandler),
     ('/logout', LogoutHandler)
     ], debug=True)
-
-

@@ -2,14 +2,26 @@
 
 {% block content %}
 	<div id="post_main_body">
-		<div id="browse-left">
+		<div class="body-left">
+			<div class="new_button_cont">
+				<a class="new_button" href='/myposts/newpost'>+ NEW POST</a>
+			</div>
+			<div class="left_menu_button_cont">
+				<hr class="left_menu_line">
+				<a class="left_menu_button" href='/browse?type=1'>Swap Offers</a>
+				<hr class="left_menu_line">
+				<a class="left_menu_button" href='/browse?type=2'>Sell Offers</a>
+				<hr class="left_menu_line">
+			</div>
+
 		</div>
-		<div id="browse-nav">
+		<div class="body-nav">
+			{% block content1 %}
+			{% endblock %}
 		</div>
-		<div id="browse-main">
-			  {% for p in posts %}
-		    	{{ p.render() | safe }}
-		  	  {% endfor %}
+		<div class="body-main">
+			{% block content2 %}
+			{% endblock %}
 		</div>
 	</div>
 {% endblock %}

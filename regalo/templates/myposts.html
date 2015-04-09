@@ -3,15 +3,24 @@
 {% block content %}
 
 <div id="mypost_main_body">
-	<div id="browse-left-my">
-		<div id="new_button_cont">
-			<a id="new_button" href='/myposts/newpost'>+ NEW POST</a>
+	<div class="body-left">
+		<div class="new_button_cont">
+			<a class="new_button" href='/myposts/newpost'>+ NEW POST</a>
 		</div>
+		<div class="left_menu_button_cont">
+				<hr class="left_menu_line">
+				<a class="left_menu_button" href='/myposts?type=1'>Your Swap Posts</a>
+				<hr class="left_menu_line">
+				<a class="left_menu_button" href='/myposts?type=2'>Your Sell Posts</a>
+				<hr class="left_menu_line">
+			</div>
 	</div>
-	<div id="browse-nav-my">
+	<div class="body-nav">
+		{% block content1 %}
+		{% endblock %}
 	</div>
-	<div id="browse-main-my">
-		{% block contents %}
+	<div class="body-main">
+		{% block content2 %}
 		{% endblock %}
 	</div>
 </div>

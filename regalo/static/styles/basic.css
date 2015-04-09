@@ -1,10 +1,10 @@
 /* Base HTML */
 body {
   background-color: #F0F0F0;
+  font-family: Tahoma, Verdana, sans-serif;
  }
  
  #main-container {
-  font-family: Sans-serif;
   padding: 1em 1em 1em 1em;
   border:1px solid red 10px;
   background-color: white;
@@ -59,7 +59,7 @@ body {
   overflow: hidden;
   margin: 0 auto;
   position: relative;
-  top: 0.7em;
+  top: 0.8em;
   width:100%;
   height: auto;
   min-height: 535px;
@@ -70,11 +70,12 @@ body {
 }
 
 #main-container #topbar-second .button-link {
-  width: 6.85em;
+  cursor: pointer;
+  width: 8.05em;
   text-decoration: none;
   text-align: center;
   display: inline-block;
-  padding: 10px;
+  padding: 10px 0 10px 0;
   color: #000;
   border-radius: 4px;
   }
@@ -99,8 +100,8 @@ body {
   text-align: center;
 }
 
-/* Browse */
-#post_main_body #browse-left {
+/* Page Body - Browse, Mypots */
+.body-left {
   margin: 1em 1em 1em 1em; 
   float: left; 
   height:400px; 
@@ -109,7 +110,7 @@ body {
   background-color: #CFCFCF;
 }
 
-#post_main_body #browse-nav {
+.body-nav {
   border-radius: 3px;
   margin: 1em 1em 0 0 ;
   float: left; 
@@ -118,7 +119,7 @@ body {
   background-color: #CFCFCF;
 }
 
-#post_main_body #browse-main {
+.body-main {
   margin: 0.25em 1em 0 0 ; 
   float: left; 
   height:450px; 
@@ -130,84 +131,13 @@ body {
   border-radius: 3px;
 }
 
-#post_main_body  #post_cont {
-  background-color: #EAEFFF;
-  width: 95%; 
-  height: 150px; 
-  margin: 10px auto 10px auto; 
-  border-radius: 5px;
-}
-
-#post_main_body  #post_cont #post_left_cont {
-  width: 40%; 
-  height: 100%; 
-  float: left;
-}
-
-#post_main_body #post_cont #post_title {
-  width: 120%; 
-  height: 20%;
-}
-
-#post_main_body #post_cont #post_retailer {
-  padding-left: 5px; 
-  font-weight: 900; 
-  font-size:15pt;
-}
-
-#post_main_body #post_cont #retailer_pic_cont {
-  width: 100%; 
-  height: 55%;
-}
-
-#post_main_body #post_cont #retailer_pic {
-  height: 100%; width: 100%; 
-  background-image:url('/static/images/walmartgiftcard.jpg'); 
-  background-size: 75% 100%; 
-  background-repeat: no-repeat; 
-  background-position: center;
-}
-
-#post_main_body #post_cont #post_owner_cont {
-  padding: 5px 0 0 5px; 
-  width: 100%; 
-  height: 25%; 
-  font-size:9pt;
-}
-
-#post_main_body #post_cont #post_mid_cont {
-  width: 35%; 
-  height: 100%; 
-  float: left;
-}
-
-#post_main_body #post_cont #looking_for_cont {
-  margin-top: 30px; 
-  margin-left: 40px; 
-  font-weight: bold;
-}
-
-#post_main_body #post_cont #looking_for_span {
-  width: 100%;
-  font-weight: 900; 
-  font-size: 10pt;
-  text-align: center;
-}
-
-#post_main_body #post_cont .looking_for_list {
-  font-size: 10pt;
-  margin: 5px;
-  text-align: center;
-  padding :0;
-}
-
-
-#post_main_body #post_cont #bid_button {
-  padding-top:10px; 
-  padding-bottom:10px;
+.new_button {
+  cursor: pointer;
+  padding-top:7px; 
+  padding-bottom:7px;
   background-color: #3385FF;  
-  margin: 50px auto; 
-  width: 70px;
+  margin: 15px auto; 
+  width: 140px;
   text-decoration: none;
   color: #000; 
   text-align: center; 
@@ -217,11 +147,173 @@ body {
   border-radius: 4px;
 }
 
-#post_main_body #post_cont #bid_button_cont {
+.new_button_cont {
+  margin: 0 auto;
+}
+
+.body_nav_title {
+  float: left;
+  display: block;
+  font-weight: bold; 
+  font-size:1em; 
+  margin:12px 0 5px 15px;
+}
+
+.body_nav_sort {
+  float: right;
+  display: block;
+  font-weight: bold; 
+  font-size:0.9em; 
+  margin:12px 2px 5px 0;
+}
+
+.body_nav_sort_arrow {
+  cursor: pointer;
+  float: right;
+  display: block;
+  font-weight: bold; 
+  font-size:1em;
+  height: 20px;
+  width: 20px;
+  background-size: 100%;
+  margin:11px 15px 5px 0;
+  background-image: url('/static/images/ios7-arrow-down.svg')
+}
+
+.body_nav_title_line {
+  border: none; 
+  background-color: #3385FF; 
+  height: 5px; 
+  margin-top: 0; 
+  width:95%;
+}
+
+.left_menu_button_cont {
+  float: left;
+  width: calc(100%);
+}
+
+.left_menu_button {
+  display: block; 
+  padding: 7px 0 0 10px;
+  cursor: pointer;  
+  margin: 0 auto;
+  height:35px;
+  text-decoration: none;
+  color: #000; 
+  text-align: left; 
+  font-size: 13pt; 
+  font-weight: bold;
+  border-left: 4px solid black;
+}
+
+.left_menu_button:hover {
+  background-color: grey;
+  color: white;
+}
+
+.left_menu_line {
+  height: 0;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid white;
+}
+
+
+.post_cont {
+  background-color: #EAEFFF;
+  width: 95%; 
+  height: 150px; 
+  margin: 10px auto 10px auto; 
+  border-radius: 5px;
+}
+
+.post_left_cont {
+  width: 40%; 
+  height: 100%; 
+  float: left;
+}
+
+.post_title {
+  width: 120%; 
+  height: 20%;
+}
+
+.post_retailer {
+  padding-left: 5px; 
+  font-weight: 900; 
+  font-size:13pt;
+}
+
+.retailer_pic_cont {
+  width: 100%; 
+  height: 55%;
+}
+
+.retailer_pic {
+  height: 100%; width: 100%;
+  background-size: 75% 100%; 
+  background-repeat: no-repeat; 
+  background-position: center;
+}
+
+.post_owner_cont {
+  padding: 5px 0 0 5px; 
+  width: 100%; 
+  height: 25%; 
+  font-size:9pt;
+}
+
+.post_mid_cont {
+  width: 35%; 
+  height: 100%; 
+  float: left;
+}
+
+.looking_for_cont {
+  margin-top: 30px; 
+  margin-left: 35px; 
+  font-weight: bold;
+}
+
+.looking_for_div {
+  width: 100%;
+  font-weight: 900; 
+  font-size: 10pt;
+  text-align: center;
+}
+
+.looking_for_list {
+  font-size: 10pt;
+  margin: 5px;
+  text-align: center;
+  padding :0;
+}
+
+
+.bid_button {
+  cursor: pointer;
+  padding-top:10px; 
+  padding-bottom:10px;
+  background-color: #002D88;  
+  margin: 50px auto; 
+  width: 70px;
+  text-decoration: none;
+  color: white; 
+  text-align: center; 
+  display: block; 
+  font-size: 13pt; 
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.bid_button_cont {
   width: 25%; 
   height: 100%; 
   float: left;
 }
+
 
 
 /* Register */
@@ -264,6 +356,7 @@ body {
   font-size: 8pt;
 }
 #register #submit_but {
+  cursor: pointer;
   font-weight: 900;
   display: block;
   margin: 2em auto;
@@ -276,55 +369,7 @@ body {
 }
 
 /* My Posts */
-#mypost_main_body #browse-left-my {
-  margin: 1em 1em 1em 1em; 
-  float: left; 
-  height:400px; 
-  width: 25%;  
-  border-radius: 3px; 
-  background-color: #CFCFCF;
-}
 
-#mypost_main_body #browse-nav-my  {
-  border-radius: 3px;
-  margin: 1em 1em 0 0 ;
-  float: left; 
-  height: 3em; 
-  width: 69%; 
-  background-color: #CFCFCF;
-}
-
-#mypost_main_body #browse-main-my  {
-  margin: 0.25em 1em 0 0 ; 
-  float: left; 
-  height:450px; 
-  min-height: 400px;
-  width: 69%; 
-  background-color: #CFCFCF; 
-  overflow-y: scroll; 
-  overflow-x: hidden; 
-  border-radius: 3px;
-}
-
-#mypost_main_body #new_button {
-  padding-top:10px; 
-  padding-bottom:10px;
-  background-color: #3385FF;  
-  margin: 15px auto; 
-  width: 140px;
-  text-decoration: none;
-  color: #000; 
-  text-align: center; 
-  display: block; 
-  font-size: 13pt; 
-  font-weight: bold;
-  border-radius: 4px;
-}
-
-#mypost_main_body #new_button_cont {
-  margin: 0 auto;
-  height: 100%;
-}
 
 /* New post */
 #newpost_form {

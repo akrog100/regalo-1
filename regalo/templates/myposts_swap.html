@@ -1,0 +1,20 @@
+{% extends "myposts.html" %}
+
+{% block content1 %}
+	<div>
+		<span class="body_nav_title">My Swap Offers</span>
+		<span class="body_nav_sort_arrow"></span>
+		<span class="body_nav_sort">Sort By</span>
+	</div>
+	<hr class="body_nav_title_line" >
+{% endblock %}
+
+{% block content2 %}
+	{% for p in posts %}
+		{{ p.render() | safe }}
+	{% endfor %}
+{% endblock %}
+
+
+
+
