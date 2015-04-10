@@ -4,16 +4,27 @@
 	<div id="post_main_body">
 		<div class="body-left">
 			<div class="new_button_cont">
-				<a class="new_button" href='/myposts/newpost'>+ NEW POST</a>
+				<a class="new_button" href='/myposts/newpost'>+ New</a>
 			</div>
 			<div class="left_menu_button_cont">
+				<p align="center" style="font-size: 14pt; font-weight: 900; color:#525252;">CATAGORIES</p>
 				<hr class="left_menu_line">
-				<a class="left_menu_button" href='/browse?type=1'>Swap Offers</a>
+				<a id="swap_menu" class="left_menu_button" href='/browse?type=1'>SWAP</a>
 				<hr class="left_menu_line">
-				<a class="left_menu_button" href='/browse?type=2'>Sell Offers</a>
-				<hr class="left_menu_line">
-			</div>
 
+				<a id="sell_menu" class="left_menu_button" href='/browse?type=2'>SELL</a>
+				<hr class="left_menu_line">
+				<br><br><br><br>
+				<!--<a id="filter_title" class="left_menu_button" href='/browse?type=2'>Filter</a>
+				<div id="menu_filter">
+					<select id="dropdown1" name="retailer">
+						<option>--select--</option>
+						{% for retailer in retailers %}
+							<option>{{retailer}}</option>
+						{% endfor %}
+					</select>
+				</div>-->
+			</div>
 		</div>
 		<div class="body-nav">
 			{% block content1 %}
@@ -24,6 +35,27 @@
 			{% endblock %}
 		</div>
 	</div>
+
+	<script>
+	$(".left_menu_button_cont").hover(
+  		function() {
+    		;
+  		}, function() {
+    		$("#menu_filter").animate({height:0},200);
+  		}
+	);
+	/*swap menu filter */
+	$("#filter_title").hover(
+  		function() {
+    		$("#menu_filter").animate({height:100},200);
+  		}
+	);
+	$("#swap_menu_filter").hover(
+  		function() {
+    		$("#menu_filter").animate({height:100},200);
+  		}
+	);
+	</script>
 {% endblock %}
 
 

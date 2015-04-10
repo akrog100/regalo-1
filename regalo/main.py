@@ -135,6 +135,9 @@ class Post(db.Model):
 
     def render(self):
         return render_str("post.html", p = self)
+
+    def getsortkey(post):
+        return post.created
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
@@ -299,8 +302,8 @@ class BrowseHandler(Handler):
         if self.user:
             u = self.get_user()
             if not t  or t == '1':
-                posts = Post.all().order('-created')
-                self.render('browse_swap.html', posts = posts)
+                posts = Post.all().filter('owner !=', u)
+                self.render('browse_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True), retailers = retailers)
 
             if t == '2':
                 self.render('browse_sell.html')
@@ -330,8 +333,8 @@ class MyPostsHandler(Handler):
         if self.user:
             u = self.get_user()
             if not t  or t == '1':
-                posts = Post.all().order('-created').filter('owner =', u)
-                self.render('myposts_swap.html', posts = posts)
+                posts = Post.all().filter('owner =', u)
+                self.render('myposts_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True))
 
             if t == '2':
                 self.render('myposts_sell.html')
@@ -368,7 +371,6 @@ class NewPostHandler(Handler):
             self.response.write(choices)
             p = Post.register(u, r, self.value, choices)
             p.put()
-
             self.redirect('/myposts')
 
 

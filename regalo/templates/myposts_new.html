@@ -11,11 +11,17 @@
 <div id="newpost_form">
 	<form method="post">
 		<div class="label">
+        	Type of post
+      	</div>
+      	<div id="new_post_radio_cont">
+			<input type="radio" name="type" value="Swap" checked="checked">Swap Offer
+			<input type="radio" name="type" value="Sell">Sell Offer
+		</div>
+		<div class="label">
         	Retailer
       	</div>
 		<div >
 			<select id="dropdown1" name="retailer">
-				<option>--select--</option>
 				{% for retailer in retailers %}
 					<option>{{retailer}}</option>
 				{% endfor %}
@@ -29,7 +35,7 @@
         	Card Value
       	</div>
 		<div >
-			<input class="inputs" type="text" name="value">
+			<input class="inputs" type="text" name="value" placeholder="0">
 		</div>
 		<div class="error">
           {{error_value}}  
@@ -40,7 +46,6 @@
       	</div>
 		<div >
 			<select id="dropdown2" name="choices" multiple>
-				<option>--select--</option>
 				{% for retailer in retailers %}
 					<option>{{retailer}}</option>
 				{% endfor %}
