@@ -13,7 +13,6 @@
    <div id="header">
     <div id="topbar-first">
      <div id="logo-cont">
-      
      </div>
  
      <div id="login-cont">
@@ -23,12 +22,13 @@
   
     <div id="topbar-second">
       <div>
-        <a id="browse" class="button-link" href='/browse'>Browse</a>
-        <a id="profile" class="button-link" href='/myprofile' >My Profile</a>
-        <a id="posts" class="button-link" href='/myposts'>My Posts</a>
-        <a id="bids" class="button-link" href='/mybids'>My Bids</a>
-        <a id="about" class="button-link" href='/about' >About Us</a>
-        <a id="help" class="button-link" href='/help'>Help/FAQ</a>
+        <div id="nav_Bar_bottom_line" style="height: 7px; width:16%; background-color: #1F7C7C; margin-top: 10px; position: absolute; bottom: 0; left:0%"> </div>
+        <a id="browse" class="button-link" href='/browse'>BROWSE</a>
+        <a id="profile" class="button-link" href='/myprofile' >MY PROFILE</a>
+        <a id="posts" class="button-link" href='/myposts'>MY POSTS</a>
+        <a id="bids" class="button-link" href='/mybids'>MY BIDS</a>
+        <a id="about" class="button-link" href='/about' >ABOUT US</a>
+        <a id="help" class="button-link" href='/help'>HELP/FAQ</a>
       </div>
     </div>  
    </div>
@@ -55,22 +55,22 @@
   parser.href = window.location.href;
   var tab = parser.pathname;
    if (tab == '/browse')  {
-    $('#browse').addClass("active").siblings().removeClass("active");
+    $('#nav_Bar_bottom_line').css("left","0%");
    }
    if (tab == '/myprofile')  {
-    $('#profile').addClass("active").siblings().removeClass("active");
+    $('#nav_Bar_bottom_line').css("left","16.3%");
    }
    if (tab == '/myposts' || tab == "/myposts/newpost") {
-    $('#posts').addClass("active").siblings().removeClass("active");
+    $('#nav_Bar_bottom_line').css("left","33%");
    }
    if (tab == '/mybids')  {
-    $('#bids').addClass("active").siblings().removeClass("active");
+    $('#nav_Bar_bottom_line').css("left","49.8%");
    }
    if (tab == '/about')  {
-    $('#about').addClass("active").siblings().removeClass("active");
+    $('#nav_Bar_bottom_line').css("left","66.4%");
    }
    if (tab == '/help')  {
-    $('#help').addClass("active").siblings().removeClass("active");
+    $('#nav_Bar_bottom_line').css("left","84%");
    }
 
 });

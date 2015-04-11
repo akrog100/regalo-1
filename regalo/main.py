@@ -4,6 +4,7 @@ import re
 import jinja2
 import os 
 from google.appengine.ext import db
+from google.appengine.api import mail
 import string
 import random
 import hashlib
@@ -259,6 +260,22 @@ class SignUpHandler(Handler):
             user.put()
             self.login(user)
             self.redirect("/browse")
+            message = mail.EmailMessage(sender="Regalo Support <support@reeegalo.com>",
+                            subject="Your account has been approved")
+
+            message.to = "{0} {1} <{2}>"
+            message.body = """
+            Dear {3}:
+
+            Your reegalo.appspot.com account has been approved.  You can now visit
+            reegalo.appspot.com and sign in using to
+            access new features.
+
+            Please let us know if you have any questions.
+
+            The reegalo.appspot.com Team
+            """ .format(self.first_name,self.last_name,self.email,self.last_name)
+            message.send()
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN IN PAGE HANDLER-----------------------------------------------#
@@ -307,6 +324,8 @@ class BrowseHandler(Handler):
 
             if t == '2':
                 self.render('browse_sell.html')
+            if t == '0':
+                self.render('browse_all.html')
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -432,6 +451,12 @@ def getMovie(title):
         return result[0]
     else:
         return None
+
+x = 1
+class EmailHandler(Handler):
+    def post(self):
+        x = x+1
+
 #///////////////////////////////////////////
 
 
@@ -447,5 +472,6 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/about', AboutHandler),
     ('/help', HelpHandler),
     ('/test',TestHandler),
-    ('/logout', LogoutHandler)
+    ('/logout', LogoutHandler),
+    ('/_ah/mail/basi@reeegalo.appspotmail.com', EmailHandler)
     ], debug=True)

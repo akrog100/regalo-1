@@ -4,26 +4,21 @@
 	<div id="post_main_body">
 		<div class="body-left">
 			<div class="new_button_cont">
-				<a class="new_button" href='/myposts/newpost'>+ New</a>
+				<a class="new_button" href='/myposts/newpost'>+ NEW POST</a>
 			</div>
 			<div class="left_menu_button_cont">
-				<p align="center" style="font-size: 14pt; font-weight: 900; color:#525252;">CATAGORIES</p>
+				<p align="center" style="font-size: 14pt; font-weight: 900; color:#525252;">SHOW POSTS</p>
 				<hr class="left_menu_line">
-				<a id="swap_menu" class="left_menu_button" href='/browse?type=1'>SWAP</a>
+				<a id="swap_menu" class="left_menu_button" href='/browse?type=1'>SWAP
+				</a>
+				<div id="swap_arrow" class="left_menu_arrow" ></div>		
 				<hr class="left_menu_line">
-
 				<a id="sell_menu" class="left_menu_button" href='/browse?type=2'>SELL</a>
+				<div id="sell_arrow" class="left_menu_arrow"></div>
 				<hr class="left_menu_line">
-				<br><br><br><br>
-				<!--<a id="filter_title" class="left_menu_button" href='/browse?type=2'>Filter</a>
-				<div id="menu_filter">
-					<select id="dropdown1" name="retailer">
-						<option>--select--</option>
-						{% for retailer in retailers %}
-							<option>{{retailer}}</option>
-						{% endfor %}
-					</select>
-				</div>-->
+				<a id="swap_menu" class="left_menu_button" href='/browse?type=0'>ALL</a>
+				<div id="all_arrow" class="left_menu_arrow"></div>
+				<hr class="left_menu_line">
 			</div>
 		</div>
 		<div class="body-nav">
@@ -36,26 +31,45 @@
 		</div>
 	</div>
 
-	<script>
-	$(".left_menu_button_cont").hover(
-  		function() {
-    		;
-  		}, function() {
-    		$("#menu_filter").animate({height:0},200);
-  		}
-	);
-	/*swap menu filter */
-	$("#filter_title").hover(
-  		function() {
-    		$("#menu_filter").animate({height:100},200);
-  		}
-	);
-	$("#swap_menu_filter").hover(
-  		function() {
-    		$("#menu_filter").animate({height:100},200);
-  		}
-	);
-	</script>
+
+<script>
+$(document).ready(function() {
+var  parser = document.createElement('a');
+parser.href = window.location.href;
+var path = parser.pathname;
+if (path == '/browse') {
+var type = getUrlParameter('type');
+   if (type == 1 || type == undefined ) {
+   	$('#swap_arrow').css("visibility", "visible" );
+   	$('#sell_arrow').css("visibility", "hidden" );
+   	$('#all_arrow').css("visibility", "hidden" );
+   }
+   if (type == 2 ) {
+   	$('#swap_arrow').css("visibility", "hidden" );
+   	$('#sell_arrow').css("visibility", "visible" );
+   	$('#all_arrow').css("visibility", "hidden" );
+   }
+   if (type == 0 ) {
+   	$('#swap_arrow').css("visibility", "hidden" );
+   	$('#sell_arrow').css("visibility", "hidden" );
+   	$('#all_arrow').css("visibility", "visible" );
+   }	
+}
+ });
+
+function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+} 
+</script>
 {% endblock %}
 
 

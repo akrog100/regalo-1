@@ -5,6 +5,7 @@ body {
   font-family: Tahoma, Verdana, sans-serif;
   background-size: 100%;
   background-repeat: no-repeat;
+  background-image: url('/static/images/texture.jpg')
  }
  
  #main-container {
@@ -35,60 +36,67 @@ body {
   height: 100px;
   margin-bottom: 20px;
  }
- 
- #main-container #topbar-second {
-  font-weight: bold;
-  width: 100%;
-  height: 40px;
- }
 
  #main-container #logo-cont {
   float: left;
   position: relative; 
   top: 0;
   height: 100%;
-  width: 25%;
+  width: 40%;
   background-position: left;
-  background-size: 60% 100%;
-  background-color: black;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-image: url('/static/images/GirlScoutLogoBlack.jpg');
  }
 #main-container #login-cont {
   float: left;
   height: 100%;
-  width: 75%;
-  background-color: #CFCFCF;
-}
-#main-container #page-body {
-  overflow: hidden;
-  margin: 0 auto;
-  position: relative;
-  top: 0.8em;
-  width:100%;
-  height: auto;
-  min-height: 535px;
-  float: left;
-  background-color: transparent;
-  border-radius: 4px;
-  border: solid 2px #EBEBEB;
+  width: 60%;
+  /*background-color: #CFCFCF;*/
 }
 
+
+ #main-container #topbar-second {
+  border-radius: 5px;
+  /*background-color: #2B2BFF;*/
+  background-size: 100%;
+  background-image: url('/static/images/Gradient.jpg');
+  color: white;
+  font-weight: bold;
+  width: 100%;
+  height: 40px;
+ }
+
+ .nav_bar_line {
+  height: 7px; 
+  width:16%; 
+  background-color: #1F7C7C; 
+  margin-top: 10px; 
+  position: absolute; 
+  bottom: 0; 
+  left:0%
+ }
+
 #main-container #topbar-second .button-link {
+  float: left;
   cursor: pointer;
-  width: 8.05em;
+  width: 9.25em;
   text-decoration: none;
-  text-align: center;
-  display: inline-block;
+  display: block;
   padding: 10px 0 10px 0;
-  color: #000;
+  text-align: center;
+  color: white;
   border-radius: 4px;
+  font-size:0.9em;
+  margin: 0;
+  transition: all .2s ease-in-out;
   }
 
 #main-container #topbar-second .button-link:hover {
-    background: #E6E6E6;
+    transform: scale(1.1);
   }
 #main-container #topbar-second .button-link.active {
-    background: grey;
+    /*background: #00006F;*/
   }
 
  #main-container #footer {
@@ -104,23 +112,41 @@ body {
   text-align: center;
 }
 
+#main-container #page-body {
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+  top: 0.8em;
+  width:100%;
+  height: auto;
+  min-height: 535px;
+  float: left;
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 2px #EBEBEB;
+}
+
 /* Page Body - Browse, Mypots */
 .body-left {
   margin: 1em 1em 1em 1em; 
   float: left; 
   height:400px; 
   width: 25%;  
-  border-radius: 3px; 
-  background-color: #CFCFCF;
+  border-radius: 5px; 
+  /*background-color: #92B6B6;*/
+  background-color: #92B6B6;
+  background-size: 200% 200%;
+  background-repeat: no-repeat;
+  /*background-image: url('/static/images/Gradient.jpg');*/
 }
 
 .body-nav {
-  border-radius: 3px;
+  border-radius: 5px;
   margin: 1em 1em 0 0 ;
   float: left; 
-  height: 3em; 
-  width: 69%; 
-  background-color: #CFCFCF;
+  height: 1.5em; 
+  width: 68.1%; 
+  background-color: #92B6B6;
 }
 
 .body-main {
@@ -128,22 +154,23 @@ body {
   float: left; 
   height:450px; 
   min-height: 400px;
-  width: 69%; 
-  background-color: #CFCFCF; 
+  width: 68%; 
+  background-color: #E6FAF0;
   overflow-y: scroll; 
   overflow-x: hidden; 
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 .new_button {
   cursor: pointer;
   padding-top:5px; 
   padding-bottom:5px;
-  background-color: #3385FF;  
+  /*background-color: #3385FF; */
+  background-color: #1F7C7C;
   margin: 15px auto; 
-  width: 80px;
+  width: 130px;
   text-decoration: none;
-  color: #000; 
+  color: white; 
   text-align: center; 
   display: block; 
   font-size: 12pt; 
@@ -159,8 +186,8 @@ body {
   float: left;
   display: block;
   font-weight: bold; 
-  font-size:1em; 
-  margin:12px 0 5px 15px;
+  font-size:0.9em; 
+  margin:3px 0 5px 15px;
 }
 
 .body_nav_sort {
@@ -168,7 +195,7 @@ body {
   display: block;
   font-weight: bold; 
   font-size:0.9em; 
-  margin:12px 2px 5px 0;
+  margin:3px 2px 5px 0;
 }
 
 .body_nav_sort_arrow {
@@ -180,7 +207,7 @@ body {
   height: 20px;
   width: 20px;
   background-size: 100%;
-  margin:11px 15px 5px 0;
+  margin:3px 15px 5px 0;
   background-image: url('/static/images/ios7-arrow-down.svg')
 }
 
@@ -194,10 +221,12 @@ body {
 
 .left_menu_button_cont {
   float: left;
-  width: calc(100%);
+  width: 100%;
 }
 
 .left_menu_button {
+  width: 100%;
+  float: left;
   display: block; 
   padding: 7px 0 0 10px;
   cursor: pointer;  
@@ -210,15 +239,33 @@ body {
   font-weight: bold;
   border-left: 4px solid black;
   border-radius:5px;
+  transition: all .2s ease-in-out;
 }
 .left_menu_button:hover {
-    background-color: grey;
-    color: white;
+  -webkit-transform: translate(0.3em,0);
+  -moz-transform: translate(0.3em,0);
+  -o-transform: translate(0.3em,0);
+  -ms-transform: translate(0.3em,0);
+  transform: translate(0.3em,0);
+  /*background-color: grey;
+  color: white;*/
+}
+
+
+.left_menu_arrow {
+  visibility: hidden;
+  height: 34px; 
+  width: 25%; 
+  margin-top: 3px; 
+  margin-left: 10.4em;*/ 
+  background-repeat: no-repeat;
+  background-size: 80% 100%;
+  background-image:url('/static/images/icon-ios7-arrow-right-128.png');
 }
 
 .left_menu_line {
   height: 0;
-  width: 100%;
+  width: 200%;
   margin: 0;
   border: 0;
   border-top: 1px solid white;
@@ -232,7 +279,8 @@ body {
 }
 
 .post_cont {
-  background-color: #EAEFFF;
+  /*background-color: #EAEFFF;*/
+  background-color: white;
   width: 95%; 
   height: 150px; 
   margin: 10px auto 10px auto; 
@@ -290,12 +338,12 @@ body {
 .looking_for_div {
   width: 100%;
   font-weight: 900; 
-  font-size: 10pt;
+  font-size: 9pt;
   text-align: center;
 }
 
 .looking_for_list {
-  font-size: 10pt;
+  font-size: 8pt;
   margin: 5px;
   text-align: center;
   padding :0;
@@ -304,11 +352,11 @@ body {
 
 .bid_button {
   cursor: pointer;
-  padding-top:10px; 
-  padding-bottom:10px;
+  padding-top:5px; 
+  padding-bottom:5px;
   background-color: #002D88;  
   margin: 50px auto; 
-  width: 70px;
+  width: 55px;
   text-decoration: none;
   color: white; 
   text-align: center; 
@@ -349,7 +397,7 @@ body {
 
 #register #register_line {
   border: none; 
-  background-color: #3385FF; 
+  background-color: #1F7C7C; 
   height: 5px; margin-top: 0; 
   margin-bottom: 2.5em;
 }
@@ -377,8 +425,8 @@ body {
   margin: 2em auto;
   height: 2.5em;
   border-radius: 5px;
-  border: 2px solid #3385FF;
-  background-color: #3385FF;
+  border: 2px solid #1F7C7C;
+  background-color: #1F7C7C;
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
@@ -447,17 +495,6 @@ body {
   color: red;
   font-size: 8pt;
 }
-#newpost_form #submit_but {
-  font-weight: 900;
-  display: block;
-  margin: 2em auto;
-  height: 2.5em;
-  border-radius: 5px;
-  border: 2px solid #3385FF;
-  background-color: #3385FF;
-  padding: 0 1em 0 1em;
-  vertical-align: center;
-}
 
 #newpost_form #post_but {
   font-weight: 900;
@@ -465,8 +502,8 @@ body {
   margin: 1em 0 0 5.5em;
   height: 2.5em;
   border-radius: 5px;
-  border: 2px solid #3385FF;
-  background-color: #3385FF;
+  border: 2px solid #1F7C7C;
+  background-color: #1F7C7C;
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
@@ -489,7 +526,7 @@ body {
 
 #login #login_line {
   border: none; 
-  background-color: #3385FF; 
+  background-color:#1F7C7C; 
   height: 5px; margin-top: 0; 
   margin-bottom: 2em;
 }
@@ -518,8 +555,8 @@ body {
   margin: 1em 0 0 5.5em;
   height: 2.5em;
   border-radius: 5px;
-  border: 2px solid #3385FF;
-  background-color: #3385FF;
+  border: 2px solid #1F7C7C;
+  background-color: #1F7C7C;
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
