@@ -3,7 +3,7 @@ body {
   /*background-color: #F0F0F0;*/
   background: linear-gradient( #F0F0F0, white);
   font-family: Tahoma, Verdana, sans-serif;
-  background-size: 100%;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   background-image: url('/static/images/texture.jpg')
  }
@@ -60,7 +60,7 @@ body {
   border-radius: 5px;
   /*background-color: #2B2BFF;*/
   background-size: 100%;
-  background-image: url('/static/images/Gradient.jpg');
+  background-image: url('/static/images/gradient.jpg');
   color: white;
   font-weight: bold;
   width: 100%;

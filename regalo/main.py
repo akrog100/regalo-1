@@ -11,6 +11,14 @@ import hashlib
 import hmac
 from string import letters
 
+import logging
+from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
+
+
+class LogSenderHandler(InboundMailHandler):
+    def receive(self, mail_message):
+        logging.info("Received a message from: " + mail_message.sender)
+
 #FOR HASHING COOKIE
 secret = "imsosecret"
 
@@ -260,21 +268,19 @@ class SignUpHandler(Handler):
             user.put()
             self.login(user)
             self.redirect("/browse")
-            message = mail.EmailMessage(sender="Regalo Support <support@reeegalo.com>",
-                            subject="Your account has been approved")
-
-            message.to = "{0} {1} <{2}>"
+            message = mail.EmailMessage()
+            message.sender = "accounts@reeegalo.appspotmail.com"
+            message.to = "yosephbasileal@yahoo.com"
+            message.subject = "Account Registeration Successful! - Reeegalo"
             message.body = """
-            Dear {3}:
+Welcome, %s!
 
-            Your reegalo.appspot.com account has been approved.  You can now visit
-            reegalo.appspot.com and sign in using to
-            access new features.
+Your reeegalo.appspot.com account has been approved.  You can now visit
+http://reeegalo.appspot.com/ and sign in using your account to
+access its features.
 
-            Please let us know if you have any questions.
-
-            The reegalo.appspot.com Team
-            """ .format(self.first_name,self.last_name,self.email,self.last_name)
+The Reeegalo Team
+""" % self.last_name
             message.send()
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -428,6 +434,12 @@ class LogoutHandler(Handler):
         self.logout()
         self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
+class RetRegHandler(Handler):
+    def get(self):
+        for ret in retailers:
+            r = Retailer.register(ret)
+            r.put()
+
 
 #//////////////////////////////////////////
 class Movie(db.Model):
@@ -452,11 +464,6 @@ def getMovie(title):
     else:
         return None
 
-x = 1
-class EmailHandler(Handler):
-    def post(self):
-        x = x+1
-
 #///////////////////////////////////////////
 
 
@@ -473,5 +480,7 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/help', HelpHandler),
     ('/test',TestHandler),
     ('/logout', LogoutHandler),
-    ('/_ah/mail/basi@reeegalo.appspotmail.com', EmailHandler)
+    ('/retailersReg', RetRegHandler)
     ], debug=True)
+
+app2 = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
