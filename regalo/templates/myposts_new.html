@@ -1,64 +1,64 @@
 {% extends "myposts.html" %}
 
 {% block content1 %}
-<div>
-	<span class="body_nav_title">New Post</span>
-</div>
+	<div>
+		<span class="body_nav_title">New Post</span>
+	</div>
 {% endblock %}
 
 {% block content2 %}
-<div id="newpost_form">
-	<form method="post">
-		<div class="label">
-        	Type of post
-      	</div>
-      	<div id="new_post_radio_cont">
-			<input type="radio" name="type" value="Swap" checked="checked">Swap Offer
-			<input type="radio" name="type" value="Sell">Sell Offer
-		</div>
-		<div class="label">
-        	Retailer
-      	</div>
-		<div >
-			<select id="dropdown1" name="retailer">
-				{% for retailer in retailers %}
-					<option>{{retailer}}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<div class="error">
-          {{error_retailer}}  
-        </div>
+	<div id="newpost_form">
+		<form method="post">
+			<div class="label">
+	        	Type of post
+	      	</div>
+	      	<div id="new_post_radio_cont">
+				<input type="radio" name="type" value="Swap" checked="checked">Swap Offer
+				<input type="radio" name="type" value="Sell">Sell Offer
+			</div>
+			<div class="label">
+	        	Retailer
+	      	</div>
+			<div >
+				<select id="dropdown1" name="retailer">
+					{% for retailer in retailers %}
+						<option>{{retailer}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="error">
+	          {{error_retailer}}  
+	        </div>
 
-		<div class="label">
-        	Card Value
-      	</div>
-		<div >
-			<input class="inputs" type="text" name="value" placeholder="0">
-		</div>
-		<div class="error">
-          {{error_value}}  
-        </div>	
+			<div class="label">
+	        	Card Value
+	      	</div>
+			<div >
+				<input class="inputs" type="text" name="value" placeholder="0">
+			</div>
+			<div class="error">
+	          {{error_value}}  
+	        </div>	
 
-        <div class="label">
-        	Gift cards looking for?
-      	</div>
-		<div >
-			<select id="dropdown2" name="choices" multiple>
-				{% for retailer in retailers %}
-					<option>{{retailer}}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<div class="error">
-          {{error_retailer}}  
-        </div>
+	        <div class="label">
+	        	Gift cards looking for?
+	      	</div>
+			<div >
+				<select id="dropdown2" name="choices" multiple>
+					{% for retailer in retailers %}
+						<option>{{retailer}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="error">
+	          {{error_retailer}}  
+	        </div>
 
-        <div>
-        	<input id="post_but" type="submit" value="Post">
-      </div>
-	</form>
-</div>
+	        <div>
+	        	<input id="post_but" type="submit" value="Post">
+	      </div>
+		</form>
+	</div>
 {% endblock %}
 
 

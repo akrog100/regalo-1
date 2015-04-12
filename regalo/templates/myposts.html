@@ -26,50 +26,9 @@
 			{% endblock %}
 		</div>
 	</div>
-
-
-<script>
-$(document).ready(function() {
-var  parser = document.createElement('a');
-parser.href = window.location.href;
-var path = parser.pathname;
-if (path == '/myposts') {
-var type = getUrlParameter('type');
-   if (type == 1 || type == undefined ) {
-   	$('#swap_arrow').css("visibility", "visible" );
-   	$('#sell_arrow').css("visibility", "hidden" );
-   	$('#all_arrow').css("visibility", "hidden" );
-   }
-   if (type == 2 ) {
-   	$('#swap_arrow').css("visibility", "hidden" );
-   	$('#sell_arrow').css("visibility", "visible" );
-   	$('#all_arrow').css("visibility", "hidden" );
-   }
-   if (type == 0 ) {
-   	$('#swap_arrow').css("visibility", "hidden" );
-   	$('#sell_arrow').css("visibility", "hidden" );
-   	$('#all_arrow').css("visibility", "visible" );
-   }	
-}
- });
-
-function getUrlParameter(sParam) {
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++) 
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam) 
-        {
-            return sParameterName[1];
-        }
-    }
-} 
-</script>
-
-<script>
-	$('.bid_button').addClass("disabled");
-</script>
+	<script>
+		$('.bid_button').addClass("disabled");
+	</script>
 {% endblock %}
 
 

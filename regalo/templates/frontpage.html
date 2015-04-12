@@ -5,25 +5,43 @@
   <title>REGALO</title>
 
   <link type="text/css" rel="stylesheet" href="/static/styles/basic.css">
-  <script src="/scripts/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="/scripts/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="/scripts/basic.js"></script>
  </head>
   
  <body>
-  <div id="main-container"> 
+  <div id="main-container">
+
+   <div id="login_top_cont">
+      <a href="{{login_top['firstref']}}" class="login_top_link" style="color: #2D8659;">{{login_top['first']}}</a>
+      <div class="login_top_arrow_cont" id="login_arrow" style="display:{{login_top['arr1_disp']}}"></div>
+      <a style="display: block; float: left;margin-left: 2px;margin-right: 5px;">{{login_top['second']}}</a>
+      <a href="{{login_top['secondref']}}" class="login_top_link" style="color: #0029A6;">{{login_top['third']}}</a>
+      <div class="login_top_arrow_cont" id="register_arrow" style="display: inline-block;"></div>
+
+   </div>
+
    <div id="header">
     <div id="topbar-first">
-     <div id="logo-cont">
-      
-     </div>
- 
+     <a href="/"><div id="logo-cont">    
+     </div></a>
+
      <div id="login-cont">
- 
+        
      </div>
-    </div> 
+    </div>
+
+    <div id="secondbarcont">
+      <div id="topbar-second">
+        {% block contentts1 %}
+
+        {% endblock %}    
+      </div>
    </div>
+  </div>
     
    <div id="page-body">
-      {% block content %}
+      {% block contentts2 %}
 
       {% endblock %}
    </div>

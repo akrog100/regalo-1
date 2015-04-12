@@ -1,6 +1,5 @@
-/* Base HTML */
+/* Base HTML for Body, Header, Page body, Footer */
 body {
-  /*background-color: #F0F0F0;*/
   background: linear-gradient( #F0F0F0, white);
   font-family: Tahoma, Verdana, sans-serif;
   background-size: 100% 100%;
@@ -10,7 +9,7 @@ body {
  
  #main-container {
   opacity:1 !important;
-  padding: 1em 1em 1em 1em;
+  padding: 0 1em 1em 1em;
   border:1px solid red 10px;
   background-color: white;
   border-radius: 10px;
@@ -24,7 +23,7 @@ body {
 
  #main-container #header {
   position: relative;
-  top: 1em;
+  top:0.2em;
   width: 100%;
   overflow: hidden;
   border-radius: 4px;
@@ -55,10 +54,41 @@ body {
   /*background-color: #CFCFCF;*/
 }
 
+#login_top_cont {
+  text-align: right; 
+  font-size: 0.9em; 
+  color: black; 
+  top: 0; 
+  float: right; 
+  height: 15px;
+  padding-top: 5px;
+}
+.login_top_arrow_cont {
+  margin-top: 5px;
+  margin-left: 2px; 
+  margin-right: 2px;
+  float: left;height:10px;
+  width:10px;
+  background-size: 80% 80%; 
+  background-repeat: no-repeat;
+}
 
- #main-container #topbar-second {
+#login_top_cont #login_arrow {
+  background-image: url('/static/images/green-right-arrow.jpg'); 
+}
+
+#login_top_cont #register_arrow {
+  background-image: url('/static/images/blue-right-arrow.png'); 
+}
+
+.login_top_link {
+  display: block; 
+  float: left;
+  font-weight: 900;
+}
+
+#main-container #topbar-second {
   border-radius: 5px;
-  /*background-color: #2B2BFF;*/
   background-size: 100%;
   background-image: url('/static/images/gradient.jpg');
   color: white;
@@ -71,16 +101,15 @@ body {
   height: 7px; 
   width:16%; 
   background-color: #1F7C7C; 
-  margin-top: 10px; 
-  position: absolute; 
-  bottom: 0; 
+  margin-top: 33px; 
+  position: absolute;
   left:0%
  }
 
 #main-container #topbar-second .button-link {
   float: left;
   cursor: pointer;
-  width: 9.25em;
+  width: 16.6%;
   text-decoration: none;
   display: block;
   padding: 10px 0 10px 0;
@@ -95,9 +124,18 @@ body {
 #main-container #topbar-second .button-link:hover {
     transform: scale(1.1);
   }
-#main-container #topbar-second .button-link.active {
-    /*background: #00006F;*/
-  }
+
+ #main-container #page-body {
+  overflow: hidden;
+  margin: 0 auto;
+  width:100%;
+  height: auto;
+  min-height: 535px;
+  float: left;
+  background-color: transparent;
+  border-radius: 4px;
+  border: solid 2px #EBEBEB;
+}
 
  #main-container #footer {
   margin-top: 1em;
@@ -111,62 +149,26 @@ body {
   border-radius: 4px;
   text-align: center;
 }
+/*/////////////////////////////////////////////////////////////*/
 
-#main-container #page-body {
-  overflow: hidden;
-  margin: 0 auto;
-  position: relative;
-  top: 0.8em;
-  width:100%;
-  height: auto;
-  min-height: 535px;
-  float: left;
-  background-color: transparent;
-  border-radius: 4px;
-  border: solid 2px #EBEBEB;
-}
+/* Page Body: body-left, body-nav, body-main; */
 
-/* Page Body - Browse, Mypots */
+/*body-left*/
 .body-left {
   margin: 1em 1em 1em 1em; 
   float: left; 
   height:400px; 
   width: 25%;  
-  border-radius: 5px; 
-  /*background-color: #92B6B6;*/
+  border-radius: 5px;
   background-color: #E6E6E6;
   background-size: 200% 200%;
   background-repeat: no-repeat;
-  /*background-image: url('/static/images/Gradient.jpg');*/
-}
-
-.body-nav {
-  border-radius: 5px;
-  margin: 1em 1em 0 0 ;
-  float: left;
-  height: 1.5em; 
-  width: 68.1%; 
-  background-color: #E6E6E6;
-}
-
-
-.body-main {
-  margin: 0.25em 1em 0 0 ; 
-  float: left; 
-  height:450px; 
-  min-height: 400px;
-  width: 68%; 
-  background-color: #F8F8F8;
-  overflow-y: scroll; 
-  overflow-x: hidden; 
-  border-radius: 5px;
 }
 
 .new_button {
   cursor: pointer;
   padding-top:5px; 
   padding-bottom:5px;
-  /*background-color: #3385FF; */
   background-color: #1F7C7C;
   margin: 15px auto; 
   width: 130px;
@@ -181,6 +183,65 @@ body {
 
 .new_button_cont {
   margin: 0 auto;
+}
+
+.left_menu_button_cont {
+  float: left;
+  width: 100%;
+}
+
+.left_menu_button {
+  width: 100%;
+  float: left;
+  display: block; 
+  padding: 7px 0 0 10px;
+  cursor: pointer;  
+  margin: 0 auto;
+  height:35px;
+  text-decoration: none;
+  color: #000; 
+  text-align: left; 
+  font-size: 11pt; 
+  font-weight: bold;
+  border-left: 4px solid black;
+  border-radius:5px;
+  transition: all .2s ease-in-out;
+}
+.left_menu_button:hover {
+  -webkit-transform: translate(0.3em,0);
+  -moz-transform: translate(0.3em,0);
+  -o-transform: translate(0.3em,0);
+  -ms-transform: translate(0.3em,0);
+  transform: translate(0.3em,0);
+}
+
+.left_menu_arrow {
+  visibility: hidden;
+  height: 34px; 
+  width: 25%; 
+  margin-top: 3px; 
+  margin-left: 82%;
+  background-repeat: no-repeat;
+  background-size: 80% 100%;
+  background-image:url('/static/images/icon-ios7-arrow-right-128.png');
+}
+
+.left_menu_line {
+  height: 0;
+  width: 200%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid white;
+}
+
+/*body-nav*/
+.body-nav {
+  border-radius: 5px;
+  margin: 1em 1em 0 0 ;
+  float: left;
+  height: 1.5em; 
+  width: 68.1%; 
+  background-color: #E6E6E6;
 }
 
 .body_nav_title {
@@ -212,75 +273,22 @@ body {
   background-image: url('/static/images/ios7-arrow-down.svg')
 }
 
-.body_nav_title_line {
-  border: none; 
-  background-color: #3385FF; 
-  height: 5px; 
-  margin-top: 0; 
-  width:95%;
+/*body-main*/
+.body-main {
+  margin: 0.25em 1em 0 0 ; 
+  float: left; 
+  height:450px; 
+  min-height: 400px;
+  width: 68%; 
+  background-color: #F8F8F8;
+  overflow-y: scroll; 
+  overflow-x: hidden; 
+  border-radius: 5px;
 }
+/*/////////////////////////////////////////////////////////////*/
 
-.left_menu_button_cont {
-  float: left;
-  width: 100%;
-}
-
-.left_menu_button {
-  width: 100%;
-  float: left;
-  display: block; 
-  padding: 7px 0 0 10px;
-  cursor: pointer;  
-  margin: 0 auto;
-  height:35px;
-  text-decoration: none;
-  color: #000; 
-  text-align: left; 
-  font-size: 11pt; 
-  font-weight: bold;
-  border-left: 4px solid black;
-  border-radius:5px;
-  transition: all .2s ease-in-out;
-}
-.left_menu_button:hover {
-  -webkit-transform: translate(0.3em,0);
-  -moz-transform: translate(0.3em,0);
-  -o-transform: translate(0.3em,0);
-  -ms-transform: translate(0.3em,0);
-  transform: translate(0.3em,0);
-  /*background-color: grey;
-  color: white;*/
-}
-
-
-.left_menu_arrow {
-  visibility: hidden;
-  height: 34px; 
-  width: 25%; 
-  margin-top: 3px; 
-  margin-left: 10.4em;
-  background-repeat: no-repeat;
-  background-size: 80% 100%;
-  background-image:url('/static/images/icon-ios7-arrow-right-128.png');
-}
-
-.left_menu_line {
-  height: 0;
-  width: 200%;
-  margin: 0;
-  border: 0;
-  border-top: 1px solid white;
-}
-
-#menu_filter {
-  background-color: blue; 
-  height: 0px; 
-  width: 100%;
-  overflow: hidden;
-}
-
+/*POST template*/
 .post_cont {
-  /*background-color: #EAEFFF;*/
   background-color: white;
   width: 95%; 
   height: 150px; 
@@ -377,7 +385,7 @@ body {
   opacity:0.3;
   pointer-events: none;
 }
-
+/*/////////////////////////////////////////////////////////////*/
 
 
 /* Register */
@@ -431,11 +439,9 @@ body {
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
+/*/////////////////////////////////////////////////////////////*/
 
-/* My Posts */
-
-
-/* New post */
+/* New post from */
 #newpost_form {
   width: 222px;
   margin: 1em auto;
@@ -508,9 +514,9 @@ body {
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
+/*/////////////////////////////////////////////////////////////*/
 
-/* Log In */
-
+/* Log In form*/
 #login {
   padding: 2em; 
   border: 1px solid #EBEBEB; 
@@ -561,5 +567,4 @@ body {
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
-
-
+/*/////////////////////////////////////////////////////////////*/

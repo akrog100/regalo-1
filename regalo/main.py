@@ -150,6 +150,13 @@ class Post(db.Model):
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
+
+def merge_two_dicts(x, y):
+    '''Given two dicts, merge them into a new dict as a shallow copy.'''
+    z = x.copy()
+    z.update(y)
+    return z
+
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -185,12 +192,22 @@ class Handler(webapp2.RequestHandler):
     def get_user(self):
         uid = self.read_secure_cookie('user_id')
         return User.by_id(int(uid))
+
+    def get_logintop(self):
+        if not self.user:
+            return {"first":"SIGN IN", "second":"Don't have an account","third":"CREATE ONE", "firstref":"/signin","secondref":"/register","arr1_disp":"inline-block"}
+        else:
+            u = self.get_user();
+            return {"first":"Hi, " + u.first_name + ". ", "second":"  Not " + u.first_name + "?","third":"Sign out","firstref":"/myprofile","secondref":"/logout","arr1_disp":"none"}
+    def default_logintop(self):
+        return {"first":"SIGN IN", "second":"Don't have an account","third":"CREATE ONE", "firstref":"/signin","secondref":"/register","arr1_disp":"inline-block"}
+
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN UP PAGE HANDLER-----------------------------------------------#
 class SignUpHandler(Handler):
     def get(self):
-        self.render('register.html')
+        self.render('register.html', login_top = self.default_logintop())
 
 
     def post(self):
@@ -290,7 +307,7 @@ class SignInHandler(Handler):
         if self.user:
             self.redirect("/browse")
         else:
-            self.render('signin.html')
+            self.render('signin.html', login_top = self.get_logintop())
        
 
     def post(self):
@@ -303,13 +320,13 @@ class SignInHandler(Handler):
             self.redirect("/browse")
         else:
             err = 'Invalid username or password'
-            self.render('signin.html', error_login = err)
+            self.render('signin.html', error_login = err, login_top = self.get_logintop())
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class FrontPageHandler(Handler):
     def get(self):   
-        self.render("frontpage.html")
+        self.render("frontpage.html", login_top = self.get_logintop())
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
@@ -326,12 +343,12 @@ class BrowseHandler(Handler):
             u = self.get_user()
             if not t  or t == '1':
                 posts = Post.all().filter('owner !=', u)
-                self.render('browse_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True), retailers = retailers)
+                self.render('browse_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True), retailers = retailers, login_top = self.get_logintop())
 
             if t == '2':
-                self.render('browse_sell.html')
+                self.render('browse_sell.html', login_top = self.get_logintop())
             if t == '0':
-                self.render('browse_all.html')
+                self.render('browse_all.html', login_top = self.get_logintop())
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -340,7 +357,7 @@ class BrowseHandler(Handler):
 class MyProfileHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myprofile.html")
+            self.render("myprofile.html", login_top = self.get_logintop())
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -359,10 +376,10 @@ class MyPostsHandler(Handler):
             u = self.get_user()
             if not t  or t == '1':
                 posts = Post.all().filter('owner =', u)
-                self.render('myposts_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True))
+                self.render('myposts_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True), login_top = self.get_logintop())
 
             if t == '2':
-                self.render('myposts_sell.html')
+                self.render('myposts_sell.html', login_top = self.get_logintop())
         else:
             self.redirect('/signin')
         
@@ -372,7 +389,7 @@ class MyPostsHandler(Handler):
 class NewPostHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myposts_new.html", retailers = retailers)
+            self.render("myposts_new.html", retailers = retailers, login_top = self.get_logintop())
         else:
             self.redirect('/signin')
 
@@ -384,7 +401,7 @@ class NewPostHandler(Handler):
 
         #????????????????????/do error checking
         if have_error:
-            self.render("newpost.html", retailers = retailers)
+            self.render("newpost.html", retailers = retailers, login_top = self.get_logintop())
         else:
             num_choices = len(self.selected_rets)
             choices = [0] * num_choices
@@ -407,7 +424,7 @@ class NewPostHandler(Handler):
 class MyBidsHandler(Handler):
     def get(self):
         if self.user:
-            self.render("mybids.html")
+            self.render("mybids.html", login_top = self.get_logintop())
         else:
             self.redirect('/signin')
 
@@ -416,7 +433,7 @@ class MyBidsHandler(Handler):
 #----------------------------------------------ABOUT HANDLER-------------------------------------------------#
 class AboutHandler(Handler):
     def get(self):  
-        self.render("about.html")
+        self.render("about.html", login_top = self.get_logintop())
 
         
 #-----------------------------------------------------------------------------------------------------------------#
@@ -424,7 +441,7 @@ class AboutHandler(Handler):
 #----------------------------------------------------HELP HANDLER-------------------------------------------------#
 class HelpHandler(Handler):
     def get(self):
-        self.render("help.html")
+        self.render("help.html", login_top = self.get_logintop())
  
 #-----------------------------------------------------------------------------------------------------------------#
 

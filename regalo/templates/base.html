@@ -1,77 +1,21 @@
-<!DOCTYPE html>
-<html>
- <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>REGALO</title>
+{% extends "frontpage.html" %}
 
-  <link type="text/css" rel="stylesheet" href="/static/styles/basic.css">
-  <script src="/scripts/jquery-1.11.2.min.js"></script>
- </head>
-  
- <body>
-  <div id="main-container"> 
-   <div id="header">
-    <div id="topbar-first">
-     <div id="logo-cont">
-     </div>
- 
-     <div id="login-cont">
- 
-     </div>
-    </div>
-  
-    <div id="topbar-second">
-      <div>
-        <div id="nav_Bar_bottom_line" class="nav_bar_line"> </div>
-        <a id="browse" class="button-link" href='/browse'>BROWSE</a>
-        <a id="profile" class="button-link" href='/myprofile' >MY PROFILE</a>
-        <a id="posts" class="button-link" href='/myposts'>MY POSTS</a>
-        <a id="bids" class="button-link" href='/mybids'>MY BIDS</a>
-        <a id="about" class="button-link" href='/about' >ABOUT US</a>
-        <a id="help" class="button-link" href='/help'>HELP/FAQ</a>
-      </div>
-    </div>  
-   </div>
-    
-   <div id="page-body">
-      {% block content %}
-
-      {% endblock %}
-   </div>
-
-   <div id="footer">
-      © 2015 Reeegalo. All Rights Reserved.
-      <br>
-      <a href="#">Terms of Use</a>
-      <a href="#">Privacy Policy</a>
+{% block contentts1 %}
+  <div id="nav_Bar_bottom_line" class="nav_bar_line"> </div>
+  <div>
+    <a id="browse" class="button-link" href='/browse'>BROWSE</a>
+    <a id="profile" class="button-link" href='/myprofile' >MY PROFILE</a>
+    <a id="posts" class="button-link" href='/myposts'>MY POSTS</a>
+    <a id="bids" class="button-link" href='/mybids'>MY BIDS</a>
+    <a id="about" class="button-link" href='/about' >ABOUT US</a>
+    <a id="help" class="button-link" href='/help'>HELP/FAQ</a>
   </div>
-</div>
-</body>
-</html>
+{% endblock %}
 
-<script>
- $(document).ready(function() {
-  var  parser = document.createElement('a');
-  parser.href = window.location.href;
-  var tab = parser.pathname;
-   if (tab == '/browse')  {
-    $('#nav_Bar_bottom_line').css("left","0%");
-   }
-   if (tab == '/myprofile')  {
-    $('#nav_Bar_bottom_line').css("left","16.3%");
-   }
-   if (tab == '/myposts' || tab == "/myposts/newpost") {
-    $('#nav_Bar_bottom_line').css("left","33%");
-   }
-   if (tab == '/mybids')  {
-    $('#nav_Bar_bottom_line').css("left","49.8%");
-   }
-   if (tab == '/about')  {
-    $('#nav_Bar_bottom_line').css("left","66.4%");
-   }
-   if (tab == '/help')  {
-    $('#nav_Bar_bottom_line').css("left","84%");
-   }
+{% block contentts2 %}
+  {% block content %}
 
-});
- </script>
+  {% endblock %}
+{% endblock %}
+
+

@@ -12,7 +12,7 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /_ah/mail/support@reeegalo.appspotmail.com
+- url: /_ah/mail/accounts@reeegalo.appspotmail.com
   script: main.app2
   login: admin
 

@@ -1,13 +1,13 @@
 {% extends "frontpage.html" %}
 
-{% block content %}
+{% block contentts2 %}
   <div id="login">
     <div>
       <p id="login_title">Sign in</p>
     </div>
     <hr id="login_line" style="">
 
-    <form method="post" >
+    <form method="post">
       <div>
         <input placeholder="User Name" class="inputs" type="text" name="username" value="{{first_name}}">
       </div>
@@ -27,4 +27,8 @@
       </div>
     </form>
   </div>
+
+  <script>
+  $('#login_top_cont').css("visibility", "hidden")
+  </script>
 {% endblock %}
