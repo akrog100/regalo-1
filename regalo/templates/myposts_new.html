@@ -31,10 +31,10 @@
 	        </div>
 
 			<div class="label">
-	        	Card Value
+	        	Card Value ($)
 	      	</div>
 			<div >
-				<input class="inputs" type="text" name="value" placeholder="0">
+				<input class="inputs" type="number" name="value" placeholder="0" pattern="\d*" min="5">
 			</div>
 			<div class="error">
 	          {{error_value}}  

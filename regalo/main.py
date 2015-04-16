@@ -15,12 +15,11 @@ import logging
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
 
-class LogSenderHandler(InboundMailHandler):
-    def receive(self, mail_message):
-        logging.info("Received a message from: " + mail_message.sender)
-
 #FOR HASHING COOKIE
 secret = "imsosecret"
+
+#RETAILERS
+retailers=("Applebees", "Best Buy","Body Shop","Chipotle","CVS","Dominos Pizza","Dunkin Donuts","Forever 21","Papa Johns","WalMart")
 
 #INIT TEMPLATE DIRECTORY
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -75,8 +74,6 @@ def valid_pw(name,pw,h):
 #---------------------------------------
 
 #---------------------------------------------------RETAILER DB---------------------------------------------------#
-retailers=("Applebees", "Best Buy","Body Shop","Chipotle","CVS","Dominos Pizza","Dunkin Donuts","Forever 21","Papa Johns","WalMart")
-
 class Retailer(db.Model):
     name = db.StringProperty(required=True,choices=retailers)
     link = db.LinkProperty()
@@ -138,6 +135,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
 
 
+
     @classmethod
     def register(cls, owner, ret, val,choices):
         return Post(owner = owner, retailer = ret, card_val = val, looking_for = choices)
@@ -150,13 +148,6 @@ class Post(db.Model):
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
-
-def merge_two_dicts(x, y):
-    '''Given two dicts, merge them into a new dict as a shallow copy.'''
-    z = x.copy()
-    z.update(y)
-    return z
-
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -166,6 +157,7 @@ class Handler(webapp2.RequestHandler):
         return t.render(params)
 
     def render(self, template, **kw):
+        kw.update(self.get_logintop())
         self.write(self.render_str(template, **kw))
 
     def login(self, user):
@@ -195,19 +187,18 @@ class Handler(webapp2.RequestHandler):
 
     def get_logintop(self):
         if not self.user:
-            return {"first":"SIGN IN", "second":"Don't have an account","third":"CREATE ONE", "firstref":"/signin","secondref":"/register","arr1_disp":"inline-block"}
+            return {"first":"SIGN IN", "second":"Don't have an account?","third":"CREATE ONE", "firstref":"/signin","secondref":"/register","arr1_disp":"inline-block"}
         else:
             u = self.get_user();
             return {"first":"Hi, " + u.first_name + ". ", "second":"  Not " + u.first_name + "?","third":"Sign out","firstref":"/myprofile","secondref":"/logout","arr1_disp":"none"}
     def default_logintop(self):
-        return {"first":"SIGN IN", "second":"Don't have an account","third":"CREATE ONE", "firstref":"/signin","secondref":"/register","arr1_disp":"inline-block"}
-
+        return {"first":"SIGN IN", "second":"Don't have an account?","third":"CREATE ONE", "firstref":"/signin","secondref":"/register","arr1_disp":"inline-block"}
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN UP PAGE HANDLER-----------------------------------------------#
 class SignUpHandler(Handler):
     def get(self):
-        self.render('register.html', login_top = self.default_logintop())
+        self.render('register.html')
 
 
     def post(self):
@@ -289,15 +280,7 @@ class SignUpHandler(Handler):
             message.sender = "accounts@reeegalo.appspotmail.com"
             message.to = "yosephbasileal@yahoo.com"
             message.subject = "Account Registeration Successful! - Reeegalo"
-            message.body = """
-Welcome, %s!
-
-Your reeegalo.appspot.com account has been approved.  You can now visit
-http://reeegalo.appspot.com/ and sign in using your account to
-access its features.
-
-The Reeegalo Team
-""" % self.last_name
+            message.body = """Welcome, %s!\nYour reeegalo.appspot.com account has been approved.  You can now visit\nhttp://reeegalo.appspot.com/ and sign in using your account to\naccess its features.\nThe Reeegalo Team""" % self.last_name
             message.send()
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -307,7 +290,7 @@ class SignInHandler(Handler):
         if self.user:
             self.redirect("/browse")
         else:
-            self.render('signin.html', login_top = self.get_logintop())
+            self.render('signin.html')
        
 
     def post(self):
@@ -320,13 +303,13 @@ class SignInHandler(Handler):
             self.redirect("/browse")
         else:
             err = 'Invalid username or password'
-            self.render('signin.html', error_login = err, login_top = self.get_logintop())
+            self.render('signin.html', error_login = err)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class FrontPageHandler(Handler):
     def get(self):   
-        self.render("frontpage.html", login_top = self.get_logintop())
+        self.render("frontpage.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
@@ -343,12 +326,12 @@ class BrowseHandler(Handler):
             u = self.get_user()
             if not t  or t == '1':
                 posts = Post.all().filter('owner !=', u)
-                self.render('browse_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True), retailers = retailers, login_top = self.get_logintop())
+                self.render('browse_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True))
 
             if t == '2':
-                self.render('browse_sell.html', login_top = self.get_logintop())
+                self.render('browse_sell.html')
             if t == '0':
-                self.render('browse_all.html', login_top = self.get_logintop())
+                self.render('browse_all.html')
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -357,7 +340,7 @@ class BrowseHandler(Handler):
 class MyProfileHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myprofile.html", login_top = self.get_logintop())
+            self.render("myprofile.html")
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -376,20 +359,19 @@ class MyPostsHandler(Handler):
             u = self.get_user()
             if not t  or t == '1':
                 posts = Post.all().filter('owner =', u)
-                self.render('myposts_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True), login_top = self.get_logintop())
+                self.render('myposts_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True))
 
             if t == '2':
-                self.render('myposts_sell.html', login_top = self.get_logintop())
+                self.render('myposts_sell.html')
         else:
-            self.redirect('/signin')
-        
+            self.redirect('/signin')      
 #-----------------------------------------------------------------------------------------------------------------#
 
 #------------------------------------------------NEW POSTS HANDLER------------------------------------------------#
 class NewPostHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myposts_new.html", retailers = retailers, login_top = self.get_logintop())
+            self.render("myposts_new.html", retailers = retailers)
         else:
             self.redirect('/signin')
 
@@ -399,9 +381,12 @@ class NewPostHandler(Handler):
         self.selected_rets = self.request.get('choices', allow_multiple=True)
         self.value = self.request.get('value')
 
+        if not self.value or not self.selected_rets:
+            have_error = True
+        self.response.write(self.selected_rets)
         #????????????????????/do error checking
         if have_error:
-            self.render("newpost.html", retailers = retailers, login_top = self.get_logintop())
+            self.render("myposts_new.html", retailers = retailers)
         else:
             num_choices = len(self.selected_rets)
             choices = [0] * num_choices
@@ -413,36 +398,28 @@ class NewPostHandler(Handler):
             self.response.write(choices)
             p = Post.register(u, r, self.value, choices)
             p.put()
-            self.redirect('/myposts')
-
-
-
-        
+            self.redirect('/myposts')   
 #-----------------------------------------------------------------------------------------------------------------#
 
 #-------------------------------------------------MY BIDS HANDLER-------------------------------------------------#
 class MyBidsHandler(Handler):
     def get(self):
         if self.user:
-            self.render("mybids.html", login_top = self.get_logintop())
+            self.render("mybids.html")
         else:
             self.redirect('/signin')
-
 #-----------------------------------------------------------------------------------------------------------------#
 
-#----------------------------------------------ABOUT HANDLER-------------------------------------------------#
+#---------------------------------------------------ABOUT HANDLER-------------------------------------------------#
 class AboutHandler(Handler):
     def get(self):  
-        self.render("about.html", login_top = self.get_logintop())
-
-        
+        self.render("about.html")       
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------------HELP HANDLER-------------------------------------------------#
 class HelpHandler(Handler):
     def get(self):
-        self.render("help.html", login_top = self.get_logintop())
- 
+        self.render("help.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------------HELP HANDLER-------------------------------------------------#
@@ -451,14 +428,40 @@ class LogoutHandler(Handler):
         self.logout()
         self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
+
+#--------------------------------------------RETAILER REGISTRATION HANDLER----------------------------------------#
 class RetRegHandler(Handler):
     def get(self):
         for ret in retailers:
             r = Retailer.register(ret)
             r.put()
+#-----------------------------------------------------------------------------------------------------------------#
+
+#-----------------------------------------------USERS PROFILE PAGE HANDLER----------------------------------------#
+class UsersPageHandler(Handler):
+    def get(self, user_id):
+        user = User.by_id(int(user_id))
+        if not user:
+            self.error(404)
+            return
+        self.render("users.html", u = user)
+#-----------------------------------------------------------------------------------------------------------------#
+
+#--------------------------------------------------SWAP BID PAGE HANDLER------------------------------------------#
+class SwapbidHandler(Handler):
+    def get(self):
+        user = self.get_user();
+        get_values = self.request.GET
+        post_id = get_values['p']
+
+        owner_id = get_values['o']
+        owner = User.by_id(int(owner_id))
+
+        self.render("swapbid.html", owner_id = owner_id, owner = owner.user_name, post = post_id, user_id = user.key().id(), user = user.user_name)
+#-----------------------------------------------------------------------------------------------------------------#
 
 
-#//////////////////////////////////////////
+#//////////////////////////////////////////TEST/////////////////////////////////////
 class Movie(db.Model):
     title = db.StringProperty()
     picture = db.BlobProperty(default=None)
@@ -481,7 +484,11 @@ def getMovie(title):
     else:
         return None
 
-#///////////////////////////////////////////
+class LogSenderHandler(InboundMailHandler):
+    def receive(self, mail_message):
+        logging.info("Received a message from: " + mail_message.sender)
+
+#///////////////////////////////////////^^TEST^^/////////////////////////////////////
 
 
 app = webapp2.WSGIApplication([ #URL handlers
@@ -497,7 +504,9 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/help', HelpHandler),
     ('/test',TestHandler),
     ('/logout', LogoutHandler),
-    ('/retailersReg', RetRegHandler)
+    ('/retailersReg', RetRegHandler),
+    ('/users/([0-9]+)', UsersPageHandler),
+    ('/swapbid',SwapbidHandler)
     ], debug=True)
 
 app2 = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
