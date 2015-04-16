@@ -100,6 +100,7 @@ class User(db.Model):
     pass_hash = db.StringProperty(required = True)
     email = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add = True)
+    rating = db.IntegerProperty()
 
     @classmethod
     def by_username(cls, u_name):
@@ -117,7 +118,8 @@ class User(db.Model):
                     last_name = l_name,
                     user_name = u_name,
                     pass_hash = pw_hash,
-                    email = email)
+                    email = email,
+                    rating = 0)
 
     @classmethod
     def login(cls, u_name, pw):
@@ -133,18 +135,33 @@ class Post(db.Model):
     card_val = db.StringProperty(required=True)
     looking_for = db.ListProperty(str,required= True)
     created = db.DateTimeProperty(auto_now_add = True)
+    num_bids = db.IntegerProperty()
 
 
 
     @classmethod
     def register(cls, owner, ret, val,choices):
-        return Post(owner = owner, retailer = ret, card_val = val, looking_for = choices)
+        return Post(owner = owner, retailer = ret, card_val = val, looking_for = choices, num_bids = 0)
 
     def render(self):
         return render_str("post.html", p = self)
 
+    def render_prof(self):
+        return render_str("post_profile.html", p = self)
+
     def getsortkey(post):
         return post.created
+#-----------------------------------------------------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------------------------------------------------#
+class Review(db.Model):
+    reviewer = db.ReferenceProperty(User,collection_name='reviewer_rev')
+    owner = db.ReferenceProperty(User,collection_name='owner_rev')
+    rev_content = db.TextProperty()
+    created = db.DateTimeProperty(auto_now_add = True) 
+
+    def render_myprof(self):
+        return render_str("reviews.html", r = self)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
@@ -340,7 +357,8 @@ class BrowseHandler(Handler):
 class MyProfileHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myprofile.html")
+            posts = Post.all().filter('owner =', self.user)
+            self.render("myprofile.html", username = self.user.user_name, email = self.user.email, rating = self.user.rating, posts = sorted(posts, key=Post.getsortkey, reverse=True))
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -444,7 +462,9 @@ class UsersPageHandler(Handler):
         if not user:
             self.error(404)
             return
-        self.render("users.html", u = user)
+        posts = Post.all().filter('owner =', user)
+        reviews = Review.all().filter('owner =', user)
+        self.render("users.html", u = user, posts = posts, reviews = reviews )
 #-----------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------SWAP BID PAGE HANDLER------------------------------------------#

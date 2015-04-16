@@ -8,41 +8,35 @@
         	<div style="width: 100%; height:25%; float:left; border-radius: 3px; background-color:#d6d6d6">
             	<br>
         		<span style="font-size:18pt; padding-left:15px; float:left">User Info:</span><br>
-       	 		<span style="padding-left:25px; padding-top:10px; float:left">Username: username</span><br>
-        		<span style="padding-left:25px; padding-top:5px; float:left">E-mail: email</span>
+       	 		<span style="width: 75%; padding-left:25px; padding-top:10px; float:left">Username: {{username}}</span><br>
+        		<span style="width: 75%;padding-left:25px; padding-top:5px; float:left">E-mail: {{email}}</span><br>
+            <span style="width: 75%; padding-left:25px; padding-top:10px; float:left">Rating: {{rating}}</span>
             </div>
         
         	<div style="width:100%; height:73%; float:left; margin-top: 10px; border-radius: 3px; background-color:#d6d6d6">
             
-            	<span style="font-size:15pt; padding-left:15px; padding-top:10px; float:left">Rating: rating</span><br><br>
-            	<span style="font-size:15pt; padding-left:15px; padding-top:5px; float:left">Reviews:</span>
+
+            	<span style="font-size:15pt; padding-left:15px; padding-top:5px; float:left">Active Posts:</span>
             
-            	<div style="width: 90%; height: 77%%; background-color: #b8bbc2; float: left; margin-left: 13px; margin-top: 8px; overflow-y: scroll; overflow-x: hidden; border-radius: 2px;">
-                
-       			  <div style="width:90%; height:125px; background-color: #bfd2ff; float:left; margin-left:12px;margin-top:12px;overflow-y: scroll; overflow-x: hidden; border-radius: 2px;">
-                        	
-                            <span style="float:left; margin-left:5px">Roger Clyde:</span>
-                        	<p style="float:left; margin-left:5px; font-size:10pt">He responded quickly and I recieved my gift card in lickity split timing!</p>
-                        	
-                  </div>
+            	<div style="width: 90%; height: 77%%; background-color: #b8bbc2; float: left; margin-left: 13px; margin-top: 8px; overflow-x: hidden;overflow-y: auto; border-radius: 2px;">
+                  {% for p in posts %}
+                    {{ p.render_prof() | safe }}
+                  {% endfor %}
             	</div>
         	</div>
         </div>
         
-        <div style="margin-right: 0.5em ; margin-top: 1em; width: 59%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left" >
+      <div style="margin-right: 0.5em ; margin-top: 1em; width: 59%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left" >
         
-       		 <span style="font-size:18pt; float:left; margin-left:25px; margin-top:10px">Active Posts:</span>
+       		 <span style="font-size:18pt; float:left; margin-left:25px; margin-top:10px">Reviews:</span>
         
           	 <div style="height:80%; width:90%;background-color:#b8bbc2; float:left; margin-left:25px; margin-top:15px; overflow-x: hidden; overflow-y: scroll; border-radius: 3px;">
-                	
-                    <div style="height: 200px; width:90%; float:left; margin-left:22px; margin-top:20px; background-color:#bfd2ff; border-radius: 3px;">
-                    	<a>post information</a>
-                    </div>
-                    
-                    
+                  {% for r in reviews %}
+                    {{ r.render_myprof() | safe }}
+                  {% endfor %} 
              </div>
                 
-     </div>
+      </div>
 
 {% endblock %}
 
