@@ -13,9 +13,12 @@
 	        	Type of post
 	      	</div>
 	      	<div id="new_post_radio_cont">
-				<input type="radio" name="type" value="Swap" checked="checked">Swap Offer
-				<input type="radio" name="type" value="Sell">Sell Offer
+				<input type="radio" name="type" value="swap" onclick="document.getElementById('offer').setAttribute('disabled','disabled'); document.getElementById('dropdown2').removeAttribute('disabled');">Swap Offer
+				<input type="radio" name="type" value="sell" onclick="document.getElementById('offer').removeAttribute('disabled');document.getElementById('dropdown2').setAttribute('disabled','disabled');">Sell Offer
 			</div>
+			<div class="error">
+	          {{error_type}}  
+	        </div>
 			<div class="label">
 	        	Retailer
 	      	</div>
@@ -34,14 +37,24 @@
 	        	Card Value ($)
 	      	</div>
 			<div >
-				<input class="inputs" type="number" name="value" placeholder="0" pattern="\d*" min="5">
+				<input id="value"  value="{{value}}" class="inputs" type="number" name="value" placeholder="0" pattern="\d*" min="0" >
 			</div>
 			<div class="error">
 	          {{error_value}}  
 	        </div>	
 
 	        <div class="label">
-	        	Gift cards looking for?
+	        	Offer for ($)
+	      	</div>
+			<div >
+				<input id="offer" value="{{offer}}" class="inputs" type="number" name="offer" placeholder="0" pattern="\d*" min="0">
+			</div>
+			<div class="error">
+	          {{error_offer}}  
+	        </div>
+
+	        <div class="label">
+	        	Gift cards looking for? (max=3)
 	      	</div>
 			<div >
 				<select id="dropdown2" name="choices" multiple>
@@ -51,7 +64,7 @@
 				</select>
 			</div>
 			<div class="error">
-	          {{error_retailer}}  
+	          {{error_retailers}}  
 	        </div>
 
 	        <div>

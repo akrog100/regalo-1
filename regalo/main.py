@@ -15,11 +15,14 @@ import logging
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
 
+edit_div = """
+
+"""
 #FOR HASHING COOKIE
 secret = "imsosecret"
 
 #RETAILERS
-retailers=("Applebees", "Best Buy","Body Shop","Chipotle","CVS","Dominos Pizza","Dunkin Donuts","Forever 21","Papa Johns","WalMart")
+retailers=("Applebees", "Best-Buy","Body-Shop","Chipotle","CVS","Dominos-Pizza","Dunkin-Donuts","Forever-21","Papa-Johns","WalMart")
 
 #INIT TEMPLATE DIRECTORY
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -128,26 +131,50 @@ class User(db.Model):
             return user
 #-----------------------------------------------------------------------------------------------------------------#
 
-#-----------------------------------------------------POST DB-----------------------------------------------------#
-class Post(db.Model):
-    owner = db.ReferenceProperty(User,collection_name='user_posts')
-    retailer = db.ReferenceProperty(Retailer)
+#---------------------------------------------------SWAP POST DB--------------------------------------------------#
+class SwapPost(db.Model):
+    owner = db.ReferenceProperty(User,collection_name='user_swapposts')
+    retailer = db.ReferenceProperty(Retailer, collection_name='ret_swapposts')
     card_val = db.StringProperty(required=True)
     looking_for = db.ListProperty(str,required= True)
     created = db.DateTimeProperty(auto_now_add = True)
     num_bids = db.IntegerProperty()
 
 
-
     @classmethod
     def register(cls, owner, ret, val,choices):
-        return Post(owner = owner, retailer = ret, card_val = val, looking_for = choices, num_bids = 0)
+        return SwapPost(owner = owner, retailer = ret, card_val = val, looking_for = choices, num_bids = 0)
 
     def render(self):
-        return render_str("post.html", p = self)
+        return render_str("post_swap.html", p = self)
 
     def render_prof(self):
-        return render_str("post_profile.html", p = self)
+        return render_str("post_swap_prof.html", p = self, type="swap")
+
+    def getsortkey(post):
+        return post.created
+#-----------------------------------------------------------------------------------------------------------------#
+
+#-----------------------------------------------------SWAP POST DB-----------------------------------------------------#
+class SellPost(db.Model):
+    owner = db.ReferenceProperty(User,collection_name='user_sellposts')
+    retailer = db.ReferenceProperty(Retailer, collection_name='ret_sellposts')
+    card_val = db.StringProperty(required=True)
+    offer_for = db.StringProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    num_bids = db.IntegerProperty()
+
+
+
+    @classmethod
+    def register(cls, owner, ret, val, val_offer):
+        return SellPost(owner = owner, retailer = ret, card_val = val, offer_for = val_offer, num_bids = 0)
+
+    def render(self):
+        return render_str("post_sell.html", p = self)
+
+    def render_prof(self):
+        return render_str("post_sell_prof.html", p = self)
 
     def getsortkey(post):
         return post.created
@@ -341,14 +368,13 @@ class BrowseHandler(Handler):
 
         if self.user:
             u = self.get_user()
+            posts_swap = SwapPost.all().filter('owner !=', u)
+            posts_sell = SellPost.all().filter('owner !=', u)
+            posts_all = {}
             if not t  or t == '1':
-                posts = Post.all().filter('owner !=', u)
-                self.render('browse_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True))
-
+                self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.getsortkey, reverse=True))
             if t == '2':
-                self.render('browse_sell.html')
-            if t == '0':
-                self.render('browse_all.html')
+                self.render('browse_sell.html', posts = sorted(posts_sell, key=SellPost.getsortkey, reverse=True))
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -356,9 +382,11 @@ class BrowseHandler(Handler):
 #----------------------------------------------MY PROFILE HANDLER-------------------------------------------------#
 class MyProfileHandler(Handler):
     def get(self):
-        if self.user:
-            posts = Post.all().filter('owner =', self.user)
-            self.render("myprofile.html", username = self.user.user_name, email = self.user.email, rating = self.user.rating, posts = sorted(posts, key=Post.getsortkey, reverse=True))
+        if self.user: 
+            posts1 = sorted(self.user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+            posts2 = sorted(self.user.user_sellposts, key=SellPost.getsortkey, reverse=True) 
+
+            self.render("myprofile.html", username = self.user.user_name, email = self.user.email, rating = self.user.rating, posts = posts1, posts2 = posts2)
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -376,11 +404,13 @@ class MyPostsHandler(Handler):
         if self.user:
             u = self.get_user()
             if not t  or t == '1':
-                posts = Post.all().filter('owner =', u)
-                self.render('myposts_swap.html', posts = sorted(posts, key=Post.getsortkey, reverse=True))
+                #posts = Post.all().filter('owner =', u)
+                posts = u.user_swapposts
+                self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.getsortkey, reverse=True))
 
             if t == '2':
-                self.render('myposts_sell.html')
+                posts = u.user_sellposts
+                self.render('myposts_sell.html', posts = sorted(posts, key=SellPost.getsortkey, reverse=True))
         else:
             self.redirect('/signin')      
 #-----------------------------------------------------------------------------------------------------------------#
@@ -389,34 +419,63 @@ class MyPostsHandler(Handler):
 class NewPostHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myposts_new.html", retailers = retailers)
+            self.render("myposts_new.html", retailers = retailers, type = "swap")
         else:
             self.redirect('/signin')
 
     def post(self):
         have_error = False
+        self.type = self.request.get('type')
         self.card_retailer = self.request.get('retailer')
-        self.selected_rets = self.request.get('choices', allow_multiple=True)
         self.value = self.request.get('value')
 
-        if not self.value or not self.selected_rets:
-            have_error = True
-        self.response.write(self.selected_rets)
-        #????????????????????/do error checking
-        if have_error:
-            self.render("myposts_new.html", retailers = retailers)
-        else:
-            num_choices = len(self.selected_rets)
-            choices = [0] * num_choices
-            for i in range(0,num_choices):
-                choices[i] = str(self.selected_rets).split(',')[i].split("'")[1]
+        params = dict(value = self.value, retailers = retailers)
+        if not self.type:
+           params['error_type'] = "*required" 
+           have_error = True
 
-            u = self.get_user()
-            r = Retailer.by_ret_name(self.card_retailer)
-            self.response.write(choices)
-            p = Post.register(u, r, self.value, choices)
-            p.put()
-            self.redirect('/myposts')   
+        if not self.value:
+            params['error_value'] = "*required"
+            have_error = True
+        
+        if self.type == "swap":
+            self.selected_rets = self.request.get('choices', allow_multiple=True)
+            num_choices = len(self.selected_rets)
+            if not self.selected_rets:
+                params['error_retailers'] = "*required"
+                have_error = True
+            if num_choices > 3:
+                params['error_retailers'] = "*select a maximum of three"
+                have_error = True
+
+        if self.type == "sell":
+            self.val_offer = self.request.get('offer')
+            if not self.val_offer:
+                params['error_offer'] = "*required"
+                have_error = True
+            params['offer'] = self.val_offer
+
+
+        if have_error:
+            self.render("myposts_new.html", **params)
+        else: 
+            if self.type == "swap":
+                choices = [0] * num_choices
+                for i in range(0,num_choices):
+                    choices[i] = str(self.selected_rets).split(',')[i].split("'")[1]
+
+                u = self.get_user()
+                r = Retailer.by_ret_name(self.card_retailer)
+                p = SwapPost.register(u, r, self.value, choices)
+                p.put()
+
+            elif self.type == "sell":
+                u = self.get_user()
+                r = Retailer.by_ret_name(self.card_retailer)
+                p = SellPost.register(u, r, self.value,self.val_offer)
+                p.put()
+
+            self.redirect('/myposts') 
 #-----------------------------------------------------------------------------------------------------------------#
 
 #-------------------------------------------------MY BIDS HANDLER-------------------------------------------------#
@@ -453,6 +512,7 @@ class RetRegHandler(Handler):
         for ret in retailers:
             r = Retailer.register(ret)
             r.put()
+        self.response.out.write("Retailers registered!")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #-----------------------------------------------USERS PROFILE PAGE HANDLER----------------------------------------#
@@ -462,7 +522,7 @@ class UsersPageHandler(Handler):
         if not user:
             self.error(404)
             return
-        posts = Post.all().filter('owner =', user)
+        posts = SwapPost.all().filter('owner =', user)
         reviews = Review.all().filter('owner =', user)
         self.render("users.html", u = user, posts = posts, reviews = reviews )
 #-----------------------------------------------------------------------------------------------------------------#

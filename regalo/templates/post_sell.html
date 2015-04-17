@@ -1,0 +1,34 @@
+<div class="post_cont" id="p_{{p.key().id()}}">
+	<div class="post_left_cont">
+		<div class="post_title">
+			<span class="post_retailer">{{p.retailer.name}}: ${{p.card_val}}</span>
+		</div>
+
+		<div class="retailer_pic_cont">
+			<div class="retailer_pic" style="background-image:url('/static/images/{{p.retailer.name}}.jpg'); ">
+			</div>
+		</div>
+ 
+		<div class="post_owner_cont">
+			<span>Posted By: <a href="/users/{{p.owner.key().id()}}">@{{p.owner.user_name}}</a></span>
+			<br>
+			<span>Date: {{p.created.strftime("%b %d, %Y")}} </span>
+		</div>
+	</div>
+
+	<div class="post_mid_cont">
+		<div class="looking_for_cont">
+			<div class="looking_for_div"><u>Offered for</u></div>
+			<ol class="looking_for_list">${{p.offer_for}}</ol>
+		</div>
+	</div>
+
+
+
+	<div class="bid_button_cont">
+		<a class="bid_button" href='/swapbid?p={{p.key().id()}}&o={{p.owner.key().id()}}'>BUY</a>
+	</div>
+
+	<a href="#"><div id="e_{{p.key().id()}}" class="edit_button" style="margin: 0 0 0 95% ;position: relative; background-size: 20px 20px;background-image: url('/static/images/edit.png'); height: 	20px; width: 20px; top:7px; display: none;">
+	</div></a>
+</div>
