@@ -133,14 +133,16 @@ class SwapPost(db.Model):
     owner = db.ReferenceProperty(User,collection_name='user_swapposts')
     retailer = db.ReferenceProperty(Retailer, collection_name='ret_swapposts')
     card_val = db.StringProperty(required=True)
+    card_code = db.StringProperty(required = True)
+    card_pin = db.IntegerProperty(required = True)
     looking_for = db.ListProperty(str,required= True)
     created = db.DateTimeProperty(auto_now_add = True)
     num_bids = db.IntegerProperty()
 
 
     @classmethod
-    def register(cls, owner, ret, val,choices):
-        return SwapPost(owner = owner, retailer = ret, card_val = val, looking_for = choices, num_bids = 0)
+    def register(cls, owner, ret, val, code, pin, choices):
+        return SwapPost(owner = owner, retailer = ret, card_val = val, card_code = code, card_pin = pin, looking_for = choices, num_bids = 0)
 
     def render(self):
         return render_str("post_swap.html", p = self)
@@ -157,6 +159,8 @@ class SellPost(db.Model):
     owner = db.ReferenceProperty(User,collection_name='user_sellposts')
     retailer = db.ReferenceProperty(Retailer, collection_name='ret_sellposts')
     card_val = db.StringProperty(required=True)
+    card_code = db.StringProperty(required = True)
+    card_pin = db.IntegerProperty(required = True)
     offer_for = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add = True)
     num_bids = db.IntegerProperty()
@@ -164,8 +168,8 @@ class SellPost(db.Model):
 
 
     @classmethod
-    def register(cls, owner, ret, val, val_offer):
-        return SellPost(owner = owner, retailer = ret, card_val = val, offer_for = val_offer, num_bids = 0)
+    def register(cls, owner, ret, val, code, pin, val_offer):
+        return SellPost(owner = owner, retailer = ret, card_val = val, card_code = code, card_pin = pin, offer_for = val_offer, num_bids = 0)
 
     def render(self):
         return render_str("post_sell.html", p = self)
@@ -425,6 +429,8 @@ class NewPostHandler(Handler):
         self.type = self.request.get('type')
         self.card_retailer = self.request.get('retailer')
         self.value = self.request.get('value')
+        self.code = self.request.get('code')
+        self.pin = self.request.get('pin')
 
         params = dict(value = self.value, retailers = retailers)
         if not self.type:
@@ -432,6 +438,14 @@ class NewPostHandler(Handler):
            have_error = True
 
         if not self.value:
+            params['error_value'] = "*required"
+            have_error = True
+
+        if not self.code:
+            params['error_value'] = "*required"
+            have_error = True
+
+        if not self.pin:
             params['error_value'] = "*required"
             have_error = True
         
@@ -463,13 +477,13 @@ class NewPostHandler(Handler):
 
                 u = self.get_user()
                 r = Retailer.by_ret_name(self.card_retailer)
-                p = SwapPost.register(u, r, self.value, choices)
+                p = SwapPost.register(u, r, self.value, self.code, int(self.pin), choices)
                 p.put()
 
             elif self.type == "sell":
                 u = self.get_user()
                 r = Retailer.by_ret_name(self.card_retailer)
-                p = SellPost.register(u, r, self.value,self.val_offer)
+                p = SellPost.register(u, r, self.value, self.code, int(self.pin), self.val_offer)
                 p.put()
 
             self.redirect('/myposts') 
