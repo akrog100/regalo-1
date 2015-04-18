@@ -15,9 +15,6 @@ import logging
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 
 
-edit_div = """
-
-"""
 #FOR HASHING COOKIE
 secret = "imsosecret"
 
@@ -155,7 +152,7 @@ class SwapPost(db.Model):
         return post.created
 #-----------------------------------------------------------------------------------------------------------------#
 
-#---------------------------------------------------SWAP POST DB-------------------------------------------------#
+#---------------------------------------------------SWAP POST DB--------------------------------------------------#
 class SellPost(db.Model):
     owner = db.ReferenceProperty(User,collection_name='user_sellposts')
     retailer = db.ReferenceProperty(Retailer, collection_name='ret_sellposts')
