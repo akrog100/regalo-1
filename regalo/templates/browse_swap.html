@@ -8,7 +8,13 @@
 {% endblock %}
 
 {% block content2 %}
-	{% for p in posts %}
-		{{ p.render() | safe }}
-	{% endfor %}
+	{% if posts|length > 0 %}
+		{% for p in posts %}
+			{{ p.render() | safe }}
+		{% endfor %}
+	{% else %}
+		<div style="margin: 1em 0 0 1em;;">
+            <span>Currently, there are no active swap posts by other users.</span>  
+        </div>
+	{% endif%}
 {% endblock %}

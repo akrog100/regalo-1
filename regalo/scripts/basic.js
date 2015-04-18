@@ -1,25 +1,34 @@
 $(document).ready(function() {
+	//Get the path from url
 	var  parser = document.createElement('a');
 	parser.href = window.location.href;
 	var tab = parser.pathname;
+
+	//no edit button except on myposts page
 	if (tab != '/myposts') {
 		$('.edit_button').remove();
 	}
 
-	/*$('.post_cont').hover(function() {
-		var my_id = this.id.substring(2);
-		$('#e_' + my_id).css("display", "block");
-	}, function () {
-		var my_id = this.id.substring(2);
-		$('#e_' + my_id).css("display", "none");
-	}
-	);*/
 
+	//toggles edit icon on myposts page
 	$("#show_edit_but").click(function(){
     	$(".edit_button").toggle();
 	});
 
 
+	//expands and collapses swap and sell posts on myprofile page
+	$("#prof_swap_expand").click(function () {
+	    $('#prof_swap_cont').slideToggle(200, function () {
+	        ;
+	    });
+	});
+	$("#prof_sell_expand").click(function () {
+	    $('#prof_sell_cont').slideToggle(200, function () {
+	        ;
+	    });
+	});
+
+	//moves the line under the tabs on the main navigation bar
 	 if (tab == '/browse')  {
 	  $('#nav_Bar_bottom_line').css("left","0%");
 	 }
@@ -40,7 +49,7 @@ $(document).ready(function() {
 	 }
 
 
-
+	 //is used to change the position of green arrow on the side menu
 	if (tab == '/browse' || tab == '/myposts') {
 		var type = getUrlParameter('type');
 		if (type == 1 || type == undefined ) {
@@ -57,6 +66,7 @@ $(document).ready(function() {
 		}	
 	}
 
+	//used to extract a get argument from the url
 	function getUrlParameter(sParam) {
 	    var sPageURL = window.location.search.substring(1);
 	    var sURLVariables = sPageURL.split('&');

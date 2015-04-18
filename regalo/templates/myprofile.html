@@ -1,64 +1,79 @@
 {% extends "base.html" %}
 
-{% block content %}   
-   		<div id="userinfoplusactiveposts" style="margin: 1em ;width: 40%; height: 550px; float:left" > 
-        <div id="userinfo" style="width: 100%; height:25%; float:left; border-radius: 3px;">
-          <div id="userinfotitle_cont" style="border-radius: 5px;margin: 0 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
+{% block content %}  
+    <div id="myprofilepage">
+   		<div id="userandposts"> 
+        <div id="userinfomain" >
+          <div id="userinfotitle_cont">
             <span class="body_nav_title">User Info</span>
+            <span id="show_edit_but" style="cursor: pointer;float: right;display: block;height: 17px;width: 17px;background-size: 100%;margin:5px 10px 0 0;background-image: url('/static/images/edit.png'); background-repeat: no-repeat;"></span>
           </div>
 
-          <div id="userinfo_cont" style="font-size: 0.9em;border-radius: 5px;margin:0.4em 1em 0 0 ; float: left; width: 100%%; background-color:  #F8F8F8;">
-     	 		  <span style="width: calc(100% - 10px); padding-left:10px; padding-top:15px; float:left">
-              <div style="margin-right: 5px; float: left; height: 20px; width: 20px; background-image: url('/static/images/user.png'); background-size: 100% 100%; "></div>
+          <div id="userinfocont">
+     	 		  <span class="userinfoentries" id="username">
+              <div class="userinfoicons" id="usericon"></div>
               Username: <b>{{username}}</b>
             </span>
             <br>
-      		  <span style="width: calc(100% - 10px);padding-left:10px; padding-top:10px; float:left;">
-              <div style="margin-right: 5px; float: left; height: 20px; width: 20px; background-image: url('/static/images/mail.png'); background-size: 100% 100%; "></div>
-              E-mail: <span style="font-size: 0.8em; overflow-x: auto;">{{email}}</span>
+      		  <span class="userinfoentries" id="email">
+              <div class="userinfoicons" id="emailicon"></div>
+              E-mail: <span id="useremailtext">{{email}}</span>
             </span>
             <br>
-            <span style="width: calc(100% - 10px); padding-left:10px; padding-top:10px;padding-bottom:15px; float:left">
-              <div style="margin-right: 5px; float: left; height: 20px; width: 20px; background-image: url('/static/images/rating.png'); background-size: 100% 100%; "></div>
+            <span class="userinfoentries" id="rating">
+              <div class="userinfoicons" id="ratingicon"></div>
               Rating: {{rating}}
             </span>
           </div>
         </div>
 
-        <div id="activeposts" style="width:100%; height:73%; float:left; margin-top: 10px; border-radius: 3px; ">
-          <div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
+        <div id="activepostscont">
+          <div class="nav_title_cont">
             <span class="body_nav_title">Recent Swap Posts</span>
+            <span id="prof_swap_expand" style="cursor: pointer;float: right;display: block;height: 22px;width: 22px;background-size: 100% 100%;margin:5px 5px 0 0;background-image: url('/static/images/collapse_arrow.jpg'); background-repeat: no-repeat;"></span>
           </div>
-          <div style="border-radius: 5px;margin:0.4em 1em 0 0 ; float: left; width: 100%%; min-height:100px; max-height: 153px; background-color:  #F8F8F8; overflow-y: auto; overflow-x: hidden;">
-            {% set i = 0 %}
-            {% for p in posts if i < 3%}
-              {% set i = i + 1 %}
-              {{ p.render_prof() | safe }}
-            {% endfor %}
-            <div style="padding-left:15px;margin-top: 7px;width: 100%; height: 30px; font-size: 0.9em;">
-              <span><a href="/myposts?type=1">See all...</a></span>  
-            </div>
-
+          <div class="prof_posts_cont" id="prof_swap_cont">
+            {% if posts|length > 0 %}
+              {% set i = 0 %}
+              {% for p in posts if i < 3%}
+                {% set i = i + 1 %}
+                {{ p.render_prof() | safe }}
+              {% endfor %}
+              <div class="posts_see_all">
+                <span><a href="/myposts?type=1">See all...</a></span>  
+              </div>
+            {% else %}
+              <div class="posts_see_all">
+               <span>You don't have any active sell post. <br><a href="myposts/newpost">Post new?</a></span>  
+              </div>
+            {% endif %}
           </div>
           
 
-          <div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
+          <div class="nav_title_cont">
             <span class="body_nav_title">Recent Sell Posts</span>
+            <span id="prof_sell_expand" style="cursor: pointer;float: right;display: block;height: 22px;width: 22px;background-size: 100% 100%;margin:5px 5px 0 0;background-image: url('/static/images/collapse_arrow.jpg'); background-repeat: no-repeat;"></span>
           </div>
-          <div style="border-radius: 5px;margin:0.4em 1em 0 0 ; float: left; width: 100%%; min-height:100px; max-height: 153px; background-color:  #F8F8F8; overflow-y: auto; overflow-x: hidden;">
-            {% set i = 0 %}
-            {% for p2 in posts2 if i < 3%}
-              {% set i = i + 1 %}
-              {{ p2.render_prof() | safe }}
-            {% endfor %}
-            <div style="padding-left:15px;margin-top: 7px;width: 100%; height: 30px; font-size: 0.9em;">
-              <span><a href="/myposts?type=2">See all...</a></span>  
-            </div>
+          <div class="prof_posts_cont" id="prof_sell_cont">
+            {% if posts2|length > 0 %}
+              {% set i = 0 %}
+              {% for p2 in posts2 if i < 3%}
+                {% set i = i + 1 %}
+                {{ p2.render_prof() | safe }}
+              {% endfor %}
+              <div class="posts_see_all">
+                <span><a href="/myposts?type=2">See all...</a></span>  
+              </div>
+            {% else %}
+              <div class="posts_see_all">
+                <span>You don't have any active sell post. <br><a href="myposts/newpost">Post new?</a></span>  
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>
         
-      <div id="reviews_cont" style="margin-right: 0.5em ; margin-top: 1em; width: 52%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left">
+      <div id="reviews_cont" style="margin-right: 0.5em ; margin-top: 1em; width: 57%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left">
        		 <span style="font-size:18pt; float:left; margin-left:25px; margin-top:10px">Reviews:</span>
         	 <div style="height:80%; width:90%;background-color:#b8bbc2; float:left; margin-left:25px; margin-top:15px; overflow-x: hidden; overflow-y: scroll; border-radius: 3px;">
                 {% for r in reviews %}
@@ -66,5 +81,6 @@
                 {% endfor %} 
            </div>        
       </div>
+    </div>
 {% endblock %}
 

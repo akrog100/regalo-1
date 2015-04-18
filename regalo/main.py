@@ -155,7 +155,7 @@ class SwapPost(db.Model):
         return post.created
 #-----------------------------------------------------------------------------------------------------------------#
 
-#-----------------------------------------------------SWAP POST DB-----------------------------------------------------#
+#---------------------------------------------------SWAP POST DB-------------------------------------------------#
 class SellPost(db.Model):
     owner = db.ReferenceProperty(User,collection_name='user_sellposts')
     retailer = db.ReferenceProperty(Retailer, collection_name='ret_sellposts')
@@ -180,7 +180,7 @@ class SellPost(db.Model):
         return post.created
 #-----------------------------------------------------------------------------------------------------------------#
 
-#-----------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------REVIEWS DB----------------------------------------------------#
 class Review(db.Model):
     reviewer = db.ReferenceProperty(User,collection_name='reviewer_rev')
     owner = db.ReferenceProperty(User,collection_name='owner_rev')
@@ -324,7 +324,7 @@ class SignUpHandler(Handler):
             message.sender = "accounts@reeegalo.appspotmail.com"
             message.to = "yosephbasileal@yahoo.com"
             message.subject = "Account Registeration Successful! - Reeegalo"
-            message.body = """Welcome, %s!\nYour reeegalo.appspot.com account has been approved.  You can now visit\nhttp://reeegalo.appspot.com/ and sign in using your account to\naccess its features.\nThe Reeegalo Team""" % self.last_name
+            message.body = """Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved.  You can now visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % self.last_name
             message.send()
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -568,6 +568,7 @@ class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
         logging.info("Received a message from: " + mail_message.sender)
 
+app2 = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
 #///////////////////////////////////////^^TEST^^/////////////////////////////////////
 
 
@@ -589,4 +590,3 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/swapbid',SwapbidHandler)
     ], debug=True)
 
-app2 = webapp2.WSGIApplication([LogSenderHandler.mapping()], debug=True)
