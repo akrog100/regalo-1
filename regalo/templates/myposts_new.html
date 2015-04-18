@@ -67,6 +67,26 @@
 	          {{error_retailers}}  
 	        </div>
 
+	        <div class="label">
+	        	Card Code
+	      	</div>
+			<div >
+				<input id="code"  value="{{code}}" class="inputs" type="text" name="code" placeholder="0" pattern="\d*">
+			</div>
+			<div class="error">
+	          {{error_value}}  
+	        </div>	
+
+	        <div class="label">
+	        	Card PIN
+	      	</div>
+			<div >
+				<input id="pin"  value="{{pin}}" class="inputs" type="number" name="pin" placeholder="0" pattern="\d*">
+			</div>
+			<div class="error">
+	          {{error_value}}  
+	        </div>	
+
 	        <div>
 	        	<input id="post_but" type="submit" value="Post">
 	      </div>
