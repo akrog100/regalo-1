@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div id="mypost_main_body">
+		<div class="body-left">
+			<div class="new_button_cont">
+				<a class="new_button" href='/myposts/newpost'>+ NEW POST</a>
+			</div>
+			<div class="left_menu_button_cont">
+				<p align="center" style="font-size: 14pt; font-weight: 900; color:#525252;">MY POSTS</p>
+				<hr class="left_menu_line">
+				<a class="left_menu_button" href='/myposts?type=1'>SWAP POSTS</a>
+				<div id="swap_arrow" class="left_menu_arrow" ></div>
+				<hr class="left_menu_line">
+				<a class="left_menu_button" href='/myposts?type=2'>SELL POSTS</a>
+				<div id="sell_arrow" class="left_menu_arrow"></div>
+				<hr class="left_menu_line">
+			</div>
+		</div>
+		<div class="body-nav">
+			{% block content1 %}
+			{% endblock %}
+		</div>
+		<div class="body-main">
+			{% block content2 %}
+			{% endblock %}
+		</div>
+	</div>
+	<script>
+		$('.bid_button').addClass("disabled");
+	</script>
+{% endblock %}
+
+
+

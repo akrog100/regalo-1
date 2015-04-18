@@ -1,0 +1,34 @@
+{% extends "frontpage.html" %}
+
+{% block contentts2 %}
+  <div id="login">
+    <div>
+      <p id="login_title">Sign in</p>
+    </div>
+    <hr id="login_line" style="">
+
+    <form method="post">
+      <div>
+        <input placeholder="User Name" class="inputs" type="text" name="username" value="{{first_name}}">
+      </div>
+
+      <div >
+        <input placeholder="Password" class="inputs" type="password" name="password" value="{{last_name}}">
+      </div>
+      <div class="error">
+        {{error_login}}  
+      </div>
+      <div>
+        <input id="login_but" type="submit" value="LOG IN">
+      </div>
+
+      <div style="margin: 1.5em auto; text-align: center;">
+        Not a user? <a href="register">Sign up now!</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+  $('#login_top_cont').css("visibility", "hidden")
+  </script>
+{% endblock %}

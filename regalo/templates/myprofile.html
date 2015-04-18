@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}  
+    <div id="myprofilepage">
+   		<div id="userandposts"> 
+        <div id="userinfomain" >
+          <div id="userinfotitle_cont">
+            <span class="body_nav_title">User Info</span>
+            <span id="show_edit_but" style="cursor: pointer;float: right;display: block;height: 17px;width: 17px;background-size: 100%;margin:5px 10px 0 0;background-image: url('/static/images/edit.png'); background-repeat: no-repeat;"></span>
+          </div>
+
+          <div id="userinfocont">
+     	 		  <span class="userinfoentries" id="username">
+              <div class="userinfoicons" id="usericon"></div>
+              Username: <b>{{username}}</b>
+            </span>
+            <br>
+      		  <span class="userinfoentries" id="email">
+              <div class="userinfoicons" id="emailicon"></div>
+              E-mail: <span id="useremailtext">{{email}}</span>
+            </span>
+            <br>
+            <span class="userinfoentries" id="rating">
+              <div class="userinfoicons" id="ratingicon"></div>
+              Rating: {{rating}}
+            </span>
+          </div>
+        </div>
+
+        <div id="activepostscont">
+          <div class="nav_title_cont">
+            <span class="body_nav_title">Recent Swap Posts</span>
+            <span id="prof_swap_expand" style="cursor: pointer;float: right;display: block;height: 22px;width: 22px;background-size: 100% 100%;margin:5px 5px 0 0;background-image: url('/static/images/collapse_arrow.jpg'); background-repeat: no-repeat;"></span>
+          </div>
+          <div class="prof_posts_cont" id="prof_swap_cont">
+            {% if posts|length > 0 %}
+              {% set i = 0 %}
+              {% for p in posts if i < 3%}
+                {% set i = i + 1 %}
+                {{ p.render_prof() | safe }}
+              {% endfor %}
+              <div class="posts_see_all">
+                <span><a href="/myposts?type=1">See all...</a></span>  
+              </div>
+            {% else %}
+              <div class="posts_see_all">
+               <span>You don't have any active sell post. <br><a href="myposts/newpost">Post new?</a></span>  
+              </div>
+            {% endif %}
+          </div>
+          
+
+          <div class="nav_title_cont">
+            <span class="body_nav_title">Recent Sell Posts</span>
+            <span id="prof_sell_expand" style="cursor: pointer;float: right;display: block;height: 22px;width: 22px;background-size: 100% 100%;margin:5px 5px 0 0;background-image: url('/static/images/collapse_arrow.jpg'); background-repeat: no-repeat;"></span>
+          </div>
+          <div class="prof_posts_cont" id="prof_sell_cont">
+            {% if posts2|length > 0 %}
+              {% set i = 0 %}
+              {% for p2 in posts2 if i < 3%}
+                {% set i = i + 1 %}
+                {{ p2.render_prof() | safe }}
+              {% endfor %}
+              <div class="posts_see_all">
+                <span><a href="/myposts?type=2">See all...</a></span>  
+              </div>
+            {% else %}
+              <div class="posts_see_all">
+                <span>You don't have any active sell post. <br><a href="myposts/newpost">Post new?</a></span>  
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+        
+      <div id="reviews_cont" style="margin-right: 0.5em ; margin-top: 1em; width: 57%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left">
+       		 <span style="font-size:18pt; float:left; margin-left:25px; margin-top:10px">Reviews:</span>
+        	 <div style="height:80%; width:90%;background-color:#b8bbc2; float:left; margin-left:25px; margin-top:15px; overflow-x: hidden; overflow-y: scroll; border-radius: 3px;">
+                {% for r in reviews %}
+                  {{ r.render_myprof() | safe }}
+                {% endfor %} 
+           </div>        
+      </div>
+    </div>
+{% endblock %}
+

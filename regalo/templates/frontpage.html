@@ -1,1 +1,56 @@
-This is REGALO!!!
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>REGALO</title>
+
+  <link type="text/css" rel="stylesheet" href="/static/styles/basic.css">
+  <script type="text/javascript" src="/scripts/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="/scripts/basic.js"></script>
+ </head>
+  
+ <body>
+  <div id="main-container">
+
+   <div id="login_top_cont">
+      <a href="{{firstref}}" class="login_top_link" style="color: #2D8659;">{{first}}</a>
+      <div class="login_top_arrow_cont" id="login_arrow" style="display:{{arr1_disp}}"></div>
+      <a style="display: block; float: left;margin-left: 2px;margin-right: 5px;">{{second}}</a>
+      <a href="{{secondref}}" class="login_top_link" style="color: #0029A6;">{{third}}</a>
+      <div class="login_top_arrow_cont" id="register_arrow" style="display: inline-block;"></div>
+   </div>
+
+   <div id="header">
+    <div id="topbar-first">
+     <a href="/"><div id="logo-cont">    
+     </div></a>
+
+     <div id="login-cont">
+        
+     </div>
+    </div>
+
+    <div id="secondbarcont">
+      <div id="topbar-second">
+        {% block contentts1 %}
+
+        {% endblock %}    
+      </div>
+   </div>
+  </div>
+    
+   <div id="page-body">
+      {% block contentts2 %}
+
+      {% endblock %}
+   </div>
+
+   <div id="footer">
+      © 2015 Reeegalo. All Rights Reserved.
+      <br>
+      <a href="#">Terms of Use</a>
+      <a href="#">Privacy Policy</a>
+  </div>
+</div>
+</body>
+</html>

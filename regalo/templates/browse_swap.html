@@ -1,0 +1,20 @@
+{% extends "browse.html" %}
+{% block content1 %}
+	<div>
+		<span class="body_nav_title">Active Swap Posts</span>
+		<span class="body_nav_sort_arrow"></span>
+		<span class="body_nav_sort">Sort By</span>
+	</div>
+{% endblock %}
+
+{% block content2 %}
+	{% if posts|length > 0 %}
+		{% for p in posts %}
+			{{ p.render() | safe }}
+		{% endfor %}
+	{% else %}
+		<div style="margin: 1em 0 0 1em;;">
+            <span>Currently, there are no active swap posts by other users.</span>  
+        </div>
+	{% endif%}
+{% endblock %}
