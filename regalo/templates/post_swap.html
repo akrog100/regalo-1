@@ -27,6 +27,9 @@
 
 	<div class="bid_button_cont">
 		<a class="bid_button" href='/swapbid?p={{p.key().id()}}&o={{p.owner.key().id()}}'>BID</a>
+		<div align="center" class="bid_count">
+			Current # of bids: {{p.num_bids}}
+		</div>
 	</div>
 
 	<a href="#"><div id="e_{{p.key().id()}}" class="edit_button" style="margin: 0 0 0 95% ;position: relative; background-size: 20px 20px;background-image: url('/static/images/edit.png'); height: 	20px; width: 20px; top:7px; display: none;">

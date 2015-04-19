@@ -1,7 +1,8 @@
 /* Base HTML for Body, Header, Page body, Footer */
 html {
-   height: 100%;
+  height: 100%;
   width: 100%;
+  overflow-x: hidden;
 }
 body {
   height: 100%;
@@ -202,7 +203,7 @@ body {
   width: calc(100% - 15px);
   float: left;
   display: block; 
-  padding: 7px 0 0 10px;
+  padding: 3px 0 0 10px;
   cursor: pointer;  
   margin: 0 auto;
   height:35px;
@@ -240,6 +241,37 @@ body {
   margin: 0;
   border: 0;
   border-top: 1px solid white;
+}
+
+.side_menu_option {
+  display:inline-block;
+  height: 30px; 
+  float: left;
+  padding-top: 6px;
+}
+
+.menu_option_icon {
+  display:inline-block;
+  height: 20px; 
+  width: 30px;
+  margin-left: 5%;
+  background-repeat: no-repeat; 
+  background-position: center; 
+  float: left;
+}
+#sell_menu_icon {
+  margin-top: 5px;
+  margin-left: 10px;
+  background-image: url('/static/images/cardbuy.png');
+  background-size: 100% 100%;
+}
+
+#swap_menu_icon {
+
+  margin-top: 5px;
+  margin-left: 7px;
+  background-image: url('/static/images/cardswap.png');
+  background-size: 200% 200%;
 }
 
 /*body-nav*/
@@ -386,6 +418,10 @@ body {
   width: 25%; 
   height: 100%; 
   float: left;
+}
+
+.bid_count {
+  font-size: 8pt;
 }
 
 .bid_button.disabled{
@@ -683,12 +719,132 @@ body {
   height: 30px; 
   font-size: 0.9em;
 }
+/*/////////////////////////////////////////////////////////////*/
 
-#myprofilepage #prof_sell_cont{
-  display: none;
+/*Bid swap page */
+.backtobrowse {
+  padding-left: 10px;
+  padding-top: 7px;
 }
 
-#myprofilepage #prof_swap_cont{
-  display: none;
+.backbrowseicon {
+  float: left;
+  display: block;
+  height: 25px;
+  width: 25px;
+  background-size: 100% 100%;
+  background-image: url('/static/images/back.png')
+}
+.backbrowsetext {
+  color: black;
+  padding-left: 5px;
+  padding-top: 1px;
+  text-decoration: none;
+  float: left;
+  height: 25px;
+  display: block;
 }
 
+#bidswap_form {
+  padding: 2em; 
+  border: 1px solid #EBEBEB; 
+  border-radius: 4px; 
+  margin: 2em 2em; 
+  width: calc(100% - 8em);
+  height: 440px;
+}
+
+#bidswap_form #swap_form_cont {
+  float: left;
+  width: 40%;
+}
+
+#bidswap_form #post_info_cont {
+  float: left;
+  margin-left: 3em;
+  width: 350px;
+  height: 300px;
+  padding-top: 3.5em;
+  font-size: 10pt;
+}
+
+#bidswap_form #bidswap_title{
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
+}
+
+#bidswap_form #bidswap_line {
+  border: none; 
+  background-color: #1F7C7C; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 2.5em;
+}
+
+#bidswap_form .inputs {
+  padding-left:5px;
+  border-radius: 5px;
+  width: 97%;
+  height: 2em;
+}
+
+#bidswap_form #dropdown1 {
+  padding-left:5px;
+  border-radius: 5px;
+  width: 100%;
+  height: 2.7em;
+}
+
+#bidswap_form .label {
+  font-size: 0.95em;
+  margin-top: 0.75em;
+  text-align: left;
+}
+#bidswap_form .error {
+  padding-left: 10px;
+  color: red;
+  font-size: 8pt;
+}
+
+#bidswap_form #post_but {
+  font-weight: 900;
+  display: block;
+  margin: 1em auto 0;
+  height: 2.5em;
+  border-radius: 5px;
+  border: 2px solid #1F7C7C;
+  background-color: #1F7C7C;
+  padding: 0 1em 0 1em;
+  vertical-align: center;
+}
+
+#bidswap_form #retailer_pic_cont {
+  width: 200px; 
+  height: 80px;
+}
+
+#bidswap_form #retailer_pic {
+  height: 100%; width: 100%;
+  background-size: 75% 100%; 
+  background-repeat: no-repeat; 
+  background-position: center;
+}
+
+
+
+#bidswap_form {
+  
+}
+#bidswap_form {
+  
+}
+#bidswap_form {
+  
+}
+#bidswap_form {
+  
+}
+#bidswap_form {
+  
+}

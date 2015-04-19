@@ -18,13 +18,15 @@ from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 #FOR HASHING COOKIE
 secret = "imsosecret"
 
-#RETAILERS
+#RETAILERS SUPPORTED
 retailers=("Applebees", "Best-Buy","Body-Shop","Chipotle","CVS","Dominos-Pizza","Dunkin-Donuts","Forever-21","Papa-Johns","WalMart")
 
 #INIT TEMPLATE DIRECTORY
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                 autoescape = True)
+
+#THIS IS USED TO RENDER ANY TEMPLATE SUCH AS POST, BID...
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
@@ -134,7 +136,7 @@ class SwapPost(db.Model):
     retailer = db.ReferenceProperty(Retailer, collection_name='ret_swapposts')
     card_val = db.StringProperty(required=True)
     card_code = db.StringProperty(required = True)
-    card_pin = db.IntegerProperty(required = True)
+    card_pin = db.StringProperty()
     looking_for = db.ListProperty(str,required= True)
     created = db.DateTimeProperty(auto_now_add = True)
     num_bids = db.IntegerProperty()
@@ -143,6 +145,10 @@ class SwapPost(db.Model):
     @classmethod
     def register(cls, owner, ret, val, code, pin, choices):
         return SwapPost(owner = owner, retailer = ret, card_val = val, card_code = code, card_pin = pin, looking_for = choices, num_bids = 0)
+
+    @classmethod
+    def by_id(cls, pid):
+        return SwapPost.get_by_id(pid)
 
     def render(self):
         return render_str("post_swap.html", p = self)
@@ -160,7 +166,7 @@ class SellPost(db.Model):
     retailer = db.ReferenceProperty(Retailer, collection_name='ret_sellposts')
     card_val = db.StringProperty(required=True)
     card_code = db.StringProperty(required = True)
-    card_pin = db.IntegerProperty(required = True)
+    card_pin = db.StringProperty()
     offer_for = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add = True)
     num_bids = db.IntegerProperty()
@@ -171,26 +177,53 @@ class SellPost(db.Model):
     def register(cls, owner, ret, val, code, pin, val_offer):
         return SellPost(owner = owner, retailer = ret, card_val = val, card_code = code, card_pin = pin, offer_for = val_offer, num_bids = 0)
 
+    @classmethod
+    def by_id(cls, pid):
+        return SellPost.get_by_id(pid)
+
     def render(self):
         return render_str("post_sell.html", p = self)
 
-    def render_prof(self):
+    def render_prof(self): #render posts on profile page
         return render_str("post_sell_prof.html", p = self)
 
-    def getsortkey(post):
+    def getsortkey(post): #used for sorting
         return post.created
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------REVIEWS DB----------------------------------------------------#
 class Review(db.Model):
-    reviewer = db.ReferenceProperty(User,collection_name='reviewer_rev')
-    owner = db.ReferenceProperty(User,collection_name='owner_rev')
+    reviewer = db.ReferenceProperty(User,collection_name='reviewer_rev') #reviewer
+    owner = db.ReferenceProperty(User,collection_name='owner_rev') #person being reviewed
     rev_content = db.TextProperty()
     created = db.DateTimeProperty(auto_now_add = True) 
 
     def render_myprof(self):
         return render_str("reviews.html", r = self)
 #-----------------------------------------------------------------------------------------------------------------#
+
+#---------------------------------------------------REVIEWS DB----------------------------------------------------#
+class Bid_swap(db.Model):
+    bidder = db.ReferenceProperty(User, collection_name = 'bidder_bids') #person bidding
+    post_owner = db.ReferenceProperty(User, collection_name = 'owner_bids') #person whose post is bidded on
+    on_post = db.ReferenceProperty(SwapPost, collection_name = 'post_bids') #post bidden on
+    bid_retailer = db.ReferenceProperty(Retailer, collection_name='ret_swapbids') #retailer of bid offer
+    card_val = db.StringProperty(required=True) #card value of bid offer
+    card_code = db.StringProperty(required = True) #card code of bid offer
+    card_pin = db.StringProperty() #card pin of bid offer
+    created = db.DateTimeProperty(auto_now_add = True)
+
+    @classmethod
+    def register(cls, bidder, post_owner, post, bid_ret, card_val, card_code, card_pin):
+        return Bid_swap(bidder = bidder, post_owner = post_owner, on_post = post, bid_retailer = bid_ret, card_val = card_val, card_code = card_code, card_pin = card_pin)
+
+    def render(self):
+        return render_str("bid_swap_temp.html", b = self)
+
+
+#-----------------------------------------------------------------------------------------------------------------#
+
+
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
 class Handler(webapp2.RequestHandler):
@@ -432,7 +465,7 @@ class NewPostHandler(Handler):
         self.code = self.request.get('code')
         self.pin = self.request.get('pin')
 
-        params = dict(value = self.value, retailers = retailers)
+        params = dict(value = self.value, code = self.code, pin = self.pin, retailers = retailers)
         if not self.type:
            params['error_type'] = "*required" 
            have_error = True
@@ -442,11 +475,7 @@ class NewPostHandler(Handler):
             have_error = True
 
         if not self.code:
-            params['error_value'] = "*required"
-            have_error = True
-
-        if not self.pin:
-            params['error_value'] = "*required"
+            params['error_code'] = "*required"
             have_error = True
         
         if self.type == "swap":
@@ -477,13 +506,13 @@ class NewPostHandler(Handler):
 
                 u = self.get_user()
                 r = Retailer.by_ret_name(self.card_retailer)
-                p = SwapPost.register(u, r, self.value, self.code, int(self.pin), choices)
+                p = SwapPost.register(u, r, self.value, self.code, self.pin, choices)
                 p.put()
 
             elif self.type == "sell":
                 u = self.get_user()
                 r = Retailer.by_ret_name(self.card_retailer)
-                p = SellPost.register(u, r, self.value, self.code, int(self.pin), self.val_offer)
+                p = SellPost.register(u, r, self.value, self.code, self.pin, self.val_offer)
                 p.put()
 
             self.redirect('/myposts') 
@@ -543,12 +572,48 @@ class SwapbidHandler(Handler):
     def get(self):
         user = self.get_user();
         get_values = self.request.GET
-        post_id = get_values['p']
+        self.post_id = get_values['p']
+        self.owner_id = get_values['o']
+        self.owner = User.by_id(int(self.owner_id))
+        self.post = SwapPost.by_id(int(self.post_id))
+        self.render("bid_swap.html", o = self.owner, p = self.post, retailers = retailers)
 
-        owner_id = get_values['o']
-        owner = User.by_id(int(owner_id))
+    def post(self):
+        self.retailer = self.request.get('retailer')
+        self.value = self.request.get('value')
+        self.code = self.request.get('code')     
+        self.pin = self.request.get('pin')
 
-        self.render("swapbid.html", owner_id = owner_id, owner = owner.user_name, post = post_id, user_id = user.key().id(), user = user.user_name)
+        have_error = False
+        params = dict(value = self.value, code = self.code, pin = self.pin, retailers = retailers)
+
+        if not self.value or not self.code:
+            have_error = True
+            if not self.value:
+                params['error_value'] = "*required"
+            if not self.code:
+                params['error_code'] = "*required"
+
+        get_values = self.request.GET
+        self.post_id = get_values['p']
+        self.owner_id = get_values['o']
+        self.owner = User.by_id(int(self.owner_id))
+        self.post = SwapPost.by_id(int(self.post_id))
+        self.ret = Retailer.by_ret_name(self.retailer)
+
+        if have_error:
+            params['o'] = self.owner
+            params['p'] = self.post
+            params['retailers'] = retailers
+            self.render("bid_swap.html", **params)
+        else:
+            b = Bid_swap.register(self.user,self.owner,self.post,self.ret,self.value,self.code,self.pin)
+            b.put()
+            self.post.num_bids = self.post.num_bids + 1
+            self.post.put()
+            self.redirect('/browse')
+
+
 #-----------------------------------------------------------------------------------------------------------------#
 
 

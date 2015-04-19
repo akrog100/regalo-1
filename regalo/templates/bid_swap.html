@@ -1,0 +1,93 @@
+{% extends "frontpage.html" %}
+
+{% block contentts1 %}
+	<a href="/browse">
+		<div class="backtobrowse">
+			<div class="backbrowseicon"></div>
+			<div class="backbrowsetext">Back to browse</div>
+		</div>
+	</a>
+{% endblock %}  
+
+{% block contentts2 %}
+	<div id="bidswap_form">
+		<div>
+      	<p id="bidswap_title">New Bid</p>
+    	</div>
+   	 	<hr id="bidswap_line" style="">
+   	 	<div id="swap_form_cont">
+   	 		<div align="center">
+	        	<b>Enter your card's information</b>
+	      	</div>
+			<form method="post">
+				<div class="label">
+		        	Retailer
+		      	</div>
+				<div >
+					<select id="dropdown1" name="retailer">
+						{% for retailer in retailers %}
+							<option>{{retailer}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="error">
+		          {{error_retailer}}  
+		        </div>
+
+				<div class="label">
+		        	Card Value ($)
+		      	</div>
+				<div >
+					<input id="value"  value="{{value}}" class="inputs" type="number" name="value" placeholder="0" pattern="\d*" min="0" >
+				</div>
+				<div class="error">
+		          {{error_value}}  
+		        </div>
+
+		        <div class="label">
+		        	Card Code
+		      	</div>
+				<div >
+					<input id="code"  value="{{code}}" class="inputs" type="text" name="code">
+				</div>
+				<div class="error">
+		          {{error_code}}  
+		        </div>	
+
+		        <div class="label">
+		        	Card PIN
+		      	</div>
+				<div >
+					<input id="pin"  value="{{pin}}" class="inputs" type="number" name="pin" placeholder="0" pattern="\d*">
+				</div>
+				<div class="error" style="color: black">
+		          If your card doesn't have pin, leave this blank. 
+		        </div>
+				<div class="error">
+		          {{error_pin}}  
+		        </div>	
+
+		        <div>
+		        	<input id="post_but" type="submit" value="BID">
+		      	</div>
+			</form>
+		</div>
+		<div id="post_info_cont">
+			<div align="center" verticalAlign="middle">
+	        	<b>Gift card you are bidding on</b><br>
+	        	<span>Retailer: {{p.retailer.name}}</span><br>
+	        	<span>Card Value: ${{p.card_val}}</span><br>
+	        	<div id="retailer_pic_cont">
+					<div id="retailer_pic" style="background-image:url('/static/images/{{p.retailer.name}}.jpg');"></div>
+				</div>
+	        	<span>Posted By: <a href="/users/{{o.key().id()}}">@{{o.user_name}}</a></span>
+				<br>
+				<span>Date: {{p.created.strftime("%b %d, %Y")}}</span>
+	      	</div>
+   	 	</div>
+	</div>
+{% endblock %}
+
+
+
+

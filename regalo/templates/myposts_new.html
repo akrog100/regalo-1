@@ -74,7 +74,7 @@
 				<input id="code"  value="{{code}}" class="inputs" type="text" name="code" placeholder="0" pattern="\d*">
 			</div>
 			<div class="error">
-	          {{error_value}}  
+	          {{error_code}}  
 	        </div>	
 
 	        <div class="label">
@@ -83,8 +83,11 @@
 			<div >
 				<input id="pin"  value="{{pin}}" class="inputs" type="number" name="pin" placeholder="0" pattern="\d*">
 			</div>
+			<div class="error" style="color: black">
+		          If your card doesn't have pin, leave this blank. 
+		        </div>
 			<div class="error">
-	          {{error_value}}  
+	          {{error_pin}}  
 	        </div>	
 
 	        <div>
