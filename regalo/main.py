@@ -74,6 +74,22 @@ def valid_pw(name,pw,h):
     salt = h.split(',')[1]
     return h == make_pw_hash(name,pw,salt)
 #---------------------------------------
+    
+#------------------------------------------------ERROR HANDLER---------------------------------------------------#
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
+
+def handle_404(request, response, exception):
+    logging.exception(exception)
+    response.write(render_str('404.html'));
+    response.set_status(404)
+
+def handle_500(request, response, exception):
+    logging.exception(exception)
+    response.write('404.html');
+    response.set_status(500)
+#-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------RETAILER DB---------------------------------------------------#
 class Retailer(db.Model):
@@ -219,11 +235,7 @@ class Bid_swap(db.Model):
 
     def render(self):
         return render_str("bid_swap_temp.html", b = self)
-
-
 #-----------------------------------------------------------------------------------------------------------------#
-
-
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
 class Handler(webapp2.RequestHandler):
@@ -237,6 +249,12 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         kw.update(self.get_logintop())
         self.write(self.render_str(template, **kw))
+
+    def error(self,err):
+        if (err == 404):
+            self.render('404.html')
+        elif (err == 500):
+            self.render('500.html')
 
     def login(self, user):
         self.set_secure_cookie('user_id', str(user.key().id()))
@@ -393,22 +411,24 @@ class FrontPageHandler(Handler):
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class BrowseHandler(Handler):
     def get(self):
-        get_values = self.request.GET
-        t = None
-        try:
-            t = get_values['type']
-        except KeyError:
-            pass
-
         if self.user:
-            u = self.get_user()
+            get_values = self.request.GET
+            t = None
+            try:
+                t = get_values['type']
+            except KeyError:
+                pass
+
+            u = self.user
             posts_swap = SwapPost.all().filter('owner !=', u)
             posts_sell = SellPost.all().filter('owner !=', u)
-            posts_all = {}
-            if not t  or t == '1':
+            if not t or t == '1':
                 self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.getsortkey, reverse=True))
-            if t == '2':
+            elif t == '2':
                 self.render('browse_sell.html', posts = sorted(posts_sell, key=SellPost.getsortkey, reverse=True))
+            else:
+                self.error(404)
+                return
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -428,23 +448,25 @@ class MyProfileHandler(Handler):
 #------------------------------------------------MY POSTS HANDLER-------------------------------------------------#
 class MyPostsHandler(Handler):
     def get(self):
-        get_values = self.request.GET
-        t = None
-        try:
-            t = get_values['type']
-        except KeyError:
-            pass
-
         if self.user:
-            u = self.get_user()
+            get_values = self.request.GET
+            t = None
+            try:
+                t = get_values['type']
+            except KeyError:
+                pass
+            u = self.user
             if not t  or t == '1':
                 #posts = Post.all().filter('owner =', u)
                 posts = u.user_swapposts
                 self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.getsortkey, reverse=True))
 
-            if t == '2':
+            elif t == '2':
                 posts = u.user_sellposts
                 self.render('myposts_sell.html', posts = sorted(posts, key=SellPost.getsortkey, reverse=True))
+            else:
+                self.error(404)
+                return
         else:
             self.redirect('/signin')      
 #-----------------------------------------------------------------------------------------------------------------#
@@ -453,7 +475,7 @@ class MyPostsHandler(Handler):
 class NewPostHandler(Handler):
     def get(self):
         if self.user:
-            self.render("myposts_new.html", retailers = retailers, type = "swap")
+            self.render("myposts_new.html", retailers = retailers)
         else:
             self.redirect('/signin')
 
@@ -529,17 +551,23 @@ class MyBidsHandler(Handler):
 
 #---------------------------------------------------ABOUT HANDLER-------------------------------------------------#
 class AboutHandler(Handler):
-    def get(self):  
-        self.render("about.html")       
+    def get(self):
+        if self.user:
+            self.render("about.html") 
+        else:
+            self.render("about-nouser.html")    
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------------HELP HANDLER-------------------------------------------------#
 class HelpHandler(Handler):
     def get(self):
-        self.render("help.html")
+        if self.user:
+            self.render("help.html")
+        else:
+            self.render("help-nouser.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
-#----------------------------------------------------HELP HANDLER-------------------------------------------------#
+#----------------------------------------------------LOGOUT HANDLER-----------------------------------------------#
 class LogoutHandler(Handler):
     def get(self):
         self.logout()
@@ -576,6 +604,9 @@ class SwapbidHandler(Handler):
         self.owner_id = get_values['o']
         self.owner = User.by_id(int(self.owner_id))
         self.post = SwapPost.by_id(int(self.post_id))
+        if not self.owner or not self.post:
+            self.error(404)
+            return
         self.render("bid_swap.html", o = self.owner, p = self.post, retailers = retailers)
 
     def post(self):
@@ -599,6 +630,11 @@ class SwapbidHandler(Handler):
         self.owner_id = get_values['o']
         self.owner = User.by_id(int(self.owner_id))
         self.post = SwapPost.by_id(int(self.post_id))
+
+        if not self.owner or not self.post:
+            self.error(404)
+            return
+
         self.ret = Retailer.by_ret_name(self.retailer)
 
         if have_error:
@@ -613,11 +649,14 @@ class SwapbidHandler(Handler):
             self.post.put()
             self.redirect('/browse')
 
-
 #-----------------------------------------------------------------------------------------------------------------#
 
 
 #//////////////////////////////////////////TEST/////////////////////////////////////
+class TestHandler2(Handler):
+    def get(self):
+        self.response.out.write("hello");
+
 class Movie(db.Model):
     title = db.StringProperty()
     picture = db.BlobProperty(default=None)
@@ -663,6 +702,11 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/logout', LogoutHandler),
     ('/retailersReg', RetRegHandler),
     ('/users/([0-9]+)', UsersPageHandler),
-    ('/swapbid',SwapbidHandler)
+    ('/swapbid',SwapbidHandler),
+    ('/test9', TestHandler2)
     ], debug=True)
+
+
+app.error_handlers[404] = handle_404
+app.error_handlers[500] = handle_500
 

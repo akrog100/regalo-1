@@ -80,4 +80,48 @@ $(document).ready(function() {
 	    }
 	}
 
+
+
+	$("#buttonpop").click(function(){
+	    $('#mybid-popDiv').fadeIn(400);
+	    $('#overlay').fadeIn(100);
+	    //$('html').css('overflow-y', 'hidden');
+
+	});
+	$("#close").click(function(){
+	    $('#mybid-popDiv').fadeOut(100);
+	    $('#overlay').fadeOut(200);
+	    //$('html').css('overflow-y', 'visible');
+	});
+	$("#overlay").click(function(){
+	    $('#mybid-popDiv').fadeOut(100);
+	    $('#overlay').fadeOut(200);
+	    //$('html').css('overflow-y', 'visible');
+	});
+	//To detect escape button
+	document.onkeydown = function(evt) {
+		evt = evt || window.event;
+		if (evt.keyCode == 27) {
+			$('#mybid-popDiv').fadeOut(100);
+		    $('#overlay').fadeOut(200);
+		    //$('html').css('overflow-y', 'visible');
+		}
+	};
+
+	$(function() {
+	    $('#buttonpop').click(function() {
+	        $('#mybid-popDiv').load('/test9');
+	    });
+	});
+
+	jQuery.ajaxSetup({
+	  beforeSend: function() {
+		 $('#loading-indicator').show();
+	  },
+	  complete: function(){
+		 $('#loading-indicator').hide();
+	  },
+	  success: function() {}
+	});
+
 });

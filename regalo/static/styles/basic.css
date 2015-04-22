@@ -2,11 +2,10 @@
 html {
   height: 100%;
   width: 100%;
-  overflow-x: hidden;
 }
 body {
-  height: 100%;
-  width: 100%;
+  height: calc(100% - 16px);
+  width: calc(100% - 16px);
   background: linear-gradient( #F0F0F0, white);
   font-family: Tahoma, Verdana, sans-serif;
   background-size: 100% 100%;
@@ -728,9 +727,10 @@ body {
 }
 
 .backbrowseicon {
+  margin-top: 2px;
   float: left;
   display: block;
-  height: 25px;
+  height: 22px;
   width: 25px;
   background-size: 100% 100%;
   background-image: url('/static/images/back.png')
@@ -738,7 +738,7 @@ body {
 .backbrowsetext {
   color: black;
   padding-left: 5px;
-  padding-top: 1px;
+  padding-top: 2px;
   text-decoration: none;
   float: left;
   height: 25px;
@@ -831,20 +831,105 @@ body {
   background-position: center;
 }
 
+/* POP up window on myBids page */
+#mybid-loading-indicator {
+  z-index: 1000;
+  position: fixed;
+  height: 20px;
+  width: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+}
 
+#mybid-popDiv {
+  border-radius: 5px;
+  z-index: 1000;
+  background: white;
+  width: 500px;
+  height: 300px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -250px;
+  margin-top: -150px;
+  display: none;
+  z-index: 9999;
+}
 
-#bidswap_form {
-  
+#overlay {
+  z-index: 1;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  position: fixed;
+  background:rgba(0,0,0,0.6);
+  display: none;
 }
-#bidswap_form {
-  
+
+/* FAQ/help */
+#faq-help-cont {
+  padding: 2em; 
+  border: 1px solid #EBEBEB; 
+  border-radius: 4px; 
+  margin: 1em 1em; 
+  width: calc(100% - 6em);
+  min-height: 535px;
+  overflow: overlay;
+
 }
-#bidswap_form {
-  
+#faq-help-cont #faq_title{
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
 }
-#bidswap_form {
-  
+
+#faq-help-cont #faq_line {
+  border: none; 
+  background-color: #1F7C7C; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 2em;
 }
-#bidswap_form {
-  
+
+#faq-help-cont .faqs_title {
+  margin-left:10px
+}
+
+#faq-help-cont .faqs_quest {
+  text-align: justify;
+  margin-left:12px
+}
+#faq-help-cont #faq-list-cont {
+  float: left;
+  width: 60%;
+}
+
+#faq-help-cont #faq-pic-cont{
+  float: left;
+  height: 130px; 
+  width: 20%;
+  background-size: 100% 100%;
+  background-image: url('/static/images/faq_icon.png');
+  margin-bottom: 2em;
+  margin-left: 8em;
+  -webkit-transform: rotate(20deg);
+  -moz-transform: rotate(20deg);
+  -o-transform: rotate(20deg);
+  -ms-transform: rotate(20deg);
+  transform: rotate(20deg);
+}
+
+#faq-help-cont #faq-body-cont{
+  width:100%; 
+  float: left;
+}
+#faq-help-cont #{
+
+}
+#faq-help-cont #{
+
+}
+#faq-help-cont #{
+
 }
