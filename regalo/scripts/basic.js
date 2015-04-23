@@ -81,13 +81,19 @@ $(document).ready(function() {
 	}
 
 
-
-	$("#buttonpop").click(function(){
+	
+	$("#popup_submit").click(function(){
+		$(":input").each(function() {
+		   if($(this).val() === "")
+		    alert("Empty Fields!!");
+		});
+	});
+	/*$(".buttonpop").click(function(){
 	    $('#mybid-popDiv').fadeIn(400);
 	    $('#overlay').fadeIn(100);
 	    //$('html').css('overflow-y', 'hidden');
 
-	});
+	});*/
 	$("#close").click(function(){
 	    $('#mybid-popDiv').fadeOut(100);
 	    $('#overlay').fadeOut(200);
@@ -109,19 +115,23 @@ $(document).ready(function() {
 	};
 
 	$(function() {
-	    $('#buttonpop').click(function() {
-	        $('#mybid-popDiv').load('/test9');
+	    $('.buttonpop').click(function(e) {
+	        $('#mybid-popDiv').load('/popup-swap?id=' + this.id);
+	        $('#mybid-popDiv').fadeIn(200);
+	    	$('#overlay').fadeIn(100);
 	    });
 	});
 
 	jQuery.ajaxSetup({
 	  beforeSend: function() {
-		 $('#loading-indicator').show();
+		 $('#mybid-loading-indicator').show(100);
 	  },
 	  complete: function(){
-		 $('#loading-indicator').hide();
+		 
 	  },
-	  success: function() {}
+	  success: function() {
+	  	$('#mybid-loading-indicator').hide(100);
+	  }
 	});
 
 });

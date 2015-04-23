@@ -12,6 +12,7 @@ body {
   background-repeat: no-repeat;
   background-image: url('/static/images/texture2.jpg');
   background-attachment: fixed;
+  overflow-y: scroll;
  }
  
  #main-container {
@@ -48,11 +49,11 @@ body {
   position: relative; 
   top: 0;
   height: 100%;
-  width: 40%;
+  width: 60%;
   background-position: left;
   background-size: 80% 100%;
   background-repeat: no-repeat;
-  background-image: url('/static/images/logo.png');
+  background-image: url('/static/images/Capture3.png');
  }
 #main-container #login-cont {
   float: left;
@@ -847,13 +848,13 @@ body {
   border-radius: 5px;
   z-index: 1000;
   background: white;
-  width: 500px;
-  height: 300px;
+  width: 400px;
+  height: 200px;
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-left: -250px;
-  margin-top: -150px;
+  margin-left: -200px;
+  margin-top: -100px;
   display: none;
   z-index: 9999;
 }
@@ -924,12 +925,33 @@ body {
   width:100%; 
   float: left;
 }
-#faq-help-cont #{
+
+/*/////////////////////////////////*/
+.error {
+  padding-left: 10px;
+  color: red;
+  font-size: 8pt;
+}
+
+#aboutus_cont  {
+  padding: 2em; 
+  border: 1px solid #EBEBEB; 
+  border-radius: 4px; 
+  margin: 1em 1em; 
+  width: calc(100% - 6em);
+  min-height: 535px;
+  overflow: overlay;
 
 }
-#faq-help-cont #{
-
+#aboutus_cont  #about_title{
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
 }
-#faq-help-cont #{
-
+#aboutus_cont  #about_line {
+  border: none; 
+  background-color: #1F7C7C; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 2em;
 }

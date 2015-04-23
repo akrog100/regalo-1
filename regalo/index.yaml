@@ -21,3 +21,8 @@ indexes:
   - name: user_name
   - name: created
     direction: desc
+
+- kind: SwapPost
+  properties:
+  - name: owner
+  - name: num_bids

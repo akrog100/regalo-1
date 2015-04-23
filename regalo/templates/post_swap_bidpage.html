@@ -1,0 +1,20 @@
+<div id="post_bidpage" style = "width: 95%; height: 120px; background-color:white; margin-left:8px;  border-radius: 5px; margin-top:10px; padding-top: 10px">
+		
+        <div style="padding-left:15px;margin-top: 2px;width: 100%; height: 20px; font-size: 0.9em;">
+            <div style="border-radius: 2px;margin-right: 5px; float: left; height: 20px; width: 20px; background-image: url('/static/images/{{p.retailer.name}}.jpg'); background-size: 100% 100%; "></div>
+            <span><a href="#">{{p.retailer.name}}, ${{p.card_val}}, Bids: {{p.num_bids}}</a></span>  
+        </div>
+  
+  		<div style="background-color:white; width:80%; height:60%; margin-left: 45px; margin-top: 2px; border-radius:3px">
+            {% set i = 0 %}
+        	{% for b in bids if i < 3 %}
+                {% set i = i + 1 %}
+                {{ b.render() | safe }}
+              {% endfor %}
+            
+            <div id="{{p.key().id()}}" class="buttonpop" style="float:right;height:20px; margin-top: 5px; margin-right:0; background-color: red; border-radius: 5px; cursor: pointer;  border: 2px solid #1F7C7C;  background-color: #1F7C7C; font-size: 0.9em; padding: 0 5px 0 5px;">
+            		<a >View/Choose</a>
+            </div>
+        	
+        </div>
+</div>

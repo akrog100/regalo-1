@@ -87,7 +87,7 @@ def handle_404(request, response, exception):
 
 def handle_500(request, response, exception):
     logging.exception(exception)
-    response.write('404.html');
+    response.write(render_str('500.html'));
     response.set_status(500)
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -172,6 +172,12 @@ class SwapPost(db.Model):
     def render_prof(self):
         return render_str("post_swap_prof.html", p = self, type="swap")
 
+    def render_bidpage(self, bids):
+        return render_str("post_swap_bidpage.html", p = self, bids = bids )
+
+    def render_bidpop(self, bids):
+        return render_str("post_swap_bidpop.html", p = self, bids = bids )
+
     def getsortkey(post):
         return post.created
 #-----------------------------------------------------------------------------------------------------------------#
@@ -234,7 +240,10 @@ class Bid_swap(db.Model):
         return Bid_swap(bidder = bidder, post_owner = post_owner, on_post = post, bid_retailer = bid_ret, card_val = card_val, card_code = card_code, card_pin = card_pin)
 
     def render(self):
-        return render_str("bid_swap_temp.html", b = self)
+        return render_str("bid_swap_bidpage.html", b = self)
+
+    def render_pop(self):
+        return render_str("bid_swap_bidpop.html", b = self)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
@@ -544,9 +553,16 @@ class NewPostHandler(Handler):
 class MyBidsHandler(Handler):
     def get(self):
         if self.user:
-            self.render("mybids.html")
+            posts = SwapPost.all().filter('owner =', self.user).filter('num_bids >', 0)
+            posts = sorted(posts, key=SwapPost.getsortkey, reverse=True)
+            self.render("mybids.html", posts = posts)
         else:
             self.redirect('/signin')
+
+    def post(self):
+        self.bid = self.request.get('selected_bid')
+        self.p_id = self.request.get('p_id')
+        #self.response.out.write("submitted")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------ABOUT HANDLER-------------------------------------------------#
@@ -653,9 +669,16 @@ class SwapbidHandler(Handler):
 
 
 #//////////////////////////////////////////TEST/////////////////////////////////////
-class TestHandler2(Handler):
+class SwapPopupHandler(Handler):
     def get(self):
-        self.response.out.write("hello");
+        get_values = self.request.GET
+        p_id = get_values['id']
+        p = SwapPost.by_id(int(p_id))
+        #self.response.out.write(p.card_val)
+        self.response.out.write(p.render_bidpop(p.post_bids))
+        
+
+        
 
 class Movie(db.Model):
     title = db.StringProperty()
@@ -703,7 +726,7 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/retailersReg', RetRegHandler),
     ('/users/([0-9]+)', UsersPageHandler),
     ('/swapbid',SwapbidHandler),
-    ('/test9', TestHandler2)
+    ('/popup-swap', SwapPopupHandler)
     ], debug=True)
 
 
