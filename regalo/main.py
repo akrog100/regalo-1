@@ -79,7 +79,7 @@ def make_email_hash(name, email):
     h = hashlib.sha256(name + email).hexdigest()
     return "%s" % (h)
 
-def valid_email(name,email,h):
+def valid_email_hash(name,email,h):
     return h == make_pw_hash(name,email)
 #---------------------------------------
     
@@ -125,8 +125,8 @@ class User(db.Model):
     rating_u = db.IntegerProperty(required=True)
     rating_d = db.IntegerProperty(required=True)
 
-    auth_token = db.StringProperty(required = True)
-    confirmed = db.BooleanProperty(required = True)
+    auth_token = db.StringProperty()
+    confirmed = db.BooleanProperty()
 
     @classmethod
     def by_username(cls, u_name):
@@ -154,7 +154,7 @@ class User(db.Model):
     @classmethod
     def login(cls, u_name, pw):
         user = cls.by_username(u_name)
-        if user and valid_pw(u_name, pw, user.pass_hash):
+        if user and user.confirmed and valid_pw(u_name, pw, user.pass_hash):
             return user
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -407,14 +407,17 @@ class SignUpHandler(Handler):
         else:
             user = User.register(self.first_name, self.last_name, self.user_name, self.password, self.email)
             user.put()
-            self.login(user)
-            self.redirect("/browse")
+            #self.login(user)
+            #self.redirect("/browse")
+            auth_url = 'reeegalo.appspot.com/confirm/%s?u=%s' % (user.auth_token,user.key().id())
             message = mail.EmailMessage()
             message.sender = "accounts@reeegalo.appspotmail.com"
             message.to = self.email
             message.subject = "Account Registeration Successful! - Reeegalo"
-            message.body = """Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved.  You can now visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % self.last_name
+            message.body = """Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved.  Please got to the following link to veify your email adress:\n\t %s\nYou can then visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % (self.last_name, auth_url)
             message.send()
+            self.render('register-success.html')
+
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN IN PAGE HANDLER-----------------------------------------------#
@@ -438,6 +441,19 @@ class SignInHandler(Handler):
             err = 'Invalid username or password'
             self.render('signin.html', error_login = err)
 #-----------------------------------------------------------------------------------------------------------------#
+
+
+class ConfirmUserHandler(Handler):
+    def get(self,token):
+        get_values = self.request.GET
+        u_id = int(get_values['u'])
+        u = User.by_id(u_id)
+        if u and u.auth_token == str(token):
+            u.confirmed = True
+            u.put()
+            self.render('email-confirmed.html')
+        else:
+            self.error(404)
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class FrontPageHandler(Handler):
@@ -814,6 +830,7 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/users/([0-9]+)', UsersPageHandler),
     ('/swapbid',SwapbidHandler),
     ('/popup-swap', SwapPopupHandler),
+    ('/confirm/([a-zA-Z0-9]+)', ConfirmUserHandler),
     ], debug=True)
 
 
