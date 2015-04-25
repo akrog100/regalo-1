@@ -1,0 +1,78 @@
+<div id="newcomment_form">
+	<div>
+  		<p id="newpost_title">New Review</p>
+	</div>
+	 <hr id="newpost_line" style="">
+	<form method="post">
+      	<div id="new_post_radio_cont" class="radio">
+			<input type="radio" name="rate" value="up" id="thumbup">
+			<label for="thumbup" id="up_label"></label>
+			<input type="radio" name="rate" value="down" id="thumbdown">
+			<label for="thumbdown" id="down_label"></label>
+		</div>
+		<br>
+		<div id="rating_error" class="error">
+          {{error_rating}} 
+        </div>
+      	<div class="label">
+        	In few words
+      	</div>
+		<div id="title_cont">
+			<input id="title_input" id="rev_title"  value="{{title}}" type="text" name="rev_title" placeholder="My experience was..." maxlength="50">
+		</div>
+		<div id="title_error" class="error">
+          {{error_title}}  
+        </div>	
+
+        <div class="label">
+        	Review
+      	</div>
+		<div >
+			<textarea id="review" cols="50" rows="6" value="{{review}}" type="textbox" name="review_cont" placeholder="Enter your review here"  maxlength="250"></textarea>
+		</div>
+		<div id="review_error" class="error">
+          {{error_review}}  
+        </div>
+
+        <div align="center">
+        	<input id="post_but" type="submit" value="Submit">
+      </div>
+	</form>
+</div>
+
+
+<script>
+$("#post_but").click(function(e){
+    if ($("input[type=radio]:checked").length <= 0) {
+    	e.preventDefault();
+        var err = "*required";
+        $('#rating_error').html(err);
+    }
+    else {
+  		$('#rating_error').html("");
+  	}
+
+    if (!$('#review').val()) {
+    	e.preventDefault();
+        var err2 = "*required";
+        $('#review_error').html(err2);
+  	}
+  	else {
+  		$('#review_error').html("");
+  	}
+
+  	if (!$('#title_input').val()) {
+  		e.preventDefault();
+        var err3 = "*required";
+        $('#title_error').html(err3);
+    }
+    else {
+  		$('#title_error').html("");
+  	}
+    return;
+});
+</script>
+
+
+
+

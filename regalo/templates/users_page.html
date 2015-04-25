@@ -1,0 +1,8 @@
+{% extends "users.html" %}
+
+{% block contentsss %}
+	{% for r in reviews %}
+		{{ r.render_myprof() | safe }}
+	{% endfor %} 
+{% endblock %}
+

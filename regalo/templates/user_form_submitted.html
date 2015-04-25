@@ -1,0 +1,14 @@
+{% extends "users.html" %}
+
+{% block contentsss %}
+
+	<div id="newpost_form_sub">
+		<div>
+      		<p id="sub_title" style="font-size: 1.2em; font-weith: 600;">Review Submitted!</p>
+    	</div>
+		<p>
+			Your review has been sucessfully documented. Thanks for your feedback. <a href="/users/{{u.key().id()}}?b={{backtourl}}">Back to Customer Reviews?</a>
+		</p>
+	</div>
+
+{% endblock %}
