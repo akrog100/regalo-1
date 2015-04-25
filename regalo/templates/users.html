@@ -1,45 +1,132 @@
-{% extends "base.html" %}
+{% extends "frontpage.html" %}
 
-{% block contentts2 %}
-  		<div style="font-size: 15pt; font-weight: bold;margin: 1em 0 0 1em;">{{u.first_name}}'s profile</div>
-   
-   		<div style="margin: 1em ;width: 33%; height: 550px; float:left" > 
-        
-        	<div style="width: 100%; height:25%; float:left; border-radius: 3px; background-color:#d6d6d6">
-            	<br>
-        		<span style="font-size:18pt; padding-left:15px; float:left">User Info:</span><br>
-       	 		<span style="width: 75%; padding-left:25px; padding-top:10px; float:left">Username: {{u.user_name}}</span><br>
-            <span style="width: 75%; padding-left:25px; padding-top:10px; float:left">Rating: {{u.rating}}</span>
-            </div>
-        
-        	<div style="width:100%; height:73%; float:left; margin-top: 10px; border-radius: 3px; background-color:#d6d6d6">
-            
+{% block contentts1 %}
+  <a href="/{{backtourl}}">
+    <div class="backtobrowse">
+      <div class="backbrowseicon"></div>
+      <div class="backbrowsetext">Back to {{backto}}</div>
+    </div>
+  </a>
+{% endblock %}
 
-            	<span style="font-size:15pt; padding-left:15px; padding-top:5px; float:left">Active Posts:</span>
-            
-            	<div style="width: 90%; height: 77%%; background-color: #b8bbc2; float: left; margin-left: 13px; margin-top: 8px; overflow-x: hidden;overflow-y: auto; border-radius: 2px;">
-                  {% for p in posts %}
-                    {{ p.render_prof() | safe }}
-                  {% endfor %}
-            	</div>
-        	</div>
+
+{% block contentts2 %}  
+    <div id="myprofilepage">
+      <div id="userandposts"> 
+        <div id="userinfomain" >
+          <div id="userinfotitle_cont">
+            <span class="body_nav_title">User Info</span>
+          </div>
+
+          <div id="userinfocont">
+            <span class="userinfoentries" id="username">
+              <div class="userinfoicons" id="usericon"></div>
+              Username: <b>{{u.user_name}}</b>
+            </span>
+            <br>
+            <span class="userinfoentries" id="email">
+              <div class="userinfoicons" id="emailicon"></div>
+              E-mail: <span id="useremailtext">{{u.email}}</span>
+            </span>
+            <br>
+            <span class="userinfoentries" id="rating">
+              <div class="userinfoicons" id="ratingicon"></div>
+              <div style="float: left;">
+                  Rating:
+                </div>
+                <div id="thumbs_title_cont" style="margin-right: 10px; float: left; ">
+                      <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; background-color: green; margin-left: 10px; background-image: url('/static/images/th_u.jpg'); border-radius: 10px; border: 0.03em solid green;">
+                      </div>
+                      <div style="float: left; font-size: 0.7em;">
+                        {{u.rating_u}}
+                      </div>
+                      <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; background-color: green; margin-left: 10px; background-image: url('/static/images/th_d.jpg'); border-radius: 10px; border: 0.03em solid yellow;">
+                      </div>
+                      <div style="float: left; font-size: 0.7em;">
+                        {{u.rating_d}}
+                      </div>
+                  </div>
+            </span>
+          </div>
         </div>
-        
-      <div style="margin-right: 0.5em ; margin-top: 1em; width: 59%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left" >
-        
-       		 <span style="font-size:18pt; float:left; margin-left:25px; margin-top:10px">Reviews:</span>
-        
-          	 <div style="height:80%; width:90%;background-color:#b8bbc2; float:left; margin-left:25px; margin-top:15px; overflow-x: hidden; overflow-y: scroll; border-radius: 3px;">
-                  {% for r in reviews %}
-                    {{ r.render_myprof() | safe }}
-                  {% endfor %} 
-             </div>
-                
+
+        <div id="activepostscont">
+          <div class="nav_title_cont">
+            <span class="body_nav_title">Recent Swap Posts</span>
+            <span id="prof_swap_expand" style="cursor: pointer;float: right;display: block;height: 22px;width: 22px;background-size: 100% 100%;margin:5px 5px 0 0;background-image: url('/static/images/collapse_arrow.jpg'); background-repeat: no-repeat;"></span>
+          </div>
+          <div class="prof_posts_cont" id="prof_swap_cont">
+            {% if posts|length > 0 %}
+              {% set i = 0 %}
+              {% for p in posts if i < 3%}
+                {% set i = i + 1 %}
+                {{ p.render_prof() | safe }}
+              {% endfor %}
+            {% else %}
+              <div class="posts_see_all">
+               <span>User has no active swap posts.</span>  
+              </div>
+            {% endif %}
+          </div>
+          
+
+          <div class="nav_title_cont">
+            <span class="body_nav_title">Recent Sell Posts</span>
+            <span id="prof_sell_expand" style="cursor: pointer;float: right;display: block;height: 22px;width: 22px;background-size: 100% 100%;margin:5px 5px 0 0;background-image: url('/static/images/collapse_arrow.jpg'); background-repeat: no-repeat;"></span>
+          </div>
+          <div class="prof_posts_cont" id="prof_sell_cont">
+            {% if posts2|length > 0 %}
+              {% set i = 0 %}
+              {% for p2 in posts2 if i < 3%}
+                {% set i = i + 1 %}
+                {{ p2.render_prof() | safe }}
+              {% endfor %}
+            {% else %}
+              <div class="posts_see_all">
+                <span>User has no active sell posts.</span>  
+              </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
+        
+      <div id="reviews_cont" style="margin-right: 0.5em ; margin-top: 1em; width: 57%; min-height: 500px; margin-left:8px; border-radius: 3px; background-color: #F8F8F8; float:left; margin-bottom: 1em;">
 
-      <script>
-      $('#nav_Bar_bottom_line').css("visibility", "hidden")
-      </script>
+          <div id="userinfotitle_cont" style="height: 2em; font-size: 1.2em;padding-top: 5px">
+            <span class="body_nav_title">Customer Reviews</span>
+            <a href=""><span id="show_edit_but" style="cursor: pointer;float: right;display: block;height: 30px;width: 30px;background-size: 100%;margin: 0 20px 0 0;background-image: url('/static/images/add.png'); background-repeat: no-repeat;"></span></a>
+          </div>
 
+           <div style="height:80%; width:90%; float:left; margin-left:25px; margin-top:15px; height: auto;overflow-x: hidden; border-radius: 3px;">
+              
+              <div id="comment_maincont" style="font-size: 0.9em; width: 100%; margin: 10px auto; float: left;">
+                <div id="thumbs_title_cont" style="margin-right: 10px; float: left; width: 100%;">
+                    <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; margin-left: 0px; background-image: url('/static/images/up.png'); border: 0.03em solid green;">
+                    </div>
+                    <div id="title_cont" style="float: left; font-weight: 600;  margin-left: 7px; font-size: 0.7em; padding-top:8px; ">
+                      Awesome! Awesome! Awesome!
+                    </div>
+                </div>
+
+                <div id="user_cont" style=" font-size: 0.7em;float: left; margin-top: 5px; width: 100%;">
+                    By <a href="">@Basileal</a>
+                </div>
+                <div id="title_cont" style="font-size: 0.6em;float: left; margin-top: 5px; width: 100%;">
+                    Date: 12/13/14
+                </div>
+                <div style="float: left; text-align: justify; font-size: 0.8em;">
+                <p>
+                  It was a very awesome experience. I would also woudl buy from him. It was a very awesome experience. I would also woudl buy from him. It was a very awesome experience. I would also woudl buy from him.
+                </p>
+                </div>
+                <hr style="display: block; width: 95%; margin: 0 auto;">
+              </div>
+
+                {% for r in reviews %}
+                  {{ r.render_myprof() | safe }}
+                {% endfor %} 
+           </div>        
+      </div>
+    </div>
 {% endblock %}
 

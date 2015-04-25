@@ -53,7 +53,7 @@ body {
   background-position: left;
   background-size: 80% 100%;
   background-repeat: no-repeat;
-  background-image: url('/static/images/Capture3.png');
+  background-image: url('/static/images/logo.png');
  }
 #main-container #login-cont {
   float: left;
@@ -557,6 +557,26 @@ body {
   padding: 0 1em 0 1em;
   vertical-align: center;
 }
+
+#newpost_form_sub {
+  margin: 1em 1em;
+  height: 440px;
+  width: 95%;
+}
+
+#newpost_form_sub #sub_title{
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
+}
+
+#newpost_form_sub #sub_line {
+  border: none; 
+  background-color: #1F7C7C; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 2.5em;
+}
 /*/////////////////////////////////////////////////////////////*/
 
 /* Log In form*/
@@ -712,7 +732,7 @@ body {
   overflow-x: hidden;
 }
 
-#myprofilepage .posts_see_all {
+.posts_see_all {
   padding-left:15px;
   margin-top: 7px;
   width: 100%; 
@@ -894,12 +914,9 @@ body {
 }
 
 #faq-help-cont .faqs_title {
-  margin-left:10px
 }
 
 #faq-help-cont .faqs_quest {
-  text-align: justify;
-  margin-left:12px
 }
 #faq-help-cont #faq-list-cont {
   float: left;
@@ -954,4 +971,13 @@ body {
   background-color: #1F7C7C; 
   height: 5px; margin-top: 0; 
   margin-bottom: 2em;
+}
+
+
+/*////swap success page */
+#post_info_swapsuc {
+  float: left;
+  margin: 1.5em 0 0 4em;
+  width: 150px;
+  font-size: 10pt;
 }

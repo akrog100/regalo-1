@@ -73,13 +73,17 @@ def make_pw_hash(name, pw, salt = None):
 def valid_pw(name,pw,h):
     salt = h.split(',')[1]
     return h == make_pw_hash(name,pw,salt)
+
+
+def make_email_hash(name, email):
+    h = hashlib.sha256(name + email).hexdigest()
+    return "%s" % (h)
+
+def valid_email(name,email,h):
+    return h == make_pw_hash(name,email)
 #---------------------------------------
     
 #------------------------------------------------ERROR HANDLER---------------------------------------------------#
-def render_str(template, **params):
-    t = jinja_env.get_template(template)
-    return t.render(params)
-
 def handle_404(request, response, exception):
     logging.exception(exception)
     response.write(render_str('404.html'));
@@ -118,7 +122,11 @@ class User(db.Model):
     pass_hash = db.StringProperty(required = True)
     email = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add = True)
-    rating = db.IntegerProperty()
+    rating_u = db.IntegerProperty(required=True)
+    rating_d = db.IntegerProperty(required=True)
+
+    auth_token = db.StringProperty(required = True)
+    confirmed = db.BooleanProperty(required = True)
 
     @classmethod
     def by_username(cls, u_name):
@@ -132,12 +140,16 @@ class User(db.Model):
     @classmethod
     def register(cls, f_name, l_name, u_name, pw, email):
         pw_hash = make_pw_hash(u_name, pw)
+        email_hash = make_email_hash(u_name, email)
         return User(first_name = f_name,
                     last_name = l_name,
                     user_name = u_name,
                     pass_hash = pw_hash,
                     email = email,
-                    rating = 0)
+                    rating_u = 0,
+                    rating_d = 0,
+                    auth_token = email_hash,
+                    confirmed = False)
 
     @classmethod
     def login(cls, u_name, pw):
@@ -156,11 +168,12 @@ class SwapPost(db.Model):
     looking_for = db.ListProperty(str,required= True)
     created = db.DateTimeProperty(auto_now_add = True)
     num_bids = db.IntegerProperty()
+    status = db.StringProperty()
 
 
     @classmethod
     def register(cls, owner, ret, val, code, pin, choices):
-        return SwapPost(owner = owner, retailer = ret, card_val = val, card_code = code, card_pin = pin, looking_for = choices, num_bids = 0)
+        return SwapPost(owner = owner, retailer = ret, card_val = val, card_code = code, card_pin = pin, looking_for = choices, num_bids = 0, status = "Active")
 
     @classmethod
     def by_id(cls, pid):
@@ -168,6 +181,9 @@ class SwapPost(db.Model):
 
     def render(self):
         return render_str("post_swap.html", p = self)
+
+    def render_myposts(self):
+        return render_str("post_swap_myposts.html", p = self)
 
     def render_prof(self):
         return render_str("post_swap_prof.html", p = self, type="swap")
@@ -217,11 +233,12 @@ class SellPost(db.Model):
 class Review(db.Model):
     reviewer = db.ReferenceProperty(User,collection_name='reviewer_rev') #reviewer
     owner = db.ReferenceProperty(User,collection_name='owner_rev') #person being reviewed
-    rev_content = db.TextProperty()
+    rev_content = db.TextProperty(required = True)
+    title = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True) 
 
     def render_myprof(self):
-        return render_str("reviews.html", r = self)
+        return render_str("reviews_myprof.html", r = self)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------REVIEWS DB----------------------------------------------------#
@@ -234,16 +251,27 @@ class Bid_swap(db.Model):
     card_code = db.StringProperty(required = True) #card code of bid offer
     card_pin = db.StringProperty() #card pin of bid offer
     created = db.DateTimeProperty(auto_now_add = True)
+    status = db.StringProperty()
 
     @classmethod
     def register(cls, bidder, post_owner, post, bid_ret, card_val, card_code, card_pin):
-        return Bid_swap(bidder = bidder, post_owner = post_owner, on_post = post, bid_retailer = bid_ret, card_val = card_val, card_code = card_code, card_pin = card_pin)
+        return Bid_swap(bidder = bidder, post_owner = post_owner, on_post = post, bid_retailer = bid_ret, card_val = card_val, card_code = card_code, card_pin = card_pin, status = "Pending")
+
+    @classmethod
+    def by_id(cls, bid):
+        return Bid_swap.get_by_id(bid)
 
     def render(self):
         return render_str("bid_swap_bidpage.html", b = self)
 
     def render_pop(self):
         return render_str("bid_swap_bidpop.html", b = self)
+
+    def render_mybid(self):
+        return render_str("bid_swap_mybid.html", b = self)
+
+    def getsortkey(post): #used for sorting
+        return post.created
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------MAIN HANDLER--------------------------------------------------#
@@ -383,7 +411,7 @@ class SignUpHandler(Handler):
             self.redirect("/browse")
             message = mail.EmailMessage()
             message.sender = "accounts@reeegalo.appspotmail.com"
-            message.to = "yosephbasileal@yahoo.com"
+            message.to = self.email
             message.subject = "Account Registeration Successful! - Reeegalo"
             message.body = """Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved.  You can now visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % self.last_name
             message.send()
@@ -449,7 +477,7 @@ class MyProfileHandler(Handler):
             posts1 = sorted(self.user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
             posts2 = sorted(self.user.user_sellposts, key=SellPost.getsortkey, reverse=True) 
 
-            self.render("myprofile.html", username = self.user.user_name, email = self.user.email, rating = self.user.rating, posts = posts1, posts2 = posts2)
+            self.render("myprofile.html", u = self.user, posts = posts1, posts2 = posts2)
         else:
             self.redirect('/signin')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -546,7 +574,7 @@ class NewPostHandler(Handler):
                 p = SellPost.register(u, r, self.value, self.code, self.pin, self.val_offer)
                 p.put()
 
-            self.redirect('/myposts') 
+            self.render("myposts_new_submitted.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #-------------------------------------------------MY BIDS HANDLER-------------------------------------------------#
@@ -555,14 +583,51 @@ class MyBidsHandler(Handler):
         if self.user:
             posts = SwapPost.all().filter('owner =', self.user).filter('num_bids >', 0)
             posts = sorted(posts, key=SwapPost.getsortkey, reverse=True)
-            self.render("mybids.html", posts = posts)
+
+            bids = self.user.bidder_bids;
+            bids = sorted(bids, key=Bid_swap.getsortkey, reverse=True)
+
+            self.render("mybids.html", posts = posts, bids = bids)
         else:
             self.redirect('/signin')
 
     def post(self):
-        self.bid = self.request.get('selected_bid')
-        self.p_id = self.request.get('p_id')
-        #self.response.out.write("submitted")
+        b = self.request.get('selected_bid')
+        self.bid = Bid_swap.by_id(int(b))
+
+        owner = self.bid.post_owner
+        bidder = self.bid.bidder
+        post_card = self.bid.on_post
+
+        #set the status of winning bid and the post to swapped
+        self.bid.on_post.status = 'Swapped'
+        self.bid.on_post.put()
+        self.bid.status = 'Swapped'
+        self.bid.put()
+
+        #decline all other bids
+        others_bids = self.bid.on_post.post_bids
+        for b in others_bids:
+            if b.key().id() != self.bid.key().id():
+                b.status = 'Declined'
+                b.put()
+
+        #email both users
+        message = mail.EmailMessage()
+        message.sender = "accounts@reeegalo.appspotmail.com"
+        message.to = bidder.email
+        message.subject = "Transaction Successful! - Reeegalo"
+        message.body = """Congratulations, %s!\n\nYou tranaction has been completed with %s. Here is the card info of the your new gift card\n\n\tRetailer:%s\n\tCard Code: %s \n\tCard PIN: %s\n\nThanks,\nThe Reeegalo Team""" % (bidder.user_name, owner.user_name, post_card.retailer.name, post_card.card_code, post_card.card_pin)
+        
+        message.send()
+        message = mail.EmailMessage()
+        message.sender = "accounts@reeegalo.appspotmail.com"
+        message.to = owner.email
+        message.subject = "Transaction Successful! - Reeegalo"
+        message.body = """Congratulations, %s!\n\nYou tranaction has been completed with %s. Here is the card info of the your new gift card\n\n\tRetailer:%s\n\tCard Code: %s \n\tCard PIN: %s\n\nThanks,\nThe Reeegalo Team""" % (owner.user_name, bidder.user_name, self.bid.bid_retailer.name, self.bid.card_code, self.bid.card_pin)
+        message.send()
+
+        self.render('swap_sucess.html', b = self.bid)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------ABOUT HANDLER-------------------------------------------------#
@@ -606,24 +671,46 @@ class UsersPageHandler(Handler):
         if not user:
             self.error(404)
             return
-        posts = SwapPost.all().filter('owner =', user)
-        reviews = Review.all().filter('owner =', user)
-        self.render("users.html", u = user, posts = posts, reviews = reviews )
+
+        get_values = self.request.GET
+
+        try:
+            b = get_values['b']
+            if b == 'mybids':
+                backtourl = "mybids"
+                backto = "My Bids"
+            elif b == 'browse':
+                backtourl = "browse"
+                backto = "Browse"
+            elif b == 'myprof':
+                backtourl = "myprofile"
+                backto = "My Profile"
+        except KeyError:
+            backtourl = "browse"
+            backto = "Browse"
+
+        posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+        posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True) 
+
+        self.render("users.html", u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------SWAP BID PAGE HANDLER------------------------------------------#
 class SwapbidHandler(Handler):
     def get(self):
-        user = self.get_user();
-        get_values = self.request.GET
-        self.post_id = get_values['p']
-        self.owner_id = get_values['o']
-        self.owner = User.by_id(int(self.owner_id))
-        self.post = SwapPost.by_id(int(self.post_id))
-        if not self.owner or not self.post:
-            self.error(404)
-            return
-        self.render("bid_swap.html", o = self.owner, p = self.post, retailers = retailers)
+        if not self.user:
+            self.redirect('/signin')
+        else:
+            user = self.get_user();
+            get_values = self.request.GET
+            self.post_id = get_values['p']
+            self.owner_id = get_values['o']
+            self.owner = User.by_id(int(self.owner_id))
+            self.post = SwapPost.by_id(int(self.post_id))
+            if not self.owner or not self.post:
+                self.error(404)
+                return
+            self.render("bid_swap_form.html", o = self.owner, p = self.post, retailers = retailers)
 
     def post(self):
         self.retailer = self.request.get('retailer')
@@ -657,29 +744,29 @@ class SwapbidHandler(Handler):
             params['o'] = self.owner
             params['p'] = self.post
             params['retailers'] = retailers
-            self.render("bid_swap.html", **params)
+            self.render("bid_swap_form.html", **params)
         else:
             b = Bid_swap.register(self.user,self.owner,self.post,self.ret,self.value,self.code,self.pin)
             b.put()
             self.post.num_bids = self.post.num_bids + 1
             self.post.put()
-            self.redirect('/browse')
-
+            self.render("bid_swap_form_submitted.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 
-#//////////////////////////////////////////TEST/////////////////////////////////////
+#----------------------------------------------------SWAP POPUP HANDLER-------------------------------------------#
 class SwapPopupHandler(Handler):
     def get(self):
         get_values = self.request.GET
         p_id = get_values['id']
         p = SwapPost.by_id(int(p_id))
-        #self.response.out.write(p.card_val)
         self.response.out.write(p.render_bidpop(p.post_bids))
-        
+#-----------------------------------------------------------------------------------------------------------------#
 
-        
 
+
+#//////////////////////////////////////////TEST/////////////////////////////////////
+ 
 class Movie(db.Model):
     title = db.StringProperty()
     picture = db.BlobProperty(default=None)
@@ -726,7 +813,7 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/retailersReg', RetRegHandler),
     ('/users/([0-9]+)', UsersPageHandler),
     ('/swapbid',SwapbidHandler),
-    ('/popup-swap', SwapPopupHandler)
+    ('/popup-swap', SwapPopupHandler),
     ], debug=True)
 
 

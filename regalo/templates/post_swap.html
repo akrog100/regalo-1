@@ -10,7 +10,7 @@
 		</div>
  
 		<div class="post_owner_cont">
-			<span>Posted By: <a href="/users/{{p.owner.key().id()}}">@{{p.owner.user_name}}</a></span>
+			<span>Posted By: <a href="/users/{{p.owner.key().id()}}?b=browse">@{{p.owner.user_name}}</a></span>
 			<br>
 			<span>Date: {{p.created.strftime("%b %d, %Y")}} </span>
 		</div>
@@ -31,7 +31,4 @@
 			Current # of bids: {{p.num_bids}}
 		</div>
 	</div>
-
-	<a href="#"><div id="e_{{p.key().id()}}" class="edit_button" style="margin: 0 0 0 95% ;position: relative; background-size: 20px 20px;background-image: url('/static/images/edit.png'); height: 	20px; width: 20px; top:7px; display: none;">
-	</div></a>
 </div>

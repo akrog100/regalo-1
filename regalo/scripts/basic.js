@@ -4,11 +4,9 @@ $(document).ready(function() {
 	parser.href = window.location.href;
 	var tab = parser.pathname;
 
-	//no edit button except on myposts page
-	if (tab != '/myposts') {
-		$('.edit_button').remove();
+	if (tab == '/signin') {
+		$('#login_top_cont').remove();
 	}
-
 
 	//toggles edit icon on myposts page
 	$("#show_edit_but").click(function(){
@@ -79,15 +77,8 @@ $(document).ready(function() {
 	        }
 	    }
 	}
-
-
 	
-	$("#popup_submit").click(function(){
-		$(":input").each(function() {
-		   if($(this).val() === "")
-		    alert("Empty Fields!!");
-		});
-	});
+
 	/*$(".buttonpop").click(function(){
 	    $('#mybid-popDiv').fadeIn(400);
 	    $('#overlay').fadeIn(100);

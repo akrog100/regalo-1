@@ -1,45 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="mybidsmaincont" style="min-height: 550px;">
+  <img src="/static/images/ajax-loader2.gif" id="mybid-loading-indicator" style="display:none" />
 
-<img src="/static/images/ajax-loader2.gif" id="mybid-loading-indicator" style="display:none" />
+  <div id="mybid-popDiv">
+  	<div id="mybid-loading-indicator"></div>
+  </div>
 
-	<div id="mybid-popDiv">
-		<div id="mybid-loading-indicator"></div>
-	</div>
+  <div id="mybidscont" style="margin: 1em;min-height: 550px; width: 45.5%; float: left; border-radius: 5px;">
+  	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
+  			<span class="body_nav_title">My current bids</span>
+  	</div>
 
-<div id="mybidscont" style="margin: 1em;height: 550px; width: 45.5%; float: left; border-radius: 5px;">
-	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
-			<span class="body_nav_title">My current bids</span>
-	</div>
-
-	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;min-height:500px;overflow-y:auto; overflow-x:hidden">
-    		<div style="border-radius: 5px; float: left; width: 100%%; background-color: #E6E6E6;min-height:500px;">  
-              {% for p2 in posts2 %}
-                {{ p2.render_bidpage(p2.post_bids) | safe }}
-              {% endfor %}
+  	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%; background-color: #E6E6E6;min-height:500px;overflow-y:auto; overflow-x:hidden">
+      {% if bids|length > 0 %}
+        {% for b in bids %}
+          {{ b.render_mybid() | safe }}
+        {% endfor %}
+      {% else %}
+        <div class="posts_see_all">
+            <span>You haven't submitted any bid yet.</span>  
         </div>
+      {% endif %}
     </div>
-</div>
+  </div>
 
-
-
-
-<div id="othersbidcont" style="margin: 1em;height: 550px; width: 45.5%; float: left; border-radius: 5px;">
-
-	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
-			<span class="body_nav_title">Bids on my posts</span>
-	</div>
-    
- 
-	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;min-height:500px;overflow-y:auto; overflow-x:hidden">
-    
-    	<div style="border-radius: 5px; float: left; width: 100%%; background-color: #E6E6E6;min-height:500px;">
-              
-    		  {% for p in posts%}
-                {{ p.render_bidpage(p.post_bids) | safe }}
-              {% endfor %}
-    	</div>
+  <div id="othersbidcont" style="margin: 1em;min-height: 550px; width: 45.5%; float: left; border-radius: 5px;">
+  	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;">
+  			<span class="body_nav_title">Bids on my posts</span>
+  	</div>
+      
+  	<div style="border-radius: 5px;margin: 1em 1em 0 0 ; float: left; width: 100%%; background-color: #E6E6E6;min-height:500px;overflow-y:auto; overflow-x:hidden">
+      	<div style="border-radius: 5px; float: left; width: 100%%; background-color: #E6E6E6;min-height:500px;">
+          {% if posts|length > 0 %}      
+      		  {% for p in posts%}
+                  {{ p.render_bidpage(p.post_bids) | safe }}
+                {% endfor %}
+          {% else %}
+            <div class="posts_see_all">
+                <span>No bid has been submitted on your posts.</span>  
+            </div>
+          {% endif %}
+      	</div>
     </div>
+  </div>
 </div>
 {% endblock %}

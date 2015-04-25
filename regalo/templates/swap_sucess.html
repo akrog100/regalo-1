@@ -1,0 +1,43 @@
+{% extends "frontpage.html" %}
+
+{% block contentts1 %}
+	<a href="/mybids">
+		<div class="backtobrowse">
+			<div class="backbrowseicon"></div>
+			<div class="backbrowsetext">Back to My Bids</div>
+		</div>
+	</a>
+{% endblock %}  
+
+{% block contentts2 %}
+
+	<div id="bidswap_form" style="font-size: 0.9em;">
+		<div>
+      		<p id="bidswap_title">Swap Sucessful!</p>
+    	</div>
+		<div style="font-size: 0.9em;width: 100%; float: left;" >
+			The information for the following gift card will arrive at your inbox soon.
+		</div>
+
+		<div id="post_info_swapsuc">
+			<div verticalAlign="middle">
+	        	<span>Retailer: {{b.bid_retailer.name}}</span><br>
+	        	<span>Card Value: ${{b.card_val}}</span><br>
+				<br>
+	      	</div>
+   	 	</div>
+
+   	 	<div style="font-size: 0.9em;float: left; width: 100%;">
+   	 		Look out for an email from us.<br>
+   	 		Thank you for using Regalo.
+   	 	</div>
+   	 	<br>
+   	 	<br>
+   	 	<br>
+   	 	<br>
+   	 	<hr style="display: block; margin-top: 3em;float: left; width: 100%">
+		<div style="font-size: 0.9em;float: left;">
+			Want to let everyone know how your experience was? You can go to <a href="/users/{{b.bidder.key().id()}}">@{{b.bidder.user_name}}</a>'s profile page and click on <span style="display: inline-block; width: 15px; height: 15px; background-size: 100% 100%; background-image: url('/static/images/add.png');margin: 0 4px 0 2px;"> </span>to rate and write a review.
+		</div>
+	</div>
+{% endblock %}

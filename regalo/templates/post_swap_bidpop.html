@@ -2,7 +2,7 @@
 		
         <div style="padding-left:15px;margin-top: 7px;width: 100%; height: 30px; font-size: 0.9em;">
             <div style="border-radius: 2px;margin-right: 5px; float: left; height: 20px; width: 20px; background-image: url('/static/images/{{p.retailer.name}}.jpg'); background-size: 100% 100%; "></div>
-            <span><a href="#">{{p.retailer.name}}, ${{p.card_val}}, Bids: {{p.num_bids}}</a></span>  
+            <span>{{p.retailer.name}}, ${{p.card_val}}, Bids: {{p.num_bids}}</span>  
         </div>
         <form method="post">
 
@@ -13,9 +13,20 @@
                   {% endfor %}
                 
             </div>
-                <div id="popup_error" align="center" class="error">
-                    {{error_swap}}
-                </div>
-            <input id="popup_submit" style="display: block; margin: 0.5em auto;" type="submit" value="ACCEPT CARD SWAP">
+            <div id="popup_error" align="center" class="error">
+                {{error_swap}}
+            </div>
+            <input id="popup_submit" class="popup_sub" style="display: block; margin: 0.5em auto;" type="submit" value="ACCEPT CARD SWAP">
         </form>
 </div>
+
+<script>
+$(".popup_sub").click(function(e){
+    if ($("input[type=radio]:checked").length <= 0) {
+        e.preventDefault();
+        var err = "*select one";
+        $('#popup_error').html(err);
+        return;
+    }
+});
+</script>

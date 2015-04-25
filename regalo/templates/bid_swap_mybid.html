@@ -1,0 +1,23 @@
+<div id="post_bidpage" style = "width: 95%; height: 70px; background-color:white; margin-left:8px;  border-radius: 5px; margin-top:10px; padding-top: 10px; margin-bottom: 10px;">
+
+      <div style="padding-left:15px;margin-top: 2px;width: 100%; height: 20px; font-size: 0.9em;">
+          <div style="border-radius: 2px;margin-right: 5px; float: left; height: 20px; width: 20px; background-image: url('/static/images/{{b.bid_retailer.name}}.jpg'); background-size: 100% 100%; background-color: red;"></div>
+          <span>{{b.bid_retailer.name}}, ${{b.card_val}}</span>  
+      </div>
+
+      <div style="font-size:0.8em;background-color:transparent; width:80%; height:60%; margin-left: 45px; margin-top: 2px; border-radius:3px">
+          <span><u>On post:</u>&nbsp;{{b.on_post.retailer.name}}, ${{b.on_post.card_val}}. By: <a href="users/{{b.post_owner.key().id()}}?b=mybids">@{{b.post_owner.user_name}}</a></span><br>
+
+          {% if b.status == 'Pending' %}
+          	{% set stat_color = 'green'%}
+          {% elif b.status == 'Swapped'%}
+            {% set stat_color = 'blue'%} 
+          {% elif b.status == 'Declined'%}
+            {% set stat_color = 'red'%}
+          {% else %}
+          	{% set stat_color = 'grey'%}
+          {% endif %}
+          <span><u>Status:</u>&nbsp;<font style="color: {{stat_color}}; font-weight: 900;">{{b.status}}</font></span>
+          
+      </div>
+</div>

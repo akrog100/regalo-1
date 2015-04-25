@@ -1,0 +1,22 @@
+<div id="comment_maincont" style="font-size: 0.9em; width: 100%; margin: 10px auto; float: left;">
+    <div id="thumbs_title_cont" style="margin-right: 10px; float: left; width: 100%;">
+        <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; background-color: green; margin-left: 0px; background-image: url('/static/images/{{thumb}}.jpg'); border-radius: 10px; border: 0.03em solid green;">
+        </div>
+        <div id="title_cont" style="float: left; font-weight: 600;  margin-left: 7px; font-size: 0.7em; padding-top:8px; ">
+          {{r.title}}
+        </div>
+    </div>
+
+    <div id="user_cont" style=" font-size: 0.7em;float: left; margin-top: 5px; width: 100%;">
+        By <a href="{{r.reviewer.key().id()}}?b={{backbut}}">@{{r.reviewer.user_name}}</a>
+    </div>
+    <div id="title_cont" style="font-size: 0.6em;float: left; margin-top: 5px; width: 100%;">
+        Date: {{p.created.strftime("%b %d, %Y")}}
+    </div>
+    <div style="float: left; text-align: justify; font-size: 0.8em;">
+    <p>
+      {{r.rev_content}}
+    </p>
+    </div>
+    <hr style="display: block; width: 95%; margin: 0 auto;">
+</div>

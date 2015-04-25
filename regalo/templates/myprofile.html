@@ -12,17 +12,31 @@
           <div id="userinfocont">
      	 		  <span class="userinfoentries" id="username">
               <div class="userinfoicons" id="usericon"></div>
-              Username: <b>{{username}}</b>
+              Username: <b>{{u.user_name}}</b>
             </span>
             <br>
       		  <span class="userinfoentries" id="email">
               <div class="userinfoicons" id="emailicon"></div>
-              E-mail: <span id="useremailtext">{{email}}</span>
+              E-mail: <span id="useremailtext">{{u.email}}</span>
             </span>
             <br>
             <span class="userinfoentries" id="rating">
               <div class="userinfoicons" id="ratingicon"></div>
-              Rating: {{rating}}
+                <div style="float: left;">
+                  Rating:
+                </div>
+                <div id="thumbs_title_cont" style="margin-right: 10px; float: left; ">
+                      <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; background-color: green; margin-left: 10px; background-image: url('/static/images/th_u.jpg'); border-radius: 10px; border: 0.03em solid green;">
+                      </div>
+                      <div style="float: left; font-size: 0.7em;">
+                        {{u.rating_u}}
+                      </div>
+                      <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; background-color: green; margin-left: 10px; background-image: url('/static/images/th_d.jpg'); border-radius: 10px; border: 0.03em solid yellow;">
+                      </div>
+                      <div style="float: left; font-size: 0.7em;">
+                        {{u.rating_d}}
+                      </div>
+                  </div>
             </span>
           </div>
         </div>
@@ -44,7 +58,7 @@
               </div>
             {% else %}
               <div class="posts_see_all">
-               <span>You don't have any active sell post. <br><a href="myposts/newpost">Post new?</a></span>  
+               <span>You don't have any active swap post. <br><a href="myposts/newpost">Post new?</a></span>  
               </div>
             {% endif %}
           </div>
@@ -73,9 +87,37 @@
         </div>
       </div>
         
-      <div id="reviews_cont" style="margin-right: 0.5em ; margin-top: 1em; width: 57%; height: 550px; margin-left:8px; border-radius: 3px; background-color: #d6d6d6; float:left">
-       		 <span style="font-size:18pt; float:left; margin-left:25px; margin-top:10px">Reviews:</span>
-        	 <div style="height:80%; width:90%;background-color:#b8bbc2; float:left; margin-left:25px; margin-top:15px; overflow-x: hidden; overflow-y: scroll; border-radius: 3px;">
+      <div id="reviews_cont" style="margin-right: 0.5em ; margin-top: 1em; width: 57%; min-height: 500px; margin-left:8px; border-radius: 3px; background-color: #F8F8F8; float:left; margin-bottom: 1em;">
+
+          <div id="userinfotitle_cont" style="height: 2em; font-size: 1.2em;padding-top: 5px">
+            <span class="body_nav_title">Customer Reviews</span>
+          </div>
+
+        	 <div style="height:80%; width:90%; float:left; margin-left:25px; margin-top:15px; height: auto;overflow-x: hidden; border-radius: 3px;">
+              
+              <div id="comment_maincont" style="font-size: 0.9em; width: 100%; margin: 10px auto; float: left;">
+                <div id="thumbs_title_cont" style="margin-right: 10px; float: left; width: 100%;">
+                    <div style="height: 20px; width: 20px;float: left;background-size: 100% 100% ; margin-left: 0px; background-image: url('/static/images/up.png'); border: 0.03em solid green;">
+                    </div>
+                    <div id="title_cont" style="float: left; font-weight: 600;  margin-left: 7px; font-size: 0.7em; padding-top:8px; ">
+                      Awesome! Awesome! Awesome!
+                    </div>
+                </div>
+
+                <div id="user_cont" style=" font-size: 0.7em;float: left; margin-top: 5px; width: 100%;">
+                    By <a href="">@Basileal</a>
+                </div>
+                <div id="title_cont" style="font-size: 0.6em;float: left; margin-top: 5px; width: 100%;">
+                    Date: 12/13/14
+                </div>
+                <div style="float: left; text-align: justify; font-size: 0.8em;">
+                <p>
+                  It was a very awesome experience. I would also woudl buy from him. It was a very awesome experience. I would also woudl buy from him. It was a very awesome experience. I would also woudl buy from him.
+                </p>
+                </div>
+                <hr style="display: block; width: 95%; margin: 0 auto;">
+              </div>
+
                 {% for r in reviews %}
                   {{ r.render_myprof() | safe }}
                 {% endfor %} 

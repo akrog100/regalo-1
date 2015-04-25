@@ -12,7 +12,7 @@
 {% block content2 %}
 	{% if posts|length > 0 %}
 		{% for p in posts %}
-			{{ p.render() | safe }}
+			{{ p.render_myposts() | safe }}
 		{% endfor %}
 	{% else %}
 		<div style="margin: 1em 0 0 1em;;">

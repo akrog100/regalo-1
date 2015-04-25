@@ -1,0 +1,56 @@
+<div class="post_cont" id="p_{{p.key().id()}}">
+	<div class="post_left_cont">
+		<div class="post_title">
+			<span class="post_retailer">{{p.retailer.name}}: ${{p.card_val}}</span>
+		</div>
+
+		<div class="retailer_pic_cont">
+			<div class="retailer_pic" style="background-image:url('/static/images/{{p.retailer.name}}.jpg'); ">
+			</div>
+		</div>
+ 
+		<div class="post_owner_cont">
+			<span>Posted By: <a href="/users/{{p.owner.key().id()}}?b=browse">@{{p.owner.user_name}}</a></span>
+			<br>
+			<span>Date: {{p.created.strftime("%b %d, %Y")}} </span>
+		</div>
+	</div>
+
+	<div class="post_mid_cont">
+		<div class="looking_for_cont">
+			<div class="looking_for_div"><u>You are looking for</u></div>
+			<ol class="looking_for_list">{{p.looking_for[0]}}</ol>
+			<ol class="looking_for_list">{{p.looking_for[1]}}</ol>
+			<ol class="looking_for_list">{{p.looking_for[2]}}</ol>
+		</div>
+	</div>
+
+	<div class="bid_button_cont">
+		<div style="height: 40%; width: 100%; padding-top: 40%;">
+			<div align="center" class="bid_count">
+				{%if p.status == 'Active'%}
+					{% set stat_color = 'green' %}
+				{% elif p.status == 'Swapped' %}
+					{% set stat_color = 'blue' %}
+				{% endif %}	
+				STATUS: <span style="color: {{stat_color}}; font-weight:900">{{p.status}}</span>
+			</div>
+
+			{% if p.status == 'Active'%}
+				<div align="center" class="bid_count">
+					Current # of bids: {{p.num_bids}}
+				</div>
+				{% if p.num_bids > 0 %}
+					<div align="center" class="bid_count">
+						<a href="/mybids#{{p.key().id()}}"> Go to bids...</a>
+					</div>
+				{% endif %}
+			{% endif %}
+		</div>
+		
+	</div>
+	{%if p.status == 'Active'%}
+		<a href="#"><div id="e_{{p.key().id()}}" class="edit_button" style="margin: 0 0 0 95% ;position: relative; background-size: 20px 20px;background-image: url('/static/images/edit.png'); height: 20px; width: 20px; top:7px; display: none;">
+		</div></a>
+	{% endif %}
+</div>
