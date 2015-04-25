@@ -981,3 +981,110 @@ body {
   width: 150px;
   font-size: 10pt;
 }
+
+
+/*add coment */
+/* New post from */
+#newcomment_form {
+  width: 100%;
+  margin: 1em 1em;
+}
+#newcomment_form #newpost_title {
+  font-weight: bold; 
+  font-size:2em; 
+  margin-bottom:5px; 
+  margin-top:0;
+}
+
+#newcomment_form #newpost_line {
+  border: none; 
+  background-color:#1F7C7C; 
+  height: 5px; margin-top: 0; 
+  margin-bottom: 1em;
+}
+
+#newcomment_form #new_post_radio_cont {
+  background-color: transparent;
+  border-radius: 5px; 
+  vertical-align: center; 
+  text-align: center; 
+  padding-top: 5px;
+  border-color: 2px solid red;
+  margin-bottom: 10px;
+}
+
+#newcomment_form #title_input {
+  border-radius: 5px;
+  width: 60%;
+  height: 2em;
+}
+
+#newcomment_form #title_cont {
+  width: 100%;
+}
+
+#newcomment_form .label {
+  font-size: 0.95em;
+  margin-top: 0.75em;
+  text-align: left;
+}
+#newcomment_form .error {
+  padding-left: 10px;
+  color: red;
+  font-size: 8pt;
+}
+
+#newcomment_form #post_but {
+  font-weight: 900;
+  display: block;
+  margin: 1em ;
+  height: 2.5em;
+  border-radius: 5px;
+  border: 2px solid #1F7C7C;
+  background-color: #1F7C7C;
+  padding: 0 1em 0 1em;
+  vertical-align: center;
+}
+
+/*
+Added to customize radio button
+*/
+#newcomment_form input[type=radio] {
+    display:none; 
+    margin:10px;
+}
+
+#newcomment_form input[type=radio] + label {
+    display: block;
+    float: left;
+    width: 40px;
+    height: 40px;
+    margin-right: 2em;
+    padding: 3px 3px 3px 3px;
+    opacity: 0.5;
+}
+
+#down_label{
+    background-size: 100% 100%;
+    background-image: url('/static/images/down.png');
+}
+
+#up_label{
+    background-size: 100% 100%;
+    background-image: url('/static/images/up.png');
+}
+
+#newcomment_form input[type=radio]:checked + #down_label {
+   /*border: 2px solid black;*/
+   opacity: 1;
+}
+
+#newcomment_form input[type=radio]:checked + #up_label {
+   /*border: 2px solid black;*/
+   opacity: 1;
+}
+
+#newcomment_form textarea {
+  border-radius: 5px;
+  resize: none;
+}

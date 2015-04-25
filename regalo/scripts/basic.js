@@ -113,6 +113,12 @@ $(document).ready(function() {
 	    });
 	});
 
+	$(function() {
+	    $('#new_comment_but').click(function(e) {
+	        $('#comments_cont').load('/usersform');
+	    });
+	});
+
 	jQuery.ajaxSetup({
 	  beforeSend: function() {
 		 $('#mybid-loading-indicator').show(100);

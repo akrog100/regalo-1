@@ -8,16 +8,13 @@
 {% endblock %}
 
 {% block content2 %}
-	{% set count = 0 %}
-	{% for p in posts %}
-		{%if p.status == 'Active'%}
-			{% set count = count + 1 %}
-			{{ p.render() | safe }}
-		{% endif %}
-	{% endfor %}
-	{% if count == 0 %}
-		<div style="margin: 1em 0 0 1em;;">
+	{% if posts|length > 0 %}
+        {% for p in posts %}
+          {{ p.render() | safe }}
+        {% endfor %}
+     {% else %}
+        <div style="margin: 1em 0 0 1em;;">
             <span>Currently, there are no active swap posts by other users.</span>  
         </div>
-	{% endif %}
+     {% endif %}
 {% endblock %}

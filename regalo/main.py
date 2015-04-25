@@ -74,13 +74,9 @@ def valid_pw(name,pw,h):
     salt = h.split(',')[1]
     return h == make_pw_hash(name,pw,salt)
 
-
 def make_email_hash(name, email):
     h = hashlib.sha256(name + email).hexdigest()
     return "%s" % (h)
-
-def valid_email_hash(name,email,h):
-    return h == make_pw_hash(name,email)
 #---------------------------------------
     
 #------------------------------------------------ERROR HANDLER---------------------------------------------------#
@@ -122,11 +118,13 @@ class User(db.Model):
     pass_hash = db.StringProperty(required = True)
     email = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add = True)
+    traded_with = db.ListProperty(int, required = True)
     rating_u = db.IntegerProperty(required=True)
     rating_d = db.IntegerProperty(required=True)
 
-    auth_token = db.StringProperty()
-    confirmed = db.BooleanProperty()
+
+    auth_token = db.StringProperty(required = True)
+    confirmed = db.BooleanProperty(required = True)
 
     @classmethod
     def by_username(cls, u_name):
@@ -146,6 +144,7 @@ class User(db.Model):
                     user_name = u_name,
                     pass_hash = pw_hash,
                     email = email,
+                    traded_with = [],
                     rating_u = 0,
                     rating_d = 0,
                     auth_token = email_hash,
@@ -232,10 +231,18 @@ class SellPost(db.Model):
 #---------------------------------------------------REVIEWS DB----------------------------------------------------#
 class Review(db.Model):
     reviewer = db.ReferenceProperty(User,collection_name='reviewer_rev') #reviewer
-    owner = db.ReferenceProperty(User,collection_name='owner_rev') #person being reviewed
-    rev_content = db.TextProperty(required = True)
+    reviewed = db.ReferenceProperty(User,collection_name='reviewed_rev') #person being reviewed
+    revcontent = db.TextProperty(required = True)
     title = db.StringProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True) 
+    created = db.DateTimeProperty(auto_now_add = True)
+    rating = db.StringProperty(required = True)
+
+    @classmethod
+    def register(cls, reviewer_u, reviewed_u, rev_cont_u, title_u, rating_u):
+        return Review(reviewer = reviewer_u, reviewed = reviewed_u, revcontent = rev_cont_u, title = title_u, rating = rating_u)
+
+    def render_users(self):
+        return render_str("reviews_myprof.html", r = self)
 
     def render_myprof(self):
         return render_str("reviews_myprof.html", r = self)
@@ -409,15 +416,14 @@ class SignUpHandler(Handler):
             user.put()
             #self.login(user)
             #self.redirect("/browse")
-            auth_url = 'reeegalo.appspot.com/confirm/%s?u=%s' % (user.auth_token,user.key().id())
+            auth_url = 'http://reeegalo.appspot.com/confirm/%s?u=%s' % (user.auth_token,user.key().id())
             message = mail.EmailMessage()
             message.sender = "accounts@reeegalo.appspotmail.com"
             message.to = self.email
             message.subject = "Account Registeration Successful! - Reeegalo"
-            message.body = """Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved.  Please got to the following link to veify your email adress:\n\t %s\nYou can then visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % (self.last_name, auth_url)
+            message.body = """ Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved. Please got to the following link %s to veify your email adress.You can then visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % (self.first_name, auth_url)
             message.send()
             self.render('register-success.html')
-
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------SIGN IN PAGE HANDLER-----------------------------------------------#
@@ -442,18 +448,19 @@ class SignInHandler(Handler):
             self.render('signin.html', error_login = err)
 #-----------------------------------------------------------------------------------------------------------------#
 
-
+#----------------------------------------------CONFRIM EMAIL HANDLER----------------------------------------------#
 class ConfirmUserHandler(Handler):
     def get(self,token):
         get_values = self.request.GET
         u_id = int(get_values['u'])
         u = User.by_id(u_id)
-        if u and u.auth_token == str(token):
+        if not u.confirmed and u and u.auth_token == str(token):
             u.confirmed = True
             u.put()
             self.render('email-confirmed.html')
         else:
             self.error(404)
+#-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class FrontPageHandler(Handler):
@@ -473,7 +480,7 @@ class BrowseHandler(Handler):
                 pass
 
             u = self.user
-            posts_swap = SwapPost.all().filter('owner !=', u)
+            posts_swap = SwapPost.all().filter('owner !=', u).filter('status ==', 'Active')
             posts_sell = SellPost.all().filter('owner !=', u)
             if not t or t == '1':
                 self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.getsortkey, reverse=True))
@@ -628,6 +635,11 @@ class MyBidsHandler(Handler):
                 b.status = 'Declined'
                 b.put()
 
+        bidder.traded_with.append(owner.key().id())
+        bidder.put()
+        owner.traded_with.append(bidder.key().id())
+        owner.put()
+
         #email both users
         message = mail.EmailMessage()
         message.sender = "accounts@reeegalo.appspotmail.com"
@@ -705,10 +717,63 @@ class UsersPageHandler(Handler):
             backtourl = "browse"
             backto = "Browse"
 
-        posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
-        posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True) 
+        allow_comment = 'no'
+        traded_with = user.traded_with
+        for u_id in traded_with:
+            if self.user.key().id() == u_id:
+                allow_comment = 'yes'
 
-        self.render("users.html", u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto)
+        rev = user.reviewed_rev
+        for r in rev:
+            if r.reviewer.key().id() == self.user.key().id():
+                allow_comment = 'no'
+
+        posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+        posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True)
+
+        self.render("users_page.html", u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto, allow = allow_comment, reviews = rev)
+
+    def post(self,u_id):
+        user = User.by_id(int(u_id))
+        if not user:
+            self.error(404)
+            return
+
+        get_values = self.request.GET
+        try:
+            b = get_values['b']
+            if b == 'mybids':
+                backtourl = "mybids"
+                backto = "My Bids"
+            elif b == 'browse':
+                backtourl = "browse"
+                backto = "Browse"
+            elif b == 'myprof':
+                backtourl = "myprofile"
+                backto = "My Profile"
+        except KeyError:
+            backtourl = "browse"
+            backto = "Browse"
+
+        allow_comment = 'no'
+
+        rating = self.request.get('rate')
+        title = self.request.get('rev_title')
+        review = self.request.get('review_cont')
+
+        r = Review.register(self.user, user, review, title, str(rating))
+        r.put()
+
+        if str(rating) == 'down':
+            user.rating_d = user.rating_d + 1
+        elif str(rating) == 'up':
+            user.rating_u = user.rating_u + 1
+        user.put()
+
+        posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+        posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True)
+        self.render('user_form_submitted.html', u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto, allow = allow_comment)
+
 #-----------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------SWAP BID PAGE HANDLER------------------------------------------#
@@ -769,7 +834,6 @@ class SwapbidHandler(Handler):
             self.render("bid_swap_form_submitted.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
-
 #----------------------------------------------------SWAP POPUP HANDLER-------------------------------------------#
 class SwapPopupHandler(Handler):
     def get(self):
@@ -779,10 +843,11 @@ class SwapPopupHandler(Handler):
         self.response.out.write(p.render_bidpop(p.post_bids))
 #-----------------------------------------------------------------------------------------------------------------#
 
-
+class RenderReviewFormHandler(Handler):
+    def get(self):
+        self.response.out.write(render_str('users_form.html'))
 
 #//////////////////////////////////////////TEST/////////////////////////////////////
- 
 class Movie(db.Model):
     title = db.StringProperty()
     picture = db.BlobProperty(default=None)
@@ -831,6 +896,7 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/swapbid',SwapbidHandler),
     ('/popup-swap', SwapPopupHandler),
     ('/confirm/([a-zA-Z0-9]+)', ConfirmUserHandler),
+    ('/usersform', RenderReviewFormHandler)
     ], debug=True)
 
 

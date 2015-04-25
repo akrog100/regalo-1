@@ -26,3 +26,8 @@ indexes:
   properties:
   - name: owner
   - name: num_bids
+
+- kind: SwapPost
+  properties:
+  - name: status
+  - name: owner
