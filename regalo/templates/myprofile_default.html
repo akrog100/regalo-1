@@ -1,0 +1,22 @@
+{% extends "myprofile.html" %}
+
+{% block contentsss %}
+<div id="userinfotitle_cont" style="height: 2em; font-size: 1.2em;padding-top: 5px">
+	<span class="body_nav_title">Customer Reviews</span>
+</div>
+
+ <div style="height:80%; width:90%; float:left; margin-left:25px; margin-top:15px; height: auto;overflow-x: hidden; border-radius: 3px;">
+     {% if reviews|length > 0 %}
+	    {% for r in reviews %}
+			{{ r.render_myprof() | safe }}
+		{% endfor %} 
+	 {% else %}
+	    <div style="margin: 1em 0 0 1em;;">
+	        <span>Currently, there are no reviews posted.</span>  
+	    </div>
+	 {% endif %}
+</div> 
+
+{% endblock %}       
+
+

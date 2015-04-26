@@ -74,8 +74,8 @@ def valid_pw(name,pw,h):
     salt = h.split(',')[1]
     return h == make_pw_hash(name,pw,salt)
 
-def make_email_hash(name, email):
-    h = hashlib.sha256(name + email).hexdigest()
+def make_email_hash(secret, email, h):
+    h = hashlib.sha256(secret + email + h).hexdigest()
     return "%s" % (h)
 #---------------------------------------
     
@@ -138,7 +138,7 @@ class User(db.Model):
     @classmethod
     def register(cls, f_name, l_name, u_name, pw, email):
         pw_hash = make_pw_hash(u_name, pw)
-        email_hash = make_email_hash(u_name, email)
+        email_hash = make_email_hash(secret, email, pw_hash)
         return User(first_name = f_name,
                     last_name = l_name,
                     user_name = u_name,
@@ -195,6 +195,12 @@ class SwapPost(db.Model):
 
     def getsortkey(post):
         return post.created
+
+    def sortretailer(post):
+        return post.retailer.name
+
+    def sortprice(post):
+        return int(post.card_val)
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------SWAP POST DB--------------------------------------------------#
@@ -246,6 +252,9 @@ class Review(db.Model):
 
     def render_myprof(self):
         return render_str("reviews_myprof.html", r = self)
+
+    def getsortkey(rev):
+        return rev.created
 #-----------------------------------------------------------------------------------------------------------------#
 
 #---------------------------------------------------REVIEWS DB----------------------------------------------------#
@@ -276,6 +285,9 @@ class Bid_swap(db.Model):
 
     def render_mybid(self):
         return render_str("bid_swap_mybid.html", b = self)
+
+    def render_myprof(self):
+        return render_str("bid_swap_myprof.html", b = self)
 
     def getsortkey(post): #used for sorting
         return post.created
@@ -414,6 +426,7 @@ class SignUpHandler(Handler):
         else:
             user = User.register(self.first_name, self.last_name, self.user_name, self.password, self.email)
             user.put()
+            self.logout()
             #self.login(user)
             #self.redirect("/browse")
             auth_url = 'http://reeegalo.appspot.com/confirm/%s?u=%s' % (user.auth_token,user.key().id())
@@ -465,7 +478,10 @@ class ConfirmUserHandler(Handler):
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
 class FrontPageHandler(Handler):
     def get(self):   
-        self.render("frontpage.html")
+        if self.user:
+            self.redirect('/browse')
+        else:
+            self.render("frontpage-home.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #----------------------------------------------FRONT PAGE HANDLER-------------------------------------------------#
@@ -474,8 +490,10 @@ class BrowseHandler(Handler):
         if self.user:
             get_values = self.request.GET
             t = None
+            s = None
             try:
                 t = get_values['type']
+                s = get_values['s']
             except KeyError:
                 pass
 
@@ -483,7 +501,16 @@ class BrowseHandler(Handler):
             posts_swap = SwapPost.all().filter('owner !=', u).filter('status ==', 'Active')
             posts_sell = SellPost.all().filter('owner !=', u)
             if not t or t == '1':
-                self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.getsortkey, reverse=True))
+                if not s or s == 'date':
+                    self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.getsortkey, reverse=True))
+                elif s == 'priceH':
+                    self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.sortprice, reverse=True))
+                elif s == 'priceL':
+                    self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.sortprice))
+                elif s == 'retailer':
+                    self.render('browse_swap.html', posts = sorted(posts_swap, key=SwapPost.sortretailer))
+                else:
+                    self.error(404)
             elif t == '2':
                 self.render('browse_sell.html', posts = sorted(posts_sell, key=SellPost.getsortkey, reverse=True))
             else:
@@ -498,11 +525,73 @@ class MyProfileHandler(Handler):
     def get(self):
         if self.user: 
             posts1 = sorted(self.user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
-            posts2 = sorted(self.user.user_sellposts, key=SellPost.getsortkey, reverse=True) 
+            posts2 = sorted(self.user.user_sellposts, key=SellPost.getsortkey, reverse=True)
 
-            self.render("myprofile.html", u = self.user, posts = posts1, posts2 = posts2)
+            bids = self.user.bidder_bids
+            bids = sorted(bids, key=Bid_swap.getsortkey, reverse=True)
+
+            rev = self.user.reviewed_rev
+            rev = sorted(rev, key=Review.getsortkey, reverse=True) 
+
+            self.render("myprofile_default.html", u = self.user, posts = posts1, posts2 = posts2, reviews = rev, bids = bids, allow = 'yes', backtourl = "myprofile", backto = "My Profile")
+
         else:
             self.redirect('/signin')
+#-----------------------------------------------------------------------------------------------------------------#
+
+#----------------------------------------------EDIT PROFILE HANDLER-----------------------------------------------#
+class EditProfHandler(Handler):
+    def get(self):
+        if self.user:
+            posts1 = sorted(self.user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+            posts2 = sorted(self.user.user_sellposts, key=SellPost.getsortkey, reverse=True)
+
+            bids = self.user.bidder_bids
+            bids = sorted(bids, key=Bid_swap.getsortkey, reverse=True)
+
+            self.render('myprofile_edit.html', u = self.user, posts = posts1, posts2 = posts2, bids = bids, allow = 'no')
+        else:
+            self.redirect('/signin')
+
+    def post(self):
+        self.email = self.request.get('email')
+        self.first_name = self.request.get('first_name')
+        self.last_name = self.request.get('last_name')
+        have_error = False
+
+        error_first = ""
+        if self.first_name and not valid_firstname(self.first_name):
+            error_first = "*not a valid name"
+            have_error = True
+
+        #last name
+        error_last = ""
+        if self.last_name and not valid_lastname(self.last_name):
+            error_last = "*not a valid name"
+            have_error = True
+
+        #email
+        error_email = ""
+        if self.email and not valid_email(self.email):
+            error_email = "*that's not a valid email."
+            have_error = True
+
+        if have_error:
+            posts1 = sorted(self.user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+            posts2 = sorted(self.user.user_sellposts, key=SellPost.getsortkey, reverse=True)
+            bids = self.user.bidder_bids
+            bids = sorted(bids, key=Bid_swap.getsortkey, reverse=True)
+            self.render('myprofile_edit.html', u = self.user, posts = posts1, posts2 = posts2, email = self.email, first_name = self.first_name, last_name = self.last_name, error_first = error_first, error_last = error_last, error_email = error_email, bids = bids, allow = 'no')
+        else:
+            if self.email:
+                self.user.email = self.email
+            if self.first_name:
+                self.user.first_name = self.first_name
+            if self.last_name:
+                self.user.last_name = self.last_name
+
+            self.user.put()
+            self.redirect('/myprofile')
 #-----------------------------------------------------------------------------------------------------------------#
 
 #------------------------------------------------MY POSTS HANDLER-------------------------------------------------#
@@ -511,15 +600,25 @@ class MyPostsHandler(Handler):
         if self.user:
             get_values = self.request.GET
             t = None
+            s = None
             try:
                 t = get_values['type']
+                s = get_values['s']
             except KeyError:
                 pass
             u = self.user
             if not t  or t == '1':
-                #posts = Post.all().filter('owner =', u)
                 posts = u.user_swapposts
-                self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.getsortkey, reverse=True))
+                if not s or s == 'date':
+                    self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.getsortkey, reverse=True))
+                elif s == 'priceH':
+                    self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.sortprice, reverse=True))
+                elif s == 'priceL':
+                    self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.sortprice))
+                elif s == 'retailer':
+                    self.render('myposts_swap.html', posts = sorted(posts, key=SwapPost.sortretailer))
+                else:
+                    self.error(404)
 
             elif t == '2':
                 posts = u.user_sellposts
@@ -529,6 +628,55 @@ class MyPostsHandler(Handler):
                 return
         else:
             self.redirect('/signin')      
+#-----------------------------------------------------------------------------------------------------------------#
+
+#--------------------------------------------EDIT SWAP POSTS HANDLER----------------------------------------------#
+class EditSwapHandler(Handler):
+    def get(self):
+        if self.user:
+            self.render("myposts_edit.html", retailers = retailers)
+        else:
+            self.redirect('/signin')
+
+    def post(self):
+        have_error = False
+        self.code = self.request.get('code')
+        self.pin = self.request.get('pin')
+
+        params = dict(code = self.code, pin = self.pin, retailers = retailers)
+
+        if not self.code:
+            params['error_code'] = "*required"
+            have_error = True
+
+        self.selected_rets = self.request.get('choices', allow_multiple=True)
+        num_choices = len(self.selected_rets)
+        if not self.selected_rets:
+            params['error_retailers'] = "*required"
+            have_error = True
+        if num_choices > 3:
+            params['error_retailers'] = "*select a maximum of three"
+            have_error = True
+
+
+        if have_error:
+            self.render("myposts_edit.html", **params)
+        else: 
+
+            choices = [0] * num_choices
+            for i in range(0,num_choices):
+                choices[i] = str(self.selected_rets).split(',')[i].split("'")[1]
+
+            get_values = self.request.GET
+            self.post_id = get_values['id']
+
+            p = SwapPost.by_id(int(self.post_id))
+            p.card_code = self.code
+            p.card_pin  = self.pin
+            p.looking_for = choices
+            p.put()
+
+            self.render("myposts_edit_submitted.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
 #------------------------------------------------NEW POSTS HANDLER------------------------------------------------#
@@ -695,43 +843,52 @@ class RetRegHandler(Handler):
 #-----------------------------------------------USERS PROFILE PAGE HANDLER----------------------------------------#
 class UsersPageHandler(Handler):
     def get(self, user_id):
-        user = User.by_id(int(user_id))
-        if not user:
-            self.error(404)
-            return
+        if not self.user:
+            self.redirect('/signin')
+        else:
+            user = User.by_id(int(user_id))
+            if not user:
+                self.error(404)
+                return
 
-        get_values = self.request.GET
+            if user.key().id() == self.user.key().id():
+                self.redirect('/myprofile')
+                return 
 
-        try:
-            b = get_values['b']
-            if b == 'mybids':
-                backtourl = "mybids"
-                backto = "My Bids"
-            elif b == 'browse':
-                backtourl = "browse"
-                backto = "Browse"
-            elif b == 'myprof':
-                backtourl = "myprofile"
-                backto = "My Profile"
-        except KeyError:
+            get_values = self.request.GET
             backtourl = "browse"
             backto = "Browse"
+            try:
+                b = get_values['b']
+                if b == 'mybids':
+                    backtourl = "mybids"
+                    backto = "My Bids"
+                elif b == 'browse':
+                    backtourl = "browse"
+                    backto = "Browse"
+                elif b == 'myprof':
+                    backtourl = "myprofile"
+                    backto = "My Profile"
+            except KeyError:
+                    backtourl = "browse"
+                    backto = "Browse"
 
-        allow_comment = 'no'
-        traded_with = user.traded_with
-        for u_id in traded_with:
-            if self.user.key().id() == u_id:
-                allow_comment = 'yes'
+            allow_comment = 'no'
+            traded_with = user.traded_with
+            for u_id in traded_with:
+                if self.user.key().id() == u_id:
+                    allow_comment = 'yes'
 
-        rev = user.reviewed_rev
-        for r in rev:
-            if r.reviewer.key().id() == self.user.key().id():
-                allow_comment = 'no'
+            rev = user.reviewed_rev
+            rev = sorted(rev, key=Review.getsortkey, reverse=True) 
+            for r in rev:
+                if r.reviewer.key().id() == self.user.key().id():
+                    allow_comment = 'no'
 
-        posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
-        posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True)
+            posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
+            posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True)
 
-        self.render("users_page.html", u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto, allow = allow_comment, reviews = rev)
+            self.render("users_page.html", u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto, allow = allow_comment, reviews = rev)
 
     def post(self,u_id):
         user = User.by_id(int(u_id))
@@ -773,7 +930,6 @@ class UsersPageHandler(Handler):
         posts1 = sorted(user.user_swapposts, key=SwapPost.getsortkey, reverse=True) 
         posts2 = sorted(user.user_sellposts, key=SellPost.getsortkey, reverse=True)
         self.render('user_form_submitted.html', u = user, posts = posts1, posts2 = posts2, backtourl = backtourl, backto = backto, allow = allow_comment)
-
 #-----------------------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------SWAP BID PAGE HANDLER------------------------------------------#
@@ -896,7 +1052,9 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/swapbid',SwapbidHandler),
     ('/popup-swap', SwapPopupHandler),
     ('/confirm/([a-zA-Z0-9]+)', ConfirmUserHandler),
-    ('/usersform', RenderReviewFormHandler)
+    ('/usersform', RenderReviewFormHandler),
+    ('/myprofile/edit', EditProfHandler),
+    ('/myposts/editswap', EditSwapHandler)
     ], debug=True)
 
 

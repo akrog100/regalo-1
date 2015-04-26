@@ -1,0 +1,50 @@
+{% extends "myprofile.html" %}
+
+{% block contentsss %}
+<div id="userinfotitle_cont" style="height: 2em; font-size: 1.2em;padding-top: 5px">
+    <span class="body_nav_title">Edit Personal Info</span>
+    <a href="/myprofile"><span id="show_edit_but" style="cursor: pointer;float: right;display: block;height: 25px;width: 25px;background-size: 100%;margin:3px 10px 5px 0;background-image: url('/static/images/cancel.png');"></span></a>
+  </div>
+
+ <div id="register" style="margin-top: 3em;">
+    <form method="post" >
+      <div class="error" style="color: black">
+        Leave any field that you don't want to change blank.
+      </div>
+
+      <div class="label">
+        First Name
+      </div>
+      <div>
+        <input class="inputs" type="text" name="first_name" value="{{first_name}}">
+        <div class="error">
+          {{error_first}}  
+        </div>
+      </div>
+
+      <div class="label">
+        Last Name
+      </div>
+      <div >
+        <input class="inputs" type="text" name="last_name" value="{{last_name}}">
+      </div>
+      <div class="error">
+        {{error_last}}  
+      </div>
+      <div class="label">
+        New Email
+      </div>
+      <div >
+        <input class="inputs"type="text" name="email" value="{{email}}">
+      </div>
+      <div class="error">
+        {{error_email}}  
+      </div>
+
+      <div>
+        <input id="submit_but" type="submit" value="Submit">
+      </div>
+    </form>
+  </div> 
+
+{% endblock %}      

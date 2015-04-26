@@ -1,4 +1,4 @@
-<div class="post_cont" id="p_{{p.key().id()}}">
+<div class="post_cont" id="{{p.key().id()}}">
 	<div class="post_left_cont">
 		<div class="post_title">
 			<span class="post_retailer">{{p.retailer.name}}: ${{p.card_val}}</span>
@@ -29,6 +29,6 @@
 		<a class="bid_button" href='/swapbid?p={{p.key().id()}}&o={{p.owner.key().id()}}'>BUY</a>
 	</div>
 
-	<a href="#"><div id="e_{{p.key().id()}}" class="edit_button" style="margin: 0 0 0 95% ;position: relative; background-size: 20px 20px;background-image: url('/static/images/edit.png'); height: 	20px; width: 20px; top:7px; display: none;">
+	<a href="#"><div id="e_{{p.key().id()}}" class="edit_button" style="margin: 0 0 0 95% ;position: relative; background-size: 20px 20px;background-image: url('/static/images/edit.png'); height: 20px; width: 20px; top:7px; display: none;">
 	</div></a>
 </div>

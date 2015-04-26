@@ -13,16 +13,53 @@ $(document).ready(function() {
     	$(".edit_button").toggle();
 	});
 
+	/*$("#prof_edit_but").click(function(){
+    	$("#prof_submit_but").toggle();
+    	if ($('#prof_submit_but').css("display") == 'block') {
+	    	$("#usernametext").attr("contenteditable","true");
+	    	$("#useremailtext").attr("contenteditable","true");
+	    	$("#usernametext").css("border","1px solid black");
+	    	$("#useremailtext").css("border","1px solid black");
+	    }
+	    else {
+	    	$("#usernametext").attr("contenteditable","false");
+	    	$("#useremailtext").attr("contenteditable","false");
+	    	$("#usernametext").css("border","none");
+	    	$("#useremailtext").css("border","none");
+	    }
+	});*/
+
 
 	//expands and collapses swap and sell posts on myprofile page
 	$("#prof_swap_expand").click(function () {
 	    $('#prof_swap_cont').slideToggle(200, function () {
-	        ;
+	        $('#prof_sell_cont').hide(200, function () {
+	        	;
+	    	});
+	    	$('#prof_swapbids_cont').hide(200, function () {
+	        	;
+	    	});
 	    });
 	});
 	$("#prof_sell_expand").click(function () {
 	    $('#prof_sell_cont').slideToggle(200, function () {
-	        ;
+	        $('#prof_swap_cont').hide(200, function () {
+	        	;
+	    	});
+	    	$('#prof_swapbids_cont').hide(200, function () {
+	        	;
+	    	});
+	    });
+	});
+
+	$("#prof_bidswap_expand").click(function () {
+	    $('#prof_swapbids_cont').slideToggle(200, function () {
+	        $('#prof_sell_cont').hide(200, function () {
+	        	;
+	    	});
+	    	$('#prof_swap_cont').hide(200, function () {
+	        	;
+	    	});
 	    });
 	});
 
@@ -30,7 +67,7 @@ $(document).ready(function() {
 	 if (tab == '/browse')  {
 	  $('#nav_Bar_bottom_line').css("left","0%");
 	 }
-	 if (tab == '/myprofile')  {
+	 if (tab == '/myprofile' || tab == '/myprofile/edit' || tab == '/myposts/editswap')  {
 	  $('#nav_Bar_bottom_line').css("left","16.3%");
 	 }
 	 if (tab == '/myposts' || tab == "/myposts/newpost") {
@@ -119,6 +156,37 @@ $(document).ready(function() {
 	    });
 	});
 
+	$(function() {
+	    $('#new_comment_but').click(function(e) {
+	        $('#comments_cont').load('/usersform');
+	    });
+	});
+
+	$(function() {
+	    $('#prof_submit_but').click(function(e) {
+			var user_name = $('#usernametext').html();
+			var email = $('#useremailtext').html();
+	       	//var posting = $.post('editprof');
+			$.ajax({
+			    url : "/editprof",
+			    type: "POST",
+			    success: function(data, textStatus, jqXHR)
+			    {
+			        $('#usernametext').html() = data;
+			    }
+			});
+		  /*// Put the results in a div
+		  posting.done(function( data ) {
+		    var user = $( data ).find( "#usertext" );
+		    var em = $( data ).find( "#usertext" );
+		    $("#usernametext").empty().append(user);
+		    $("#useremailtext").empty().append(em);
+		  });
+	    });*/
+		});
+	});
+
+
 	jQuery.ajaxSetup({
 	  beforeSend: function() {
 		 $('#mybid-loading-indicator').show(100);
@@ -130,5 +198,16 @@ $(document).ready(function() {
 	  	$('#mybid-loading-indicator').hide(100);
 	  }
 	});
+
+	$('.myMenu > li').bind('mouseover', openSubMenu);
+		$('.myMenu > li').bind('mouseout', closeSubMenu);
+		
+		function openSubMenu() {
+			$(this).find('ul').css('visibility', 'visible');	
+		};
+		
+		function closeSubMenu() {
+			$(this).find('ul').css('visibility', 'hidden');	
+		};
 
 });

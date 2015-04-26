@@ -1,0 +1,60 @@
+{% extends "myposts.html" %}
+
+{% block content1 %}
+	<div>
+		<span class="body_nav_title">Edit Post</span>
+		<a href="/myposts"><span id="show_edit_but" style="cursor: pointer;float: right;display: block;height: 18px;width: 18px;background-size: 100%;margin:3px 10px 5px 0;background-image: url('/static/images/cancel.png');"></span></a>
+	</div>
+{% endblock %}
+
+{% block content2 %}
+	<div id="newpost_form">
+		<form method="post">
+
+	        <div class="label">
+	        	Edit gift cards  you're looking for? (max=3)
+	      	</div>
+			<div >
+				<select id="dropdown2" name="choices" multiple>
+					{% for retailer in retailers %}
+						<option>{{retailer}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="error">
+	          {{error_retailers}}  
+	        </div>
+
+	        <div class="label">
+	        	Edit Card Code
+	      	</div>
+			<div >
+				<input id="code"  value="{{code}}" class="inputs" type="text" name="code" placeholder="0" pattern="\d*">
+			</div>
+			<div class="error">
+	          {{error_code}}  
+	        </div>	
+
+	        <div class="label">
+	        	Edit Card PIN
+	      	</div>
+			<div >
+				<input id="pin"  value="{{pin}}" class="inputs" type="number" name="pin" placeholder="0" pattern="\d*">
+			</div>
+			<div class="error" style="color: black">
+		          If your card doesn't have pin, leave this blank. 
+		        </div>
+			<div class="error">
+	          {{error_pin}}  
+	        </div>	
+
+	        <div>
+	        	<input id="post_but" type="submit" value="Post">
+	      </div>
+		</form>
+	</div>
+{% endblock %}
+
+
+
+

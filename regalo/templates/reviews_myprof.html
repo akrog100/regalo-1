@@ -8,7 +8,7 @@
     </div>
 
     <div id="user_cont" style=" font-size: 0.7em;float: left; margin-top: 5px; width: 100%;">
-        By <a href="{{r.reviewer.key().id()}}?b={{backbut}}">@{{r.reviewer.user_name}}</a>
+        By <a href="/users/{{r.reviewer.key().id()}}?b=browse">@{{r.reviewer.user_name}}</a>
     </div>
     <div id="title_cont" style="font-size: 0.6em;float: left; margin-top: 5px; width: 100%;">
         Date: {{r.created.strftime("%b %d, %Y")}}

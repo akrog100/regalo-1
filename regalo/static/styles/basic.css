@@ -51,9 +51,9 @@ body {
   height: 100%;
   width: 60%;
   background-position: left;
-  background-size: 80% 100%;
+  background-size: 80% 80%;
   background-repeat: no-repeat;
-  background-image: url('/static/images/logo.png');
+  background-image: url('/static/images/Capture4.jpg');
  }
 #main-container #login-cont {
   float: left;
@@ -309,8 +309,60 @@ body {
   height: 20px;
   width: 20px;
   background-size: 100%;
-  margin:3px 15px 5px 0;
+  margin:1px 15px 5px 0;
   background-image: url('/static/images/ios7-arrow-down.svg')
+}
+
+/*style the main menu*/
+.myMenu {
+  margin:0;
+  padding:0;
+}
+
+.myMenu li {
+  list-style:none;
+  float:right;
+  font:12px Arial, Helvetica, sans-serif #111;
+}
+
+.myMenu li a:link, .myMenu li a:visited {
+  font-weight: bold; 
+  font-size:0.9em; 
+  padding-top:  3px;
+  display:block;
+  text-decoration:none;
+  background-color:transparent;
+  margin:0;
+  border-right: 1px solid #fff;
+  color:#111;
+  transition: all .2s ease-in-out;
+}
+
+.myMenu li a:hover {
+}
+
+/*style the sub menu*/
+.myMenu li ul {
+  font-size:0.8em; 
+  position:absolute;
+  visibility:hidden;
+  border-top:1px solid #fff;
+  margin:0;
+  padding:0;
+}
+
+.myMenu li ul li {
+  display:inline;
+  float:none;
+}
+
+.myMenu li ul li a:link, .myMenu li ul li a:visited {
+  background-color:#E6E6E6;
+  width:auto;
+}
+
+.myMenu li ul li a:hover {
+  transform: scale(1.1);  
 }
 
 /*body-main*/
@@ -549,7 +601,7 @@ body {
 #newpost_form #post_but {
   font-weight: 900;
   display: block;
-  margin: 1em 0 0 5.5em;
+  margin: 1em auto;
   height: 2.5em;
   border-radius: 5px;
   border: 2px solid #1F7C7C;
@@ -622,7 +674,7 @@ body {
 #login #login_but {
   font-weight: 900;
   display: block;
-  margin: 1em 0 0 5.5em;
+  margin: 1em auto;
   height: 2.5em;
   border-radius: 5px;
   border: 2px solid #1F7C7C;
@@ -642,7 +694,7 @@ body {
 
 #myprofilepage #userinfomain{
   width: 100%; 
-  height:25%; 
+  min-height:25%; 
   float:left; 
   border-radius: 3px;
 }
@@ -669,7 +721,7 @@ body {
   float:left
 }
 #myprofilepage #username{
-  padding-top:15px;
+  padding-top:10px;
 }
 #myprofilepage #email{
   padding-top:10px;
@@ -690,6 +742,10 @@ body {
   background-image: url('/static/images/user.png'); 
 }
 
+#myprofilepage #nameicon {
+  background-image: url('/static/images/name.png'); 
+}
+
 #myprofilepage #emailicon {
   background-image: url('/static/images/mail.png');
 }
@@ -702,6 +758,13 @@ body {
   font-size: 0.8em; 
   overflow-x: auto;
 }
+
+
+#myprofilepage #usernametext {
+  font-size: 0.8em; 
+  overflow-x: auto;
+}
+
 
 #myprofilepage #activepostscont {
   width:100%; 
@@ -730,6 +793,7 @@ body {
   background-color:  #F8F8F8; 
   overflow-y: auto; 
   overflow-x: hidden;
+  display: none;
 }
 
 .posts_see_all {
@@ -738,6 +802,20 @@ body {
   width: 100%; 
   height: 30px; 
   font-size: 0.9em;
+}
+
+#myprofilepage #prof_submit_but {
+  cursor: pointer;
+  font-weight: 900;
+  display: block;
+  height: 1em;
+  border-radius: 5px;
+  border: 2px solid #1F7C7C;
+  background-color: #1F7C7C;
+  float: right;
+  margin: 0 10px 10px 0;
+  padding: 5px 5px 5px 5px;
+  display: none;
 }
 /*/////////////////////////////////////////////////////////////*/
 
@@ -772,7 +850,8 @@ body {
   border-radius: 4px; 
   margin: 2em 2em; 
   width: calc(100% - 8em);
-  height: 440px;
+  min-height: 550px;
+  height: auto;
 }
 
 #bidswap_form #swap_form_cont {

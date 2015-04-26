@@ -1,8 +1,13 @@
 {% extends "users.html" %}
 
 {% block contentsss %}
-	{% for r in reviews %}
+ {% if reviews|length > 0 %}
+    {% for r in reviews %}
 		{{ r.render_myprof() | safe }}
 	{% endfor %} 
+ {% else %}
+    <div style="margin: 1em 0 0 1em;;">
+        <span>Currently, there are no reviews for this user.</span>  
+    </div>
+ {% endif %}
 {% endblock %}
-
