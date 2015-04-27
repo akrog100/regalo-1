@@ -17,7 +17,13 @@
           {% else %}
           	{% set stat_color = 'grey'%}
           {% endif %}
-          <span><u>Status:</u>&nbsp;<font style="color: {{stat_color}}; font-weight: 900;">{{b.status}}</font></span>
+          <span>
+            <u>Status:</u>&nbsp;
+            <font style="color: {{stat_color}}; font-weight: 900;">{{b.status}}</font>
+            {% if b.status == 'Swapped'%}
+              <font style="black; font-size: 0.7em;">*your new card sent to your email</font>
+            {% endif%} 
+          </span>
           
       </div>
 </div>

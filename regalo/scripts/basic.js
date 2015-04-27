@@ -67,10 +67,10 @@ $(document).ready(function() {
 	 if (tab == '/browse')  {
 	  $('#nav_Bar_bottom_line').css("left","0%");
 	 }
-	 if (tab == '/myprofile' || tab == '/myprofile/edit' || tab == '/myposts/editswap')  {
+	 if (tab == '/myprofile' || tab == '/myprofile/edit')  {
 	  $('#nav_Bar_bottom_line').css("left","16.3%");
 	 }
-	 if (tab == '/myposts' || tab == "/myposts/newpost") {
+	 if (tab == '/myposts' || tab == "/myposts/newpost" || tab == '/myposts/editswap') {
 	  $('#nav_Bar_bottom_line').css("left","33.4%");
 	 }
 	 if (tab == '/mybids')  {

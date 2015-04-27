@@ -3,6 +3,7 @@ html {
   height: 100%;
   width: 100%;
 }
+
 body {
   height: calc(100% - 16px);
   width: calc(100% - 16px);
@@ -18,7 +19,6 @@ body {
  #main-container {
   opacity:1 !important;
   padding: 0 1em 1em 1em;
-  border:1px solid red 10px;
   background-color: white;
   border-radius: 10px;
   border-color:black;
@@ -53,7 +53,7 @@ body {
   background-position: left;
   background-size: 80% 80%;
   background-repeat: no-repeat;
-  background-image: url('/static/images/Capture4.jpg');
+  background-image: url('/static/images/logo.png');
  }
 #main-container #login-cont {
   float: left;
@@ -96,10 +96,9 @@ body {
 }
 
 #main-container #topbar-second {
-  -webkit-text-size-adjust: auto;
   border-radius: 5px;
   background-size: 120%;
-  background-image: url('/static/images/Gradient.jpg');
+  background-image: url('/static/images/gradient.jpg');
   background-color: black;
   font-weight: bold;
   width: 100%;
@@ -999,7 +998,7 @@ body {
 }
 #faq-help-cont #faq-list-cont {
   float: left;
-  width: 60%;
+  width: 100%;
 }
 
 #faq-help-cont #faq-pic-cont{

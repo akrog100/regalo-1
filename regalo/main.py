@@ -19,7 +19,28 @@ from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 secret = "imsosecret"
 
 #RETAILERS SUPPORTED
-retailers=("Applebees", "Best-Buy","Body-Shop","Chipotle","CVS","Dominos-Pizza","Dunkin-Donuts","Forever-21","Papa-Johns","WalMart")
+retailers=["Applebees",
+           "Best-Buy",
+           "Body-Shop",
+           "Chipotle",
+           "CVS",
+           "Dominos-Pizza",
+           "Dunkin-Donuts",
+           "Forever-21",
+           "Papa-Johns",
+           "WalMart",
+           "Starbucks",
+           "Home-Depot",
+           "Subway",
+           "Barnes-and-Noble",
+           "Nordstom",
+           "Lowes",
+           "TJ-Maxx",
+           "Toys-R-Us",
+           "Old-Navy",
+           "Sears",
+           "Target"]
+retailers.sort()
 
 #INIT TEMPLATE DIRECTORY
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -153,7 +174,7 @@ class User(db.Model):
     @classmethod
     def login(cls, u_name, pw):
         user = cls.by_username(u_name)
-        if user and user.confirmed and valid_pw(u_name, pw, user.pass_hash):
+        if user and valid_pw(u_name, pw, user.pass_hash):
             return user
 #-----------------------------------------------------------------------------------------------------------------#
 
@@ -434,7 +455,8 @@ class SignUpHandler(Handler):
             message.sender = "accounts@reeegalo.appspotmail.com"
             message.to = self.email
             message.subject = "Account Registeration Successful! - Reeegalo"
-            message.body = """ Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved. Please got to the following link %s to veify your email adress.You can then visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % (self.first_name, auth_url)
+            #message.body = """ Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved. Please got to the following link %s to veify your email adress.You can then visit http://reeegalo.appspot.com/ and sign in using your account to access its features.\n\nThe Reeegalo Team""" % (self.first_name, auth_url)
+            message.body = """ Welcome, %s!\n\nYour reeegalo.appspot.com account has been approved. You can now visit http://reeegalo.appspot.com/ and sign in to your account and access its features.\n\nThe Reeegalo Team""" % (self.first_name)
             message.send()
             self.render('register-success.html')
 #-----------------------------------------------------------------------------------------------------------------#
@@ -634,6 +656,14 @@ class MyPostsHandler(Handler):
 class EditSwapHandler(Handler):
     def get(self):
         if self.user:
+            get_values = self.request.GET
+            self.post_id = get_values['id']
+            p = SwapPost.by_id(int(self.post_id))
+
+            if p.owner.key().id() != self.user.key().id():
+                self.error(404)
+                return
+
             self.render("myposts_edit.html", retailers = retailers)
         else:
             self.redirect('/signin')
@@ -645,16 +675,10 @@ class EditSwapHandler(Handler):
 
         params = dict(code = self.code, pin = self.pin, retailers = retailers)
 
-        if not self.code:
-            params['error_code'] = "*required"
-            have_error = True
-
         self.selected_rets = self.request.get('choices', allow_multiple=True)
         num_choices = len(self.selected_rets)
-        if not self.selected_rets:
-            params['error_retailers'] = "*required"
-            have_error = True
-        if num_choices > 3:
+
+        if self.selected_rets and num_choices > 3:
             params['error_retailers'] = "*select a maximum of three"
             have_error = True
 
@@ -671,9 +695,12 @@ class EditSwapHandler(Handler):
             self.post_id = get_values['id']
 
             p = SwapPost.by_id(int(self.post_id))
-            p.card_code = self.code
-            p.card_pin  = self.pin
-            p.looking_for = choices
+            if self.code:
+                p.card_code = self.code
+            if self.pin:
+                p.card_pin  = self.pin
+            if self.selected_rets:
+                p.looking_for = choices
             p.put()
 
             self.render("myposts_edit_submitted.html")
@@ -834,6 +861,9 @@ class LogoutHandler(Handler):
 #--------------------------------------------RETAILER REGISTRATION HANDLER----------------------------------------#
 class RetRegHandler(Handler):
     def get(self):
+        rets = Retailer.all()
+        for r in rets:
+           r.delete() 
         for ret in retailers:
             r = Retailer.register(ret)
             r.put()
@@ -938,15 +968,21 @@ class SwapbidHandler(Handler):
         if not self.user:
             self.redirect('/signin')
         else:
+            try:
+                get_values = self.request.GET
+                self.post_id = get_values['p']
+            except KeyError:
+                    self.error(404)
+                    return
+
             user = self.get_user();
-            get_values = self.request.GET
-            self.post_id = get_values['p']
-            self.owner_id = get_values['o']
-            self.owner = User.by_id(int(self.owner_id))
             self.post = SwapPost.by_id(int(self.post_id))
+            self.owner = self.post.owner
+
             if not self.owner or not self.post:
                 self.error(404)
                 return
+
             self.render("bid_swap_form.html", o = self.owner, p = self.post, retailers = retailers)
 
     def post(self):
@@ -967,9 +1003,8 @@ class SwapbidHandler(Handler):
 
         get_values = self.request.GET
         self.post_id = get_values['p']
-        self.owner_id = get_values['o']
-        self.owner = User.by_id(int(self.owner_id))
         self.post = SwapPost.by_id(int(self.post_id))
+        self.owner = self.post.owner
 
         if not self.owner or not self.post:
             self.error(404)
@@ -990,7 +1025,7 @@ class SwapbidHandler(Handler):
             self.render("bid_swap_form_submitted.html")
 #-----------------------------------------------------------------------------------------------------------------#
 
-#----------------------------------------------------SWAP POPUP HANDLER-------------------------------------------#
+#----------------------------------------------SWAP POPUP (AJAX) HANDLER------------------------------------------#
 class SwapPopupHandler(Handler):
     def get(self):
         get_values = self.request.GET
@@ -999,33 +1034,12 @@ class SwapPopupHandler(Handler):
         self.response.out.write(p.render_bidpop(p.post_bids))
 #-----------------------------------------------------------------------------------------------------------------#
 
+#-----------------------------------------------RENDER REVIEWS(AJAX) HANDLER--------------------------------------#
 class RenderReviewFormHandler(Handler):
     def get(self):
         self.response.out.write(render_str('users_form.html'))
 
 #//////////////////////////////////////////TEST/////////////////////////////////////
-class Movie(db.Model):
-    title = db.StringProperty()
-    picture = db.BlobProperty(default=None)
-
-class TestHandler(Handler):
-    def get(self):
-        title = "pic"
-        movie = getMovie(title)
-        if (movie and movie.picture):
-            self.response.headers['Content-Type'] = 'image/jpeg'
-            self.response.out.write(movie.picture)
-        else:
-            self.redirect('/static/noimage.jpg') 
-
-def getMovie(title):
-    result = db.GqlQuery("SELECT * FROM Movie WHERE title = :1 LIMIT 1",
-                    title).fetch(1)
-    if (len(result) > 0):
-        return result[0]
-    else:
-        return None
-
 class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
         logging.info("Received a message from: " + mail_message.sender)
@@ -1045,7 +1059,6 @@ app = webapp2.WSGIApplication([ #URL handlers
     ('/mybids', MyBidsHandler),
     ('/about', AboutHandler),
     ('/help', HelpHandler),
-    ('/test',TestHandler),
     ('/logout', LogoutHandler),
     ('/retailersReg', RetRegHandler),
     ('/users/([0-9]+)', UsersPageHandler),

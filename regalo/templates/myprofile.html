@@ -102,7 +102,7 @@
           <div class="prof_posts_cont" id="prof_swapbids_cont">
             {% if bids|length > 0 %}
               {% set i = 0 %}
-              {% for b in bids if i < 3%}
+              {% for b in bids if i < 2%}
                 {% set i = i + 1 %}
                 {{ b.render_myprof() | safe }}
               {% endfor %}
