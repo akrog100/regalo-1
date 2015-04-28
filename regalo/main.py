@@ -33,7 +33,7 @@ retailers=["Applebees",
            "Home-Depot",
            "Subway",
            "Barnes-and-Noble",
-           "Nordstom",
+           "Nordstrom",
            "Lowes",
            "TJ-Maxx",
            "Toys-R-Us",
@@ -820,14 +820,13 @@ class MyBidsHandler(Handler):
         message.sender = "accounts@reeegalo.appspotmail.com"
         message.to = bidder.email
         message.subject = "Transaction Successful! - Reeegalo"
-        message.body = """Congratulations, %s!\n\nYou tranaction has been completed with %s. Here is the card info of the your new gift card\n\n\tRetailer:%s\n\tCard Code: %s \n\tCard PIN: %s\n\nThanks,\nThe Reeegalo Team""" % (bidder.user_name, owner.user_name, post_card.retailer.name, post_card.card_code, post_card.card_pin)
-        
+        message.body = """Congratulations, %s!\n\nYou tranaction has been completed with %s. Here is the card info of the your new gift card\n\n\tRetailer: %s\n\tCard Code: %s \n\tCard PIN: %s\n\nThanks,\nThe Reeegalo Team""" % (bidder.user_name, owner.user_name, post_card.retailer.name, post_card.card_code, post_card.card_pin)
         message.send()
         message = mail.EmailMessage()
         message.sender = "accounts@reeegalo.appspotmail.com"
         message.to = owner.email
         message.subject = "Transaction Successful! - Reeegalo"
-        message.body = """Congratulations, %s!\n\nYou tranaction has been completed with %s. Here is the card info of the your new gift card\n\n\tRetailer:%s\n\tCard Code: %s \n\tCard PIN: %s\n\nThanks,\nThe Reeegalo Team""" % (owner.user_name, bidder.user_name, self.bid.bid_retailer.name, self.bid.card_code, self.bid.card_pin)
+        message.body = """Congratulations, %s!\n\nYou tranaction has been completed with %s. Here is the card info of the your new gift card\n\n\tRetailer: %s\n\tCard Code: %s \n\tCard PIN: %s\n\nThanks,\nThe Reeegalo Team""" % (owner.user_name, bidder.user_name, self.bid.bid_retailer.name, self.bid.card_code, self.bid.card_pin)
         message.send()
 
         self.render('swap_sucess.html', b = self.bid)
