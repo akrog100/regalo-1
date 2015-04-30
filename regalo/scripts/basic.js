@@ -4,6 +4,7 @@ $(document).ready(function() {
 	parser.href = window.location.href;
 	var tab = parser.pathname;
 
+	//removes login/logout div ont top on signin page
 	if (tab == '/signin') {
 		$('#login_top_cont').remove();
 	}
@@ -30,8 +31,8 @@ $(document).ready(function() {
 	});*/
 
 
-	//expands and collapses swap and sell posts on myprofile page
-	$("#prof_swap_expand").click(function () {
+	//expands and collapses swap posts, sell posts, recent bids on myprofile page
+	$("#prof_swap_expand").click(function () { //swap posts
 	    $('#prof_swap_cont').slideToggle(200, function () {
 	        $('#prof_sell_cont').hide(200, function () {
 	        	;
@@ -41,7 +42,7 @@ $(document).ready(function() {
 	    	});
 	    });
 	});
-	$("#prof_sell_expand").click(function () {
+	$("#prof_sell_expand").click(function () { //sell posts
 	    $('#prof_sell_cont').slideToggle(200, function () {
 	        $('#prof_swap_cont').hide(200, function () {
 	        	;
@@ -52,7 +53,7 @@ $(document).ready(function() {
 	    });
 	});
 
-	$("#prof_bidswap_expand").click(function () {
+	$("#prof_bidswap_expand").click(function () { //recent bids
 	    $('#prof_swapbids_cont').slideToggle(200, function () {
 	        $('#prof_sell_cont').hide(200, function () {
 	        	;
@@ -122,11 +123,14 @@ $(document).ready(function() {
 	    //$('html').css('overflow-y', 'hidden');
 
 	});*/
+
+	//to close pop up when clicked on close
 	$("#close").click(function(){
 	    $('#mybid-popDiv').fadeOut(100);
 	    $('#overlay').fadeOut(200);
 	    //$('html').css('overflow-y', 'visible');
 	});
+	//to close pop up when clicked elsewhere
 	$("#overlay").click(function(){
 	    $('#mybid-popDiv').fadeOut(100);
 	    $('#overlay').fadeOut(200);
@@ -142,6 +146,7 @@ $(document).ready(function() {
 		}
 	};
 
+	//load content into pop up and show overlay
 	$(function() {
 	    $('.buttonpop').click(function(e) {
 	        $('#mybid-popDiv').load('/popup-swap?id=' + this.id);
@@ -150,17 +155,18 @@ $(document).ready(function() {
 	    });
 	});
 
+	//load reviews/rating form into myprofile main content window
+	$(function() {
+	    $('#new_comment_but').click(function(e) {
+	        $('#comments_cont').load('/usersform');
+	    });
+	});
 	$(function() {
 	    $('#new_comment_but').click(function(e) {
 	        $('#comments_cont').load('/usersform');
 	    });
 	});
 
-	$(function() {
-	    $('#new_comment_but').click(function(e) {
-	        $('#comments_cont').load('/usersform');
-	    });
-	});
 
 	$(function() {
 	    $('#prof_submit_but').click(function(e) {
@@ -186,7 +192,7 @@ $(document).ready(function() {
 		});
 	});
 
-
+	//show a revolving circle .gif while ajax function loads
 	jQuery.ajaxSetup({
 	  beforeSend: function() {
 		 $('#mybid-loading-indicator').show(100);
@@ -199,6 +205,7 @@ $(document).ready(function() {
 	  }
 	});
 
+	//for dropdown window on myposts and browse page
 	$('.myMenu > li').bind('mouseover', openSubMenu);
 		$('.myMenu > li').bind('mouseout', closeSubMenu);
 		
@@ -209,5 +216,4 @@ $(document).ready(function() {
 		function closeSubMenu() {
 			$(this).find('ul').css('visibility', 'hidden');	
 		};
-
 });
