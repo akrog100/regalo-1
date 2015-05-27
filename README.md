@@ -16,4 +16,4 @@ Regalo is a web application for exchanging unwanted gift cards between users.
   
 **WEBSITE:**
 
-  [https://reeegalo.appspot.com](reeegalo.appspot.com)
+  [reeegalo.appspot.com](https://reeegalo.appspot.com)
