@@ -17,3 +17,5 @@ Regalo is a web application for exchanging unwanted gift cards between users.
 **WEBSITE:**
 
   [reeegalo.appspot.com](https://reeegalo.appspot.com)
+  
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/yosephbasileal/regalo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
